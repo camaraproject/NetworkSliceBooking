@@ -1,20 +1,19 @@
-<a href="https://github.com/camaraproject/§repo_name§/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/camaraproject/§repo_name§?style=plastic"></a>
-<a href="https://github.com/camaraproject/§repo_name§/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/camaraproject/§repo_name§?style=plastic"></a>
-<a href="https://github.com/camaraproject/§repo_name§/pulls" title="Open Pull Requests"><img src="https://img.shields.io/github/issues-pr/camaraproject/§repo_name§?style=plastic"></a>
-<a href="https://github.com/camaraproject/§repo_name§/graphs/contributors" title="Contributors"><img src="https://img.shields.io/github/contributors/camaraproject/§repo_name§?style=plastic"></a>
-<a href="https://github.com/camaraproject/§repo_name§" title="Repo Size"><img src="https://img.shields.io/github/repo-size/camaraproject/§repo_name§?style=plastic"></a>
-<a href="https://github.com/camaraproject/§repo_name§/blob/main/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=plastic"></a>
+<a href="https://github.com/camaraproject/NetworkSliceBooking/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/camaraproject/NetworkSliceBooking?style=plastic"></a>
+<a href="https://github.com/camaraproject/NetworkSliceBooking/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/camaraproject/NetworkSliceBooking?style=plastic"></a>
+<a href="https://github.com/camaraproject/NetworkSliceBooking/pulls" title="Open Pull Requests"><img src="https://img.shields.io/github/issues-pr/camaraproject/NetworkSliceBooking?style=plastic"></a>
+<a href="https://github.com/camaraproject/NetworkSliceBooking/graphs/contributors" title="Contributors"><img src="https://img.shields.io/github/contributors/camaraproject/NetworkSliceBooking?style=plastic"></a>
+<a href="https://github.com/camaraproject/NetworkSliceBooking" title="Repo Size"><img src="https://img.shields.io/github/repo-size/camaraproject/NetworkSliceBooking?style=plastic"></a>
+<a href="https://github.com/camaraproject/NetworkSliceBooking§/blob/main/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=plastic"></a>
 
-# §repo_name§
-Repository to describe, develop, document and test the §repo_name§ API family
+# Network Slice Booking
+Repository to describe, develop, document and test the Network SliceBooking API family
 
 ## Scope
-* Service APIs for “§repo_name§” (see APIBacklog.md)  
+* Service APIs for “Network Slice Booking” (see APIBacklog.md)  
 * It provides the customer with the ability to:  
-  * §API family description§.
-  * NOTE: The scope of this API family should be limited (at least at a first stage) to 4G and 5G.  
+  * reserve, dynamically provisioning, query, dynamically delete a slice with customized SLA assurance capabilities, customized service duration, expected slice covered locations. 
 * Describe, develop, document and test the APIs (with 1-2 Telcos)  
-* Started: §start date§
+* Started: January 2024
 * Location: virtually  
 
 ## Meetings
@@ -23,5 +22,5 @@ Repository to describe, develop, document and test the §repo_name§ API family
 * Meeting link: tbd
 
 ## Contributorship and mailing list
-* To subscribe / unsubscribe to the mailing list of this Sub Project and thus be / resign as Contributor please visit <https://lists.camaraproject.org/g/sp-§api_family_abbreviation§>.
-* A message to all Contributors of this Sub Project can be sent using <sp-§api_family_abbreviation§@lists.camaraproject.org>.
+* To subscribe / unsubscribe to the mailing list of this Sub Project and thus be / resign as Contributor please visit <https://lists.camaraproject.org/g/sp-nsb>.
+* A message to all Contributors of this Sub Project can be sent using <sp-nsb@lists.camaraproject.org>.
