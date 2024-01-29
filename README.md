@@ -6,7 +6,7 @@
 <a href="https://github.com/camaraproject/NetworkSliceBooking§/blob/main/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=plastic"></a>
 
 # Network Slice Booking
-Repository to describe, develop, document and test the Network SliceBooking API family
+Repository to describe, develop, document and test the Network Slice Booking API family
 
 ## Scope
 * Service APIs for “Network Slice Booking” (see APIBacklog.md)  
