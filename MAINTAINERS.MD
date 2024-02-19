@@ -6,3 +6,5 @@
 | China Mobile | Hanbei Wang |
 | Huawei | Kai Zhang |
 | Huawei | Shuting Qing |
+| Ericsson | Thorsten Lohmar |
+
