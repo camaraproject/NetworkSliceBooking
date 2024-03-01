@@ -7,4 +7,4 @@
 | Huawei | Kai Zhang |
 | Huawei | Shuting Qing |
 | Ericsson | Thorsten Lohmar |
-
+| Telefonica | Ricardo Serrano |
