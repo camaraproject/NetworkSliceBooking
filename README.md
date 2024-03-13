@@ -17,9 +17,9 @@ Repository to describe, develop, document and test the Network Slice Booking API
 * Location: virtually  
 
 ## Meetings
-* Meetings are held virtually
-* Schedule: tbd
-* Meeting link: tbd
+* Meetings will be held virtually. The first meeting will be on Friday, March 15th.
+* Schedule: Biweekly on Friday, 16:30-17:30(GMT+08:00) CST / 9:30-10:30 CET
+* Meeting link: https://meeting.tencent.com/dm/fIwn0IE08NYY / Tencent Meeting ID: 309-1766-7990.
 
 ## Contributorship and mailing list
 * To subscribe / unsubscribe to the mailing list of this Sub Project and thus be / resign as Contributor please visit <https://lists.camaraproject.org/g/sp-nsb>.
