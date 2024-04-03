@@ -1,0 +1,336 @@
+openapi: 3.0.3
+info:
+  title: API for Network slicing Booking
+  description: Title
+  version: 0.0.1
+servers:
+  - url: "{apiRoot}/nsb/v0"
+    variables:
+      apiRoot:
+        default: http://localhost:9100
+        description:
+tags:
+  - name: NSB Sessions
+    description: Manage NSB sessions
+paths:
+  /sessions:
+    post:
+      tags:
+        - NSB Sessions
+      summary: Creates a new session
+      description:
+      operationId: createSession
+      requestBody:
+        description: Parameters to create a new session
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSession"
+        required: true
+
+      responses:
+        "201":
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionInfo"
+        "400":
+          description: Invalid input for createSession operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+
+
+
+  /sessions/{sessionid}:
+    delete:
+      tags:
+        - NSB Sessions
+      summary: Delete a NSB session
+      description: Deleting NSB session
+      operationId: deleteSession
+      parameters:
+        - name: sessionId
+          in: path
+          description: Session ID that was obtained from the createSession operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/SessionId"
+      responses:
+        "204":
+          description: Session deleted
+    get:
+      tags:
+        - NSB Sessions
+      summary: Get NSB session information
+      description: Querying for NSB session resource information details
+      operationId: getSession
+      parameters:
+        - name: sessionId
+          in: path
+          description: Session ID that was obtained from the createSession operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/SessionId"
+      responses:
+        "200":
+          description: Contains information about active session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionInfo"
+components:
+  schemas:
+    SessionId:
+      description: Session ID in UUID format
+      type: string
+      format: uuid
+
+    SessionInfo:
+      description: Session related information.
+      allOf:
+        - $ref: "#/components/schemas/CreateSession"
+        - type: object
+          properties:
+            sessionId:
+              $ref: "#/components/schemas/SessionId"
+            result:
+              type: string
+              enum:
+                - Success
+                - Fail
+          required:
+            - result
+
+
+
+    CreateSession:
+      description: Attributes required to create a session
+      type: object
+      properties:
+        ServiceTime:
+          $ref: "#/components/schemas/ServiceTime"
+        ServiceArea:
+          $ref: "#/components/schemas/Area"
+        NumofTerminals:
+          $ref: "#/components/schemas/NumofTerminals"
+        SLATargets:
+          $ref: "#/components/schemas/SLATargets"
+      required:
+        - ServiceTime
+        - ServiceArea
+        - NumofTerminals
+        - SLATargets
+
+    SLATargets:
+      type: object
+      properties:
+        DLAvgThroughput:
+          $ref: "#/components/schemas/Throughput"
+        ULAvgThroughput:
+          $ref: "#/components/schemas/Throughput"
+
+
+    NumofTerminals:
+      type: integer
+      example: 5
+      description: Number of terminals
+      format: int32
+      minimum: 1
+      maximum: 20
+
+
+    Throughput:
+      type: number
+      format: double
+
+    ServiceTime:
+      description: Attributes required to service time
+      type: object
+      properties:
+        StartTime:
+          $ref: "#/components/schemas/TimeStamp"
+        EndTime:
+          $ref: "#/components/schemas/TimeStamp"
+
+    Area:
+      type: object
+      properties:
+        areaType:
+          $ref: "#/components/schemas/AreaType"
+      required:
+        - areaType
+      discriminator:
+        propertyName: areaType
+        mapping:
+          CIRCLE: "#/components/schemas/Circle"
+          POLYGON: "#/components/schemas/Polygon"
+
+    AreaType:
+      type: string
+      description: |
+        Type of this area.
+        CIRCLE - The area is defined as a circle.
+        POLYGON - The area is defined as a polygon.
+      enum:
+        - CIRCLE
+        - POLYGON
+
+    Circle:
+      description: Circular area
+      allOf:
+        - $ref: "#/components/schemas/Area"
+        - type: object
+          required:
+            - center
+            - radius
+          properties:
+            center:
+              $ref: "#/components/schemas/Point"
+            radius:
+              type: number
+              description: Distance from the center in meters
+              minimum: 1
+
+    Polygon:
+      allOf:
+        - $ref: "#/components/schemas/Area"
+        - type: object
+          required:
+            - boundary
+          properties:
+            boundary:
+              $ref: "#/components/schemas/PointList"
+
+    PointList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Point"
+      minItems: 3
+      maxItems: 15
+
+    Point:
+      type: object
+      description: Coordinates (latitude, longitude) defining a location in a map
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          $ref: "#/components/schemas/Latitude"
+        longitude:
+          $ref: "#/components/schemas/Longitude"
+      example:
+        latitude: 31.22529
+        longitude: 121.48905
+
+    Latitude:
+      description: Latitude component of a location
+      type: number
+      format: double
+      minimum: -90
+      maximum: 90
+
+    Longitude:
+      description: Longitude component of location
+      type: number
+      format: double
+      minimum: -180
+      maximum: 180
+
+    TimeStamp:
+      type: object
+      properties:
+        TimeZone:
+          $ref: "#/components/schemas/TimeZone"
+        HourType:
+          $ref: "#/components/schemas/HourType"
+        Years:
+          $ref: "#/components/schemas/Year"
+        Months:
+          $ref: "#/components/schemas/Month"
+        Days:
+          $ref: "#/components/schemas/Day"
+        Hours:
+          $ref: "#/components/schemas/Hour"
+        Minutes:
+          $ref: "#/components/schemas/Minute"
+        ExtendType:
+          $ref: "#/components/schemas/ExtendType"
+
+    TimeZone:
+      type: String
+      example: UTC+8
+    ExtendType:
+      type: string
+      enum:
+        - AM
+        - PM
+
+    HourType:
+      type: string
+      enum:
+        - 24
+        - 12
+    Year:
+      type: integer
+      format: int32
+
+    Month:
+      type: integer
+      format: int32
+      minimum: 1
+      maximum: 12
+
+    Day:
+      type: integer
+      format: int32
+      minimum: 1
+      maximum: 31
+    Hour:
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 23
+    Minute:
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 59
+    Second:
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 59
+
+
+    ErrorInfo:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+      required:
+        - status
+        - code
+        - message
+
+
+
+
+
+
+
+
+
+
+
+  
