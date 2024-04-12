@@ -44,5 +44,5 @@ Enterprises Developer. Eg: TV Station Developer
 **API End Users:**
 
 Enterprise. Eg: TV Station 
-1. Live Video Streaming Team One have a Live Streaming Task. Team One order the "Streaming Assurance" Service on TB Stations APP.
+1. Live Video Streaming Team One have a Live Streaming Task. Team One order the "Streaming Assurance" Service on TV Stations APP.
 2. Operator provide slice service on given the given date and area.
