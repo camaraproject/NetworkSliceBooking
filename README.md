@@ -18,7 +18,7 @@ Repository to describe, develop, document and test the Network Slice Booking API
 
 ## Meetings
 * Meetings will be held virtually. The first meeting will be on Friday, March 15th.
-* Schedule: Biweekly on Friday, 16:30-17:30(GMT+08:00) CST / 10:30-11:30 CEST
+* Schedule: Biweekly on Friday, 16:30 CST / 10:30 CEST
 * Meeting link: https://teams.live.com/meet/9559310154416?p=X9GldgzTnpV6NUdx / Meeting ID: 955 931 015 441 6 & PWD:V2RXNd
 
 
