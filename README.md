@@ -19,8 +19,7 @@ Repository to describe, develop, document and test the Network Slice Booking API
 ## Meetings
 * Meetings will be held virtually. The first meeting will be on Friday, March 15th.
 * Schedule: Biweekly on Friday, 16:30 CST / 10:30 CEST
-* Meeting link: https://teams.live.com/meet/9559310154416?p=X9GldgzTnpV6NUdx / Meeting ID: 955 931 015 441 6 & PWD:V2RXNd
-
+* Meeting link: <a href="https://teams.live.com/meet/9559310154416?p=X9GldgzTnpV6NUdx">Microsoft Teams Meeting</a> 
 
 ## Contributorship and mailing list
 * To subscribe / unsubscribe to the mailing list of this Sub Project and thus be / resign as Contributor please visit <https://lists.camaraproject.org/g/sp-nsb>.
