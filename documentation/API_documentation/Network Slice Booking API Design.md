@@ -13,7 +13,7 @@ Seller: Operator
 
 Mode: Operator provide slice services by NaaS API to enterprise customers directly. 
 
-Example Use Cases: In the past/current, most of  current slice customer need to order slice from operators directly through operator customer managemer. This takes time from 2 weeks to 2 month. Those kind of customers may renew, reopen, modify, close the slice service using NaaS Slice APIs. 
+Example Use Cases: In the past/current, most of current slice customer need to order slice from operators directly through operator customer managemer. This takes time from 2 weeks to 2 month. Those kind of customers may renew, reopen, modify, close the slice service using NaaS Slice APIs. 
 
 
 
@@ -35,6 +35,7 @@ Step1: OTT code and embed the API in the APP, provide the channel for individual
 Step2: Individual purchase the slice from the OTT APP, pay to operators directly. 
 
 Step3: Provider provide the slice to the individuals (to C) directly. 
+
 
 
 
@@ -66,6 +67,7 @@ Basically there should be a CRUD for "Reserve a Slice Resource" and a CRUD for "
   - Include End Devices as optional. 
     - For those who would like to activate devices within 1 click, may provide the end devices infos. 
     - For those who would like to later activate devices, or don't know which devices to active when order the slice resource, may later call API2 to do activation. Suitable for B2B2C scenario.
+
 
 - API 2：Manage the access control of devices to the slice
 - Function:
