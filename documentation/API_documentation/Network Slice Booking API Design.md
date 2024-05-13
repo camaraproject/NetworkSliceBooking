@@ -11,9 +11,9 @@ Customer: toB Enterprise Customer
 
 Seller: Operator 
 
-Mode: Operator provide slice services by NaaS API to enterprise customers directly. 
+Mode: Operator provide slice services by NaaS(Network as a Service) Service API to enterprise customers directly. 
 
-Example Use Cases: In the past/current, most of current slice customer need to order slice from operators directly through operator customer managemer. This takes time from 2 weeks to 2 month. Those kind of customers may renew, reopen, modify, close the slice service using NaaS Slice APIs. 
+Example Use Cases: For the original slice customers, who need to purchase slice from customer manager. Now those group of customer may renew, modify, or cancel a slice service with NaaS Service API call. 
 
 
 
@@ -34,7 +34,7 @@ Step1: OTT code and embed the API in the APP, provide the channel for individual
 
 Step2: Individual purchase the slice from the OTT APP, pay to operators directly. 
 
-Step3: Provider provide the slice to the individuals (to C) directly. 
+Step3: Telecom Operator provide the slice to the individuals (to C) directly. 
 
 
 
@@ -53,9 +53,9 @@ Step3: Provider provide the slice to the individuals (to C) directly.
 
 
 
-##  **Procudure of How to Get a Slice:**
+##  **Procedure of How to Get a Slice:**
 
-General: Split the slice reservsation function and device access control function, to fit the above 3 scenario.
+General: Split the slice reservation function and device access control function, to fit the above 3 scenario.
 
    - API 1：Reserve a slice resource 
    - API 2：Manage the access control of devices to the slice
@@ -64,7 +64,8 @@ Basically there should be a CRUD for "Reserve a Slice Resource" and a CRUD for "
 - API 1：Reserve a slice resource 
 - Function: 
   - Reserve a slice of one selected period and one selected area. 
-  - Include End Devices as optional. 
+  - Device Access Management may happen at any point in time while the resource is in revered-state and in active-state.
+  - Include End Devices as optional, since: 
     - For those who would like to activate devices within 1 click, may provide the end devices infos. 
     - For those who would like to later activate devices, or don't know which devices to active when order the slice resource, may later call API2 to do activation. Suitable for B2B2C scenario.
 
