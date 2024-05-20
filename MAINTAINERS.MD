@@ -1,9 +1,9 @@
-| Org                    | Name            |
-| -----------------------|-----------------|
-| China Unicom | Fan Yang        |
-| China Unicom | Jing Hao        |
-| China Telecom | Dan Xu          |
-| China Mobile | Hanbai Wang     |
-| Huawei | Kai Zhang       |
-| Huawei | Shuting Qing    |
-| Ericsson | Thorsten Lohmar |
+| Org           | Name            | GitHub Username        |
+| --------------|-----------------|------------------------|
+| China Unicom  | Fan Yang        | chinaunicomyangfan |
+| China Unicom  | Jing Hao        | haoj24 |
+| China Telecom | Dan Xu          | DanXu-ChinaTelecom |
+| China Mobile  | Hanbai Wang     | HanbaiWang |
+| Huawei        | Kai Zhang       | Kai-hw |
+| Huawei        | Shuting Qing    | ShutingQing |
+| Ericsson      | Thorsten Lohmar | tlohmar |
