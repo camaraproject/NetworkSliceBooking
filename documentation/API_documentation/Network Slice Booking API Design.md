@@ -1,11 +1,13 @@
 # Network Slice Booking API Design
 
 ## **Use Cases**
-Scenario can be  B2B, B2C, B2B2C
+The business modes of Network Slice Booking can be  B2B, B2C, B2B2C. 
 
-1. Scenario 1 - B2B
+Note: Currently, we've come across the following business modes, which can be grouped into these 3 in general. If there's any other modes, please do not hesitate to propose. 
 
-   Sell Slice Directly
+1. Scenario 1 - B2B 
+
+In Brief: Sell Slice Directly. 
 
 Customer: toB Enterprise Customer
 
