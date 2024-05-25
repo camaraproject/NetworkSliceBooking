@@ -5,78 +5,76 @@ The business modes of Network Slice Booking can be  B2B, B2C, B2B2C.
 
 Note: Currently, we've come across the following business modes, which can be grouped into these 3 in general. If there's any other modes, please do not hesitate to propose. 
 
-1. Scenario 1 - B2B 
+**1. Scenario 1 - B2B** 
+    
+    In brief: toB Enterprise customers come to NaaS Platform, book a slice, telecom operator provide the service.
+    
+    API Provided By: Telecom Operator's NaaS Platform, or Aggregator's NaaS Platform
 
-In Brief: Sell Slice Directly. 
+    API Consumer: Enterprise APP Developer
 
-Customer: toB Enterprise Customer
-
-Seller: Operator 
-
-Mode: Operator provide slice services by NaaS(Network as a Service) Service API to enterprise customers directly. 
-
-Example Use Cases: For the original slice customers, who need to purchase slice from customer manager. Now those group of customer may renew, modify, or cancel a slice service with NaaS Service API call. 
-
-
+    End User: toB Enterprise Customer
+     
+    Example Use Cases: For enterprise customers, who in the past need to talk to a customer manager, to book a slice service. Now those group of customers may renew, modify, or cancel a slice service within a NaaS Service API call.
 
 
-2. Scenario 2 - B2C
+**2. Scenario 2 - B2B2C**
 
-OTT act as a Platform to Sell Slice
+    In brief: OTT buy the slice from NaaS Platform, and resell the slice to toC individual customers.
+    
+    API Provided By: Telecom Operator's NaaS Platform, or Aggregator's NaaS Platform
 
-Customer: Individuals  / Studios / Influencers
+    API Consumer: APP Developer (eg. OTT)
 
-Selling Platform: OTT
+    API Reseller: APP Developer (eg. OTT)
 
-Seller: Operator
-
-Mode: OTT only act as a platform who help provide slice to customer. 
-
-Step1: OTT code and embed the API in the APP, provide the channel for individuals (to C) to purchase the slice. 
-
-Step2: Individual purchase the slice from the OTT APP, pay to operators directly. 
-
-Step3: Telecom Operator provide the slice to the individuals (to C) directly. 
-
-
-
-
-3. Scenario3 - B2B2C
-
-   OTT buy the slice, and resell the slice. 
-
-   Customer: Individuals  / Studios / Influencers
-
-   Seller: OTT
-
-   Service Provider: Operator
-
-   Mode: OTT buy the slice from Operator. OTT resell the slice to the individuals.
+    End User: toC APP End Users (eg. Individuals / Influencers / Streaming Studios )
+    
+    Example Use Cases: 
+    - OTT book slices from any NaaS Platform, in the way of calling Network Slice Booking API. 
+    - OTT may book a bunch of slices of different time and locations at one time. 
+    - Telecom Operators provide slice service for OTT.
+    - OTT abstract the API to an APP function, and resell the service to End Users. Resell modes depends on OTT itself.
+    - End Users buy the service from OTT. 
 
 
+**3. Scenario3 - B2B2C**
 
-##  **Procedure of How to Get a Slice:**
+    In brief: OTT abstract the slice api from NaaS Platform, provide a channel for toC individual customers, to buy a slice from NaaS Plaform.
+    
+    API Provided By: Telecom Operator's NaaS Platform, or Aggregator's NaaS Platform
 
-General: Split the slice reservation function and device access control function, to fit the above 3 scenario.
+    API Consumer: APP Developer (eg. OTT)
 
+    Slice Product Provider: APP Developer (eg. OTT)
+
+    End User: toC APP End Users (eg. Individuals / Influencers / Streaming Studios )
+
+    Example Use Cases:
+    - OTT call the API from any NaaS Platform, in the way of calling Network Slice Booking API. 
+    - OTT abstract the API, make it a Slice Product, provided to toC customers, who are OTT APP End Users.
+    - End Users buy the service through the APP.
+    - OTT transfer the request to NaaS Platform. 
+    - Telecom Operators provide the slice service to End Users directly.
+
+
+##  **API Design**
+
+Generally: Split the slice reservation function and device access control function
    - API 1：Reserve a slice resource 
-   - API 2：Manage the access control of devices to the slice
-
-Basically there should be a CRUD for "Reserve a Slice Resource" and a CRUD for "Manage the access control of devices to the slice". 
-- API 1：Reserve a slice resource 
-- Function: 
-  - Reserve a slice of one selected period and one selected area. 
-  - Device Access Management may happen at any point in time while the resource is in revered-state and in active-state.
-  - Include End Devices as optional, since: 
-    - For those who would like to activate devices within 1 click, may provide the end devices infos. 
-    - For those who would like to later activate devices, or don't know which devices to active when order the slice resource, may later call API2 to do activation. Suitable for B2B2C scenario.
+   - API 2：Device Access Management / Manage the access control of devices to the slice 
+   - Note: Basically there should be a CRUD for "Reserve a Slice Resource" and a CRUD for "Manage the access control of devices to the slice". 
 
 
-- API 2：Manage the access control of devices to the slice
-- Function:
-  - Slice Owners may have the right to allow access of devices to slice between the time of the order been made till the services ends. 
+**API 1：Reserve a slice resource** 
+   - Function: 
+     - Reserve a slice of one selected period and one selected area. 
+     - Device Access Management may happen at any point in time while the resource is in revered-state and in active-state.
 
 
+**API 2：Device Access Management / Manage the access control of devices to the slice**
+   - Function:
+     - Allow API caller manage the access control from devices to the slice.
 
 
 
