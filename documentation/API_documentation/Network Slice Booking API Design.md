@@ -1,7 +1,7 @@
 # Network Slice Booking API Design
 
 ## **Use Cases**
-The business modes of Network Slice Booking can be  B2B, B2C, B2B2C. 
+The business modes of Network Slice Booking can be  B2B, B2B2C. 
 
 Note: Currently, we've come across the following business modes, which can be grouped into these 3 in general. If there's any other modes, please do not hesitate to propose. 
 
@@ -20,26 +20,6 @@ Note: Currently, we've come across the following business modes, which can be gr
 
 **2. Scenario 2 - B2B2C**
 
-    In brief: OTT buy the slice from NaaS Platform, and resell the slice to toC individual customers.
-    
-    API Provided By: Telecom Operator's NaaS Platform, or Aggregator's NaaS Platform
-
-    API Consumer: APP Developer (eg. OTT)
-
-    API Reseller: APP Developer (eg. OTT)
-
-    End User: toC APP End Users (eg. Individuals / Influencers / Streaming Studios )
-    
-    Example Use Cases: 
-    - OTT book slices from any NaaS Platform, in the way of calling Network Slice Booking API. 
-    - OTT may book a bunch of slices of different time and locations at one time. 
-    - Telecom Operators provide slice service for OTT.
-    - OTT abstract the API to an APP function, and resell the service to End Users. Resell modes depends on OTT itself.
-    - End Users buy the service from OTT. 
-
-
-**3. Scenario3 - B2B2C**
-
     In brief: OTT abstract the slice api from NaaS Platform, provide a channel for toC individual customers, to buy a slice from NaaS Plaform.
     
     API Provided By: Telecom Operator's NaaS Platform, or Aggregator's NaaS Platform
@@ -56,6 +36,26 @@ Note: Currently, we've come across the following business modes, which can be gr
     - End Users buy the service through the APP.
     - OTT transfer the request to NaaS Platform. 
     - Telecom Operators provide the slice service to End Users directly.
+
+**3. Scenario3 - B2B2C**
+
+    In brief: OTT buy the slice from NaaS Platform, and resell the slice to toC individual customers.
+
+    API Provided By: Telecom Operator's NaaS Platform, or Aggregator's NaaS Platform
+
+    API Consumer: APP Developer (eg. OTT)
+
+    API Reseller: APP Developer (eg. OTT)
+
+    End User: toC APP End Users (eg. Individuals / Influencers / Streaming Studios )
+    
+    Example Use Cases: 
+    - OTT book slices from any NaaS Platform, in the way of calling Network Slice Booking API. 
+    - OTT may book a bunch of slices of different time and locations at one time. 
+    - Telecom Operators provide slice service for OTT.
+    - OTT abstract the API to an APP function, and resell the service to End Users. Resell modes depends on OTT itself.
+    - End Users buy the service from OTT. 
+
 
 
 ##  **API Design**
