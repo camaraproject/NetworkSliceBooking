@@ -1,13 +1,12 @@
 openapi: 3.0.3
 info:
   title: API for Network slicing Booking
-  description: Copyright (c) 2024 Huawei Technologies Co., Ltd.
-  version: 0.0.1
+  version: wip
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: "{apiRoot}/nsb/v0"
+  - url: "{apiRoot}/nsb/vwip"
     variables:
       apiRoot:
         default: http://localhost:9100
