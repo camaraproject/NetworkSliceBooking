@@ -1,6 +1,8 @@
 openapi: 3.0.3
 info:
-  title: API for Network slicing Booking
+  title: API for Network Slice Booking
+  description: |
+    The Network Slice Booking (NSB) API provides programmable interface for developers to reserve a slice resource of a selected area within a period, and manage device access control as needed.
   version: wip
   license:
     name: Apache 2.0
@@ -41,7 +43,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorInfo"
-                
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
+
   /sessions/{sessionId}:
     delete:
       tags:
@@ -59,6 +69,20 @@ paths:
       responses:
         "204":
           description: Session deleted
+        "400":
+          description: Invalid input for createSession operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
     get:
       tags:
         - NSB Sessions
@@ -79,6 +103,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SessionInfo"
+        "401":
+         $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "500":
+          $ref: "#/components/responses/Generic500"
+        "503":
+          $ref: "#/components/responses/Generic503"
 components:
   schemas:
     SessionId:
@@ -112,8 +144,8 @@ components:
           $ref: "#/components/schemas/ServiceTime"
         ServiceArea:
           $ref: "#/components/schemas/Area"
-        SLAProfile:
-          $ref: "#/components/schemas/SLAProfile"
+        QoSProfile:
+          $ref: "#/components/schemas/QoSProfile"
       required:
         - ServiceTime
         - ServiceArea
@@ -125,23 +157,69 @@ components:
         MaxNumofTerminals:
           $ref: "#/components/schemas/NumofTerminals"
         DLThroughputPerTerminal:
-          $ref: "#/components/schemas/Throughput"
+          $ref: "#/components/schemas/Rate"
         ULThroughputPerTerminal:
-          $ref: "#/components/schemas/Throughput"
+          $ref: "#/components/schemas/Rate"
         DLLatency:
-          $ref: "#/components/schemas/Latency"
+          description: |
+            DLLatency is an attribute specifies the required DL packet transmission latency (millisecond) through the 5G network.
+          $ref: "#/components/schemas/Duration"
         ULLatency:
-          $ref: "#/components/schemas/Latency"
+          description: |
+            ULLatency is an attribute specifies the required UL packet transmission latency (millisecond) through the 5G network.
+          $ref: "#/components/schemas/Duration"
 
 
-    Latency:
-      type: integer
-      example: 10
-      description: |
-        An attribute specifies the required DL packet transmission latency (millisecond) 
-        through the RAN, CN, and TN part of 5G network.
-      format: int32
+    Duration:
+      description: Specification of duration
+      type: object
+      properties:
+        value:
+          description: Quantity of duration
+          type: integer
+          example: 12
+          format: int32
+          minimum: 1
+        unit:
+          $ref: "#/components/schemas/TimeUnitEnum"
 
+
+    TimeUnitEnum:
+      description: Units of time
+      type: string
+      enum:
+        - Days
+        - Hours
+        - Minutes
+        - Seconds
+        - Milliseconds
+        - Microseconds
+        - Nanoseconds
+
+
+    Rate:
+      description: Specification of rate
+      type: object
+      properties:
+        value:
+          description: Quantity of rate
+          type: integer
+          example: 10
+          format: int32
+          minimum: 0
+          maximum: 1024
+        unit:
+          $ref: "#/components/schemas/RateUnitEnum"
+
+    RateUnitEnum:
+      description: Units of rate
+      type: string
+      enum:
+        - bps
+        - kbps
+        - Mbps
+        - Gbps
+        - Tbps
 
     NumofTerminals:
       type: integer
@@ -165,9 +243,15 @@ components:
       type: object
       properties:
         StartTime:
-          $ref: "#/components/schemas/TimeStamp"
+          description: Start the Slice Service From
+          type: string
+            format: date-time
+            example: "2024-06-01T12:00:00Z"
         EndTime:
-          $ref: "#/components/schemas/TimeStamp"
+          description: End the Slice Service At
+          type: string
+            format: date-time
+            example: "2024-06-01T12:00:00Z"
 
     Float:
       type: number
@@ -262,7 +346,6 @@ components:
       description: string with format "date-time"
 
 
-
     ErrorInfo:
       type: object
       properties:
@@ -280,7 +363,61 @@ components:
         - code
         - message
 
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorInfo"
+          example:
+            status: 401
+            code: UNAUTHENTICATED
+            message: "Authorization failed: ..."
 
+      Generic403:
+        description: Forbidden
+        headers:
+          x-correlator:
+            $ref: '#/components/headers/x-correlator'
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ErrorInfo"
+            example:
+              status: 403
+              code: PERMISSION_DENIED
+              message: "Operation not allowed: ..."
+
+      Generic500:
+        description: Internal server error
+        headers:
+          x-correlator:
+            $ref: '#/components/headers/x-correlator'
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ErrorInfo"
+            example:
+              status: 500
+              code: INTERNAL
+              message: "Internal server error: ..."
+
+        Generic503:
+          description: Service unavailable
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInfo"
+              example:
+                status: 503
+                code: UNAVAILABLE
+                message: "Service unavailable"
 
 
 
