@@ -87,7 +87,7 @@ paths:
 
     get:
       tags:
-        - NSB Sessions
+        - Network Slice Booking Sessions Sessions
       summary: Get NSB session information
       description: Querying for NSB session resource information details
       operationId: getSession
