@@ -3,12 +3,12 @@ info:
   title: Network Slice Booking
   description: |
     The Network Slice Booking (NSB) API provides programmable interface for developers to reserve a slice resource of a selected area within a period, and manage device access control as needed.
-  version: wip
+  version: 0.1.0-alpha.1
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: "{apiRoot}/network-slice-booking/vwip"
+  - url: "{apiRoot}/network-slice-booking/v0.1alpha1"
     variables:
       apiRoot:
         default: http://localhost:9100
