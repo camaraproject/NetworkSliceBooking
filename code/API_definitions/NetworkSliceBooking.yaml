@@ -3,12 +3,12 @@ info:
   title: Network Slice Booking
   description: |
     The Network Slice Booking (NSB) API provides programmable interface for developers to reserve a slice resource of a selected area within a period, and manage device access control as needed.
-  version: 0.1.0-alpha.1
+  version: 0.1.0-rc.1
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: "{apiRoot}/network-slice-booking/v0.1alpha1"
+  - url: "{apiRoot}/network-slice-booking/v0.1rc1"
     variables:
       apiRoot:
         default: http://localhost:9100
@@ -27,7 +27,7 @@ paths:
         description: Parameters to create a new session
         content:
           application/json:
-            schema:
+            schema:   
               $ref: "#/components/schemas/CreateSession"
             examples:
               LOCATION_CIRCLE:
@@ -37,12 +37,50 @@ paths:
         required: true
 
       responses:
-        "201":
+        "200":
           description: Session created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SessionInfo"
+                type: object
+                properties:
+                  sessionId:
+                        $ref: "#/components/schemas/SessionId"
+                  result:
+                    type: string
+                    enum:
+                      - Success
+                required:
+                  - sessionId
+                  - result
+              examples:
+                SUCCESS:
+                  $ref: "#/components/examples/SUCCESS"
+        "204":
+          description: Session create failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessionId:
+                        $ref: "#/components/schemas/SessionId"
+                  result:
+                    type: string
+                    enum:
+                      - Fail
+                  message:
+                    type: string
+                    enum:
+                      - SERVICEAREA NOT SUPPORTED
+                      - RESOURCES INSUFFICIENT
+                required:
+                  - result
+              examples:
+                SERCICEAREA_NOT_SUPPORTED:
+                  $ref: "#/components/examples/SERCICEAREA_NOT_SUPPORTED"
+                RESOURCES_INSUFFICIENT:
+                  $ref: "#/components/examples/RESOURCES_INSUFFICIENT"
         "400":
          $ref: "#/components/responses/Generic400"
         "401":
@@ -73,7 +111,7 @@ paths:
           schema:
             $ref: "#/components/schemas/SessionId"
       responses:
-        "204":
+        "200":
           description: Session deleted
         "400":
           $ref: "#/components/responses/Generic400"
@@ -81,10 +119,8 @@ paths:
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
-        "410":
-          $ref: "#/components/responses/Generic410"
-        "429":
-          $ref: "#/components/responses/Generic429"
+        "404":
+          $ref: "#/components/responses/Generic404"
         "500":
           $ref: "#/components/responses/Generic500"
         "503":
@@ -110,16 +146,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SessionInfo"
+              examples:
+                RESPONSE_CIRCLE:
+                  $ref: "#/components/examples/RESPONSE_CIRCLE"
+                RESPONSE_POLYGON:
+                  $ref: "#/components/examples/RESPONSE_POLYGON"
+
         "400":
          $ref: "#/components/responses/Generic400"
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
-        "410":
-          $ref: "#/components/responses/Generic410"
-        "429":
-          $ref: "#/components/responses/Generic429"
+        "404":
+          $ref: "#/components/responses/Generic404"
         "500":
           $ref: "#/components/responses/Generic500"
         "503":
@@ -140,7 +180,7 @@ components:
     SessionInfo:
       description: Session related information.
       allOf:
-        # - $ref: "#/components/schemas/CreateSession"
+        - $ref: "#/components/schemas/CreateSession"
         - type: object
           properties:
             sessionId:
@@ -149,11 +189,8 @@ components:
               type: string
               enum:
                 - Success
-                - Fail
           required:
             - result
-
-
 
     CreateSession:
       description: Attributes required to create a session
@@ -492,7 +529,7 @@ components:
                       - NOT_FOUND
           examples:
             GENERIC_404_NOT_FOUND:
-              description: Resource is not found
+              description: Specified slice resource is not found
               value:
                 status: 404
                 code: NOT_FOUND
@@ -575,10 +612,13 @@ components:
                   code:
                     enum:
                       - INTERNAL
-          example:
-            status: 500
-            code: INTERNAL
-            message: "Internal server error: ..."
+          examples:
+            GENERIC_500_SERVER_ERROR:
+              description: Internal server error
+              value:
+                status: 500
+                code: INTERNAL
+                message: "Internal server error"
 
 
     Generic503:
@@ -599,10 +639,13 @@ components:
                   code:
                     enum:
                       - UNAVAILABLE
-          example:
-            status: 503
-            code: UNAVAILABLE
-            message: "Service unavailable"
+          examples:
+            GENERIC_503_SERVICE_UNAVAILABLE:
+              description: Service unavailable
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: "Service unavailable"
   examples:
     RETRIEVAL_CIRCLE:
       value:
@@ -659,10 +702,77 @@ components:
           ULLatency:
             value: 12
             unit: "Days"
-    SUPPORTED_201:
+    RESPONSE_CIRCLE:
       value:
-        sessionId:
-
+        ServiceTime:
+          StartTime: "2024-06-01T12:00:00Z"
+          EndTime: "2024-06-01T12:00:00Z"
+        ServiceArea:
+          AreaType: CIRCLE
+          center:
+            latitude: 45.754114
+            longitude: 4.860374
+          radius: 800
+        QoSProfile:
+          MaxNumofTerminals: 5
+          DLThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          ULThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          DLLatency:
+            value: 12
+            unit: "Days"
+          ULLatency:
+            value: 12
+            unit: "Days"
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        result: "Success"
+    RESPONSE_POLYGON:
+      value:
+        ServiceTime:
+          StartTime: "2024-06-01T12:00:00Z"
+          EndTime: "2024-06-01T12:00:00Z"
+        ServiceArea:
+          AreaType: POLYGON
+          boundary:
+            - latitude: 45.754114
+              longitude: 4.860374
+            - latitude: 45.753845
+              longitude: 4.863185
+            - latitude: 45.753916
+              longitude: 4.866531
+            - latitude: 45.754116
+              longitude: 4.876353
+        QoSProfile:
+          MaxNumofTerminals: 5
+          DLThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          ULThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          DLLatency:
+            value: 12
+            unit: "Days"
+          ULLatency:
+            value: 12
+            unit: "Days"
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        result: "Success"
+    SUCCESS:
+      value:
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        result: "Success"
+    SERCICEAREA_NOT_SUPPORTED:
+      value:
+        result: "Fail"
+        message: "ServiceArea is not surpported"
+    RESOURCES_INSUFFICIENT:
+      value:
+        result: "Fail"
+        message: "The remaining resouces are insufficient"
 
 
 
