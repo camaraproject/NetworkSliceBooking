@@ -38,49 +38,9 @@ paths:
 
       responses:
         "200":
-          description: Session created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  sessionId:
-                        $ref: "#/components/schemas/SessionId"
-                  result:
-                    type: string
-                    enum:
-                      - Success
-                required:
-                  - sessionId
-                  - result
-              examples:
-                SUCCESS:
-                  $ref: "#/components/examples/SUCCESS"
+          $ref: "#/components/responses/Generic200"              
         "204":
-          description: Session create failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  sessionId:
-                        $ref: "#/components/schemas/SessionId"
-                  result:
-                    type: string
-                    enum:
-                      - Fail
-                  message:
-                    type: string
-                    enum:
-                      - SERVICEAREA NOT SUPPORTED
-                      - RESOURCES INSUFFICIENT
-                required:
-                  - result
-              examples:
-                SERCICEAREA_NOT_SUPPORTED:
-                  $ref: "#/components/examples/SERCICEAREA_NOT_SUPPORTED"
-                RESOURCES_INSUFFICIENT:
-                  $ref: "#/components/examples/RESOURCES_INSUFFICIENT"
+          $ref: "#/components/responses/Generic204"
         "400":
          $ref: "#/components/responses/Generic400"
         "401":
@@ -121,6 +81,8 @@ paths:
           $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
+        "429":
+          $ref: "#/components/responses/Generic429_requests"
         "500":
           $ref: "#/components/responses/Generic500"
         "503":
@@ -145,7 +107,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SessionInfo"
+                $ref: "#/components/schemas/SessionInfo"   
               examples:
                 RESPONSE_CIRCLE:
                   $ref: "#/components/examples/RESPONSE_CIRCLE"
@@ -160,6 +122,8 @@ paths:
           $ref: "#/components/responses/Generic403"
         "404":
           $ref: "#/components/responses/Generic404"
+        "429":
+          $ref: "#/components/responses/Generic429_requests"
         "500":
           $ref: "#/components/responses/Generic500"
         "503":
@@ -189,8 +153,14 @@ components:
               type: string
               enum:
                 - Success
+            status:
+              type: integer
+              enum:
+                - 200
           required:
             - result
+            - status
+            - sessionId
 
     CreateSession:
       description: Attributes required to create a session
@@ -419,6 +389,61 @@ components:
         - code
         - message
   responses:
+    Generic200:
+      description: Session created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                enum:
+                  - 200
+              sessionId:
+                    $ref: "#/components/schemas/SessionId"
+              result:
+                type: string
+                enum:
+                  - Success
+            required:
+              - status
+              - sessionId
+              - result
+          examples:
+                SUCCESS:
+                  $ref: "#/components/examples/SUCCESS"
+    Generic204:
+      description: Session create failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                enum:
+                  - 204
+              sessionId:
+                    $ref: "#/components/schemas/SessionId"
+              result:
+                type: string
+                enum:
+                  - Fail
+              message:
+                type: string
+                enum:
+                  - SERVICEAREA NOT SUPPORTED
+                  - RESOURCES INSUFFICIENT
+            required:
+              - status
+              - result
+              - message
+          examples:
+            SERCICEAREA_NOT_SUPPORTED:
+              $ref: "#/components/examples/SERCICEAREA_NOT_SUPPORTED"
+            RESOURCES_INSUFFICIENT:
+              $ref: "#/components/examples/RESOURCES_INSUFFICIENT"
     Generic400:
       description: Bad Request
       headers:
@@ -561,7 +586,7 @@ components:
                 message: Access to the target resource is no longer available.
 
     Generic429:
-      description: Too Many Requests
+      description: Quota Exceed or Too Many Requests
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
@@ -593,6 +618,31 @@ components:
                 code: TOO_MANY_REQUESTS
                 message: Either out of resource quota or reaching rate limiting.
 
+    Generic429_requests:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 429
+                  code:
+                    enum:
+                      - TOO_MANY_REQUESTS
+          examples:
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: API Server request limit is overpassed
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Either out of resource quota or reaching rate limiting.
 
     Generic500:
       description: Internal server error
@@ -727,6 +777,7 @@ components:
           ULLatency:
             value: 12
             unit: "Days"
+        status: 200
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         result: "Success"
     RESPONSE_POLYGON:
@@ -759,18 +810,22 @@ components:
           ULLatency:
             value: 12
             unit: "Days"
+        status: 200
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         result: "Success"
     SUCCESS:
       value:
+        status: 200
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         result: "Success"
     SERCICEAREA_NOT_SUPPORTED:
       value:
+        status: 204
         result: "Fail"
-        message: "ServiceArea is not surpported"
+        message: "Service area is not surpported"
     RESOURCES_INSUFFICIENT:
       value:
+        status: 204
         result: "Fail"
         message: "The remaining resouces are insufficient"
 
