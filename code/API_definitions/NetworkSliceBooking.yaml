@@ -3,12 +3,12 @@ info:
   title: Network Slice Booking
   description: |
     The Network Slice Booking (NSB) API provides programmable interface for developers to reserve a slice resource of a selected area within a period, and manage device access control as needed.
-  version: wip
+  version: 0.1.0-rc.1
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: "{apiRoot}/network-slice-booking/vwip"
+  - url: "{apiRoot}/network-slice-booking/v0.1rc1"
     variables:
       apiRoot:
         default: http://localhost:9100
@@ -27,17 +27,20 @@ paths:
         description: Parameters to create a new session
         content:
           application/json:
-            schema:
+            schema:   
               $ref: "#/components/schemas/CreateSession"
+            examples:
+              LOCATION_CIRCLE:
+                $ref: "#/components/examples/RETRIEVAL_CIRCLE"
+              LOCATION_POLYGON:
+                $ref: "#/components/examples/RETRIEVAL_POLYGON"
         required: true
 
       responses:
-        "201":
-          description: Session created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SessionInfo"
+        "200":
+          $ref: "#/components/responses/Generic200"              
+        "204":
+          $ref: "#/components/responses/Generic204"
         "400":
          $ref: "#/components/responses/Generic400"
         "401":
@@ -68,7 +71,7 @@ paths:
           schema:
             $ref: "#/components/schemas/SessionId"
       responses:
-        "204":
+        "200":
           description: Session deleted
         "400":
           $ref: "#/components/responses/Generic400"
@@ -76,10 +79,10 @@ paths:
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
-        "410":
-          $ref: "#/components/responses/Generic410"
+        "404":
+          $ref: "#/components/responses/Generic404"
         "429":
-          $ref: "#/components/responses/Generic429"
+          $ref: "#/components/responses/Generic429_requests"
         "500":
           $ref: "#/components/responses/Generic500"
         "503":
@@ -104,17 +107,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SessionInfo"
+                $ref: "#/components/schemas/SessionInfo"   
+              examples:
+                RESPONSE_CIRCLE:
+                  $ref: "#/components/examples/RESPONSE_CIRCLE"
+                RESPONSE_POLYGON:
+                  $ref: "#/components/examples/RESPONSE_POLYGON"
+
         "400":
          $ref: "#/components/responses/Generic400"
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
-        "410":
-          $ref: "#/components/responses/Generic410"
+        "404":
+          $ref: "#/components/responses/Generic404"
         "429":
-          $ref: "#/components/responses/Generic429"
+          $ref: "#/components/responses/Generic429_requests"
         "500":
           $ref: "#/components/responses/Generic500"
         "503":
@@ -144,11 +153,14 @@ components:
               type: string
               enum:
                 - Success
-                - Fail
+            status:
+              type: integer
+              enum:
+                - 200
           required:
             - result
-
-
+            - status
+            - sessionId
 
     CreateSession:
       description: Attributes required to create a session
@@ -377,6 +389,61 @@ components:
         - code
         - message
   responses:
+    Generic200:
+      description: Session created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                enum:
+                  - 200
+              sessionId:
+                    $ref: "#/components/schemas/SessionId"
+              result:
+                type: string
+                enum:
+                  - Success
+            required:
+              - status
+              - sessionId
+              - result
+          examples:
+                SUCCESS:
+                  $ref: "#/components/examples/SUCCESS"
+    Generic204:
+      description: Session create failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                enum:
+                  - 204
+              sessionId:
+                    $ref: "#/components/schemas/SessionId"
+              result:
+                type: string
+                enum:
+                  - Fail
+              message:
+                type: string
+                enum:
+                  - SERVICEAREA NOT SUPPORTED
+                  - RESOURCES INSUFFICIENT
+            required:
+              - status
+              - result
+              - message
+          examples:
+            SERCICEAREA_NOT_SUPPORTED:
+              $ref: "#/components/examples/SERCICEAREA_NOT_SUPPORTED"
+            RESOURCES_INSUFFICIENT:
+              $ref: "#/components/examples/RESOURCES_INSUFFICIENT"
     Generic400:
       description: Bad Request
       headers:
@@ -385,7 +452,17 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
+                      - OUT_OF_RANGE
           examples:
             GENERIC_400_INVALID_ARGUMENT:
               description: Invalid Argument. Generic Syntax Exception
@@ -407,11 +484,30 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
-          example:
-            status: 401
-            code: UNAUTHENTICATED
-            message: "Authorization failed: ..."
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 401
+                  code:
+                    enum:
+                      - UNAUTHENTICATED
+                      - AUTHENTICATION_REQUIRED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
 
     Generic403:
       description: Forbidden
@@ -421,12 +517,48 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
-          example:
-            status: 403
-            code: PERMISSION_DENIED
-            message: "Operation not allowed: ..."
-
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 403
+                  code:
+                    enum:
+                      - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    Generic404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 404
+                  code:
+                    enum:
+                      - NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Specified slice resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
     Generic410:
       description: Gone
       headers:
@@ -435,7 +567,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 410
+                  code:
+                    enum:
+                      - GONE
           examples:
             GENERIC_410_GONE:
               description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
@@ -445,14 +586,24 @@ components:
                 message: Access to the target resource is no longer available.
 
     Generic429:
-      description: Too Many Requests
+      description: Quota Exceed or Too Many Requests
       headers:
         x-correlator:
           $ref: "#/components/headers/x-correlator"
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 429
+                  code:
+                    enum:
+                      - QUOTA_EXCEEDED
+                      - TOO_MANY_REQUESTS
           examples:
             GENERIC_429_QUOTA_EXCEEDED:
               description: Request is rejected due to exceeding a business quota limit
@@ -467,6 +618,31 @@ components:
                 code: TOO_MANY_REQUESTS
                 message: Either out of resource quota or reaching rate limiting.
 
+    Generic429_requests:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 429
+                  code:
+                    enum:
+                      - TOO_MANY_REQUESTS
+          examples:
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: API Server request limit is overpassed
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Either out of resource quota or reaching rate limiting.
 
     Generic500:
       description: Internal server error
@@ -476,11 +652,23 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
-          example:
-            status: 500
-            code: INTERNAL
-            message: "Internal server error: ..."
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 500
+                  code:
+                    enum:
+                      - INTERNAL
+          examples:
+            GENERIC_500_SERVER_ERROR:
+              description: Internal server error
+              value:
+                status: 500
+                code: INTERNAL
+                message: "Internal server error"
 
 
     Generic503:
@@ -491,13 +679,155 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorInfo"
-          example:
-            status: 503
-            code: UNAVAILABLE
-            message: "Service unavailable"
-
-
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 503
+                  code:
+                    enum:
+                      - UNAVAILABLE
+          examples:
+            GENERIC_503_SERVICE_UNAVAILABLE:
+              description: Service unavailable
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: "Service unavailable"
+  examples:
+    RETRIEVAL_CIRCLE:
+      value:
+        ServiceTime:
+          StartTime: "2024-06-01T12:00:00Z"
+          EndTime: "2024-06-01T12:00:00Z"
+        ServiceArea:
+          AreaType: CIRCLE
+          center:
+            latitude: 45.754114
+            longitude: 4.860374
+          radius: 800
+        QoSProfile:
+          MaxNumofTerminals: 5
+          DLThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          ULThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          DLLatency:
+            value: 12
+            unit: "Days"
+          ULLatency:
+            value: 12
+            unit: "Days"
+    RETRIEVAL_POLYGON:
+      value:
+        ServiceTime:
+          StartTime: "2024-06-01T12:00:00Z"
+          EndTime: "2024-06-01T12:00:00Z"
+        ServiceArea:
+          AreaType: POLYGON
+          boundary:
+            - latitude: 45.754114
+              longitude: 4.860374
+            - latitude: 45.753845
+              longitude: 4.863185
+            - latitude: 45.753916
+              longitude: 4.866531
+            - latitude: 45.754116
+              longitude: 4.876353
+        QoSProfile:
+          MaxNumofTerminals: 5
+          DLThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          ULThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          DLLatency:
+            value: 12
+            unit: "Days"
+          ULLatency:
+            value: 12
+            unit: "Days"
+    RESPONSE_CIRCLE:
+      value:
+        ServiceTime:
+          StartTime: "2024-06-01T12:00:00Z"
+          EndTime: "2024-06-01T12:00:00Z"
+        ServiceArea:
+          AreaType: CIRCLE
+          center:
+            latitude: 45.754114
+            longitude: 4.860374
+          radius: 800
+        QoSProfile:
+          MaxNumofTerminals: 5
+          DLThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          ULThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          DLLatency:
+            value: 12
+            unit: "Days"
+          ULLatency:
+            value: 12
+            unit: "Days"
+        status: 200
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        result: "Success"
+    RESPONSE_POLYGON:
+      value:
+        ServiceTime:
+          StartTime: "2024-06-01T12:00:00Z"
+          EndTime: "2024-06-01T12:00:00Z"
+        ServiceArea:
+          AreaType: POLYGON
+          boundary:
+            - latitude: 45.754114
+              longitude: 4.860374
+            - latitude: 45.753845
+              longitude: 4.863185
+            - latitude: 45.753916
+              longitude: 4.866531
+            - latitude: 45.754116
+              longitude: 4.876353
+        QoSProfile:
+          MaxNumofTerminals: 5
+          DLThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          ULThroughputPerTerminal:
+            value: 10
+            unit: "bps"
+          DLLatency:
+            value: 12
+            unit: "Days"
+          ULLatency:
+            value: 12
+            unit: "Days"
+        status: 200
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        result: "Success"
+    SUCCESS:
+      value:
+        status: 200
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        result: "Success"
+    SERCICEAREA_NOT_SUPPORTED:
+      value:
+        status: 204
+        result: "Fail"
+        message: "Service area is not surpported"
+    RESOURCES_INSUFFICIENT:
+      value:
+        status: 204
+        result: "Fail"
+        message: "The remaining resouces are insufficient"
 
 
 
