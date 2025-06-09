@@ -10,8 +10,8 @@ Checklist for network-slicing-book v0.1.0 in rX.X
 |  4 | API versioning convention applied            |   M   |         M         |    M    |    M   |   Y  |                                           v0.1.0                                            |
 |  5 | API documentation                            |   M   |         M         |    M    |    M   |   Y  |         Embed documentation into API spec - [link](/code/NetworkSliceBooking.yaml)          |
 |  6 | User stories                                 |   O   |         O         |    O    |    M   |   Y  | [UserStory for Network Slicing Booking](/documentation/API_documentation/NSB_User_Story.md) |
-|  7 | Basic API test cases & documentation         |   O   |         M         |    M    |    M   |   Y  |                                           [link]                                            |
-|  8 | Enhanced API test cases & documentation      |   O   |         O         |    O    |    M   |   Y  |                                           [link]                                            |
+|  7 | Basic API test cases & documentation         |   O   |         M         |    M    |    M   |   Y  |              [link](/code/Test_definitions)               |
+|  8 | Enhanced API test cases & documentation      |   O   |         O         |    O    |    M   |   Y  |                [link](/code/Test_definitions)                |
 |  9 | Test result statement                        |   O   |         O         |    O    |    M   |   N  |                                                                                             |
 | 10 | API release numbering convention applied     |   M   |         M         |    M    |    M   |   Y  |                                                                                             |
 | 11 | Change log updated                           |   M   |         M         |    M    |    M   |   Y  |                                    [link](/CHANGELOG.md)                                    |
