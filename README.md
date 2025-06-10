@@ -22,10 +22,11 @@ Repository to describe, develop, document and test the Network Slice Booking API
 <!-- Pre-releases of this sub project are available in https://github.com/camaraproject/§repo_name§/releases -->
 <!-- The latest public release is available here: https://github.com/camaraproject/§repo_name§/releases/latest -->
 <!-- For changes see [CHANGELOG.md](https://github.com/camaraproject/§repo_name§/blob/main/CHANGELOG.md) -->
-
+ 
+For changes see [CHANGELOG.md](https://github.com/camaraproject/NetworkSliceBooking/blob/main/CHANGELOG.md)
 ## Contributing
 * Meetings are held virtually <!-- for new API families request a meeting link from the LF admin team or replace the information with the existing meeting information (of the API family) -->
-    * Schedule: !! tbd
+    * Schedule: Bi-weekly on Fridays 16:00 CST / 10:00 CEST
     * [Registration / Join](https://zoom-lfx.platform.linuxfoundation.org/meeting/92204181217?password=7ef83098-28d4-417c-95bc-3f0ab7904c8f)
     * Minutes: Access [Meeting minutes](https://wiki.camaraproject.org/display/CAM/NetworkSliceBooking)
 * Mailing List

@@ -1,5 +1,5 @@
 @NetworkSliceBooking
-Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for createSession
+Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operations for createSession
 
     # Input to be provided by the implementation to the tester
     #
@@ -15,7 +15,7 @@ Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for createSession
     # * An Area outside the supported area
     # * A combination of request parameters including service area, start time, and end time, configuration information of network slicing
     #
-    # References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0
+    # References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0-rc.1
 
 Background: Common createSession setup
     Given an environment at "apiRoot"
