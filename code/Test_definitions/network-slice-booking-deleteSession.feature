@@ -1,5 +1,5 @@
 @NetworkSliceBooking
-Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for deleteSession
+Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operations for deleteSession
 
     # Input to be provided by the implementation to the tester
     #
@@ -8,7 +8,7 @@ Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for deleteSession
     #
     # Testing assets:
     # * The sessionId of an existing session.
-    # * References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0
+    # * References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0-rc.1
 
 Background: Common deleteSession setup
     Given an environment at "apiRoot"
