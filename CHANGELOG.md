@@ -29,7 +29,7 @@ The API definition(s) are based on
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/refs/heads/main/code/API_definitions/NetworkSliceBooking.yaml&nocors)
-  - [View it on Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/refs/heads/main/code/API_definitions/NetworkSliceBooking.yaml)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/refs/heads/main/code/API_definitions/NetworkSliceBooking.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/NetworkSliceBooking/blob/main/code/API_definitions/NetworkSliceBooking.yaml)
 ### Added
 * Upload Network Slice Booking API initial documentation in [#4](https://github.com/camaraproject/NetworkSliceBooking/pull/4) 
