@@ -5,9 +5,13 @@
 <a href="https://github.com/camaraproject/NetworkSliceBooking" title="Repo Size"><img src="https://img.shields.io/github/repo-size/camaraproject/NetworkSliceBooking?style=plastic"></a>
 <a href="https://github.com/camaraproject/NetworkSliceBooking/blob/main/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=plastic"></a>
 <a href="https://github.com/camaraproject/NetworkSliceBooking/releases/latest" title="Latest Release"><img src="https://img.shields.io/github/release/camaraproject/NetworkSliceBooking?style=plastic"></a>
+<a href="https://github.com/camaraproject/Governance/blob/main/ProjectStructureAndRoles.md" title="Sandbox API Repository"><img src="https://img.shields.io/badge/Sandbox%20API%20Repository-yellow?style=plastic"></a>
 
-# Network Slice Booking
-Repository to describe, develop, document and test the Network Slice Booking API family
+# NetworkSliceBooking
+
+Sandbox API Repository to describe, develop, document, and test the NetworkSliceBooking Service API(s). The repository does not yet belong to a CAMARA Sub Project.
+
+* API Repository [wiki page](https://lf-camaraproject.atlassian.net/wiki/x/rDPe)
 
 ## Scope
 * Service APIs for “Network Slice Booking” (see APIBacklog.md)  
@@ -24,11 +28,10 @@ Repository to describe, develop, document and test the Network Slice Booking API
 <!-- For changes see [CHANGELOG.md](https://github.com/camaraproject/§repo_name§/blob/main/CHANGELOG.md) -->
 
 ## Contributing
-* Meetings are held virtually <!-- for new API families request a meeting link from the LF admin team or replace the information with the existing meeting information (of the API family) -->
-    * Schedule: !! tbd
+* Meetings are held virtually 
+    * Schedule: ⚠️ tbd
     * [Registration / Join](https://zoom-lfx.platform.linuxfoundation.org/meeting/92204181217?password=7ef83098-28d4-417c-95bc-3f0ab7904c8f)
     * Minutes: Access [Meeting minutes](https://wiki.camaraproject.org/display/CAM/NetworkSliceBooking)
 * Mailing List
-    <!-- Note: the $sub-project-mailinglistname$ is either already existing or will be created by the CAMARA Admin Team  -->
     * Subscribe / Unsubscribe to the mailing list of this Sub Project <https://lists.camaraproject.org/g/sp-nsb>.
     * A message to the community of this Sub Project can be sent using <sp-nsb@lists.camaraproject.org>.
