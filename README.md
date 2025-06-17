@@ -15,11 +15,10 @@ Sandbox API Repository to describe, develop, document, and test the NetworkSlice
 
 ## Scope
 * Service APIs for “Network Slice Booking” (see APIBacklog.md)  
-* It provides the customer with the ability to:  
+* It provides the API consumer with the ability to:  
   * reserve, dynamically provisioning, query, dynamically delete a slice with customized SLA assurance capabilities, customized service duration, expected slice covered locations. 
 * Describe, develop, document and test the APIs (with 1-2 Telcos)  
 * Started: January 2024
-* Location: virtually  
 
 ## Release Information
 <!-- Use/uncomment one or multiple the following options -->
