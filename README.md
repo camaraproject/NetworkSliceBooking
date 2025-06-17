@@ -23,7 +23,7 @@ Sandbox API Repository to describe, develop, document, and test the NetworkSlice
 
 ## Release Information
 <!-- Use/uncomment one or multiple the following options -->
-<!-- Pre-releases of this sub project are available in https://github.com/camaraproject/§repo_name§/releases -->
+Pre-releases of this sub project are available in https://github.com/camaraproject/NetworkSliceBooking/releases
 <!-- The latest public release is available here: https://github.com/camaraproject/§repo_name§/releases/latest -->
 <!-- For changes see [CHANGELOG.md](https://github.com/camaraproject/§repo_name§/blob/main/CHANGELOG.md) -->
  
