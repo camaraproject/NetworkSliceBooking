@@ -2,7 +2,9 @@ openapi: 3.0.3
 info:
   title: Network Slice Booking
   description: |
-    The Network Slice Booking (NSB) API provides programmable interface for developers to reserve a slice resource of a selected area within a period, and manage device access control as needed. For specific details, Please refer to [Network Slice Booking API Design.md](/documentation/API_documentation/Network_Slice_Booking_API_Design.md).
+    The Network Slice Booking (NSB) API provides programmable interface for developers to reserve a slice resource of a selected area within a period, and manage device access control as needed.
+    This API predict the SLA can be guaranteed or not for the indicated time and location, and provide resource reserved network slice to guarantee the service QoS.
+    For specific details, Please refer to [Network Slice Booking API Design.md](/documentation/API_documentation/Network_Slice_Booking_API_Design.md).
     
     # Introduction
 
@@ -14,10 +16,12 @@ info:
     - Create a new session for network slice booking, specifying the service time, service area, and QoS profile.
     - Retrieve information about an existing session, including the service time, service area, and QoS profile.
     - Delete an existing session.
-
-    The service time is defined by a start time and an end time, which indicates the period during which the network slice will be reserved.
-    The service area can be defined as a circle or a polygon, allowing for flexible geographical coverage. 
-    The QoS profile includes parameters such as maximum number of devices, downlink and uplink throughput per device, and latency requirements.
+    
+    # Request Parameters Definition:
+    * **ServiceTime**: is defined by a start time and an end time, which indicates the period during which the network slice will be reserved.
+    * **ServiceArea**: can be defined as a circle or a polygon, allowing for flexible geographical coverage. 
+    * **QoSProfile**: includes parameters such as maximum number of devices, downlink and uplink throughput per device, and latency requirements.
+    * **SessionId**: is a unique identifier for the session, which is returned when a session is created and used to retrieve or delete the session later.
 
     # Authorization and authentication
 
@@ -206,10 +210,19 @@ components:
       type: object
       properties:
         ServiceTime:
-          $ref: "#/components/schemas/ServiceTime"
+          description: |
+            ServiceTime is a period during which the network slice will be reserved.
+            It is defined by a start time and an end time.
+          $ref: "#/components/schemas/TimePeriod"
         ServiceArea:
+          description: |
+            ServiceArea is a geographical area where the network slice will be reserved.
+            It can be defined as a circle or a polygon.
           $ref: "#/components/schemas/Area"
         QoSProfile:
+          description: |
+            QoSProfile is a set of quality of service parameters that define the requirements for the network slice.
+            It includes parameters such as maximum number of devices, downlink and uplink throughput per device, and latency requirements.
           $ref: "#/components/schemas/QoSProfile"
       required:
         - ServiceTime
@@ -308,21 +321,20 @@ components:
           $ref: "#/components/schemas/Float"
         max:
           $ref: "#/components/schemas/Float"
-
-    ServiceTime:
-      description: Attributes required to service time
-      type: object
+    TimePeriod:
       properties:
-        StartTime:
-          description: Start the Slice Service From
+        startDate:
           type: string
           format: date-time
+          description: An instant of time, starting of the TimePeriod.
           example: "2024-06-01T12:00:00Z"
-        EndTime:
-          description: End the Slice Service At
+        endDate:
           type: string
           format: date-time
+          description: An instant of time, ending of the TimePeriod. If not included, then the period has no ending date.
           example: "2024-06-01T12:00:00Z"
+      required:
+        - startDate
 
     Float:
       type: number
@@ -738,10 +750,10 @@ components:
     RETRIEVAL_CIRCLE:
       value:
         ServiceTime:
-          StartTime: "2024-06-01T12:00:00Z"
-          EndTime: "2024-06-01T12:00:00Z"
+          startDate: "2024-06-01T12:00:00Z"
+          endDate: "2024-06-01T12:00:00Z"
         ServiceArea:
-          AreaType: CIRCLE
+          areaType: CIRCLE
           center:
             latitude: 45.754114
             longitude: 4.860374
@@ -763,10 +775,10 @@ components:
     RETRIEVAL_POLYGON:
       value:
         ServiceTime:
-          StartTime: "2024-06-01T12:00:00Z"
-          EndTime: "2024-06-01T12:00:00Z"
+          startDate: "2024-06-01T12:00:00Z"
+          endDate: "2024-06-01T12:00:00Z"
         ServiceArea:
-          AreaType: POLYGON
+          areaType: POLYGON
           boundary:
             - latitude: 45.754114
               longitude: 4.860374
@@ -793,10 +805,10 @@ components:
     RESPONSE_CIRCLE:
       value:
         ServiceTime:
-          StartTime: "2024-06-01T12:00:00Z"
-          EndTime: "2024-06-01T12:00:00Z"
+          startDate: "2024-06-01T12:00:00Z"
+          endDate: "2024-06-01T12:00:00Z"
         ServiceArea:
-          AreaType: CIRCLE
+          areaType: CIRCLE
           center:
             latitude: 45.754114
             longitude: 4.860374
@@ -821,10 +833,10 @@ components:
     RESPONSE_POLYGON:
       value:
         ServiceTime:
-          StartTime: "2024-06-01T12:00:00Z"
-          EndTime: "2024-06-01T12:00:00Z"
+          startDate: "2024-06-01T12:00:00Z"
+          endDate: "2024-06-01T12:00:00Z"
         ServiceArea:
-          AreaType: POLYGON
+          areaType: POLYGON
           boundary:
             - latitude: 45.754114
               longitude: 4.860374
