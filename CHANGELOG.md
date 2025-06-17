@@ -1,4 +1,4 @@
-# Changelog Network Slice Booking API
+# Changelog Network Slice Booking
 
 ## Table of Contents
 - [r1.1](#r1.1)
