@@ -16,7 +16,7 @@ info:
     - Create a new session for network slice booking, specifying the service time, service area, and QoS profile.
     - Retrieve information about an existing session, including the service time, service area, and QoS profile.
     - Delete an existing session.
-    
+
     # Request Parameters Definition:
     * **ServiceTime**: is defined by a start time and an end time, which indicates the period during which the network slice will be reserved.
     * **ServiceArea**: can be defined as a circle or a polygon, allowing for flexible geographical coverage. 
@@ -63,6 +63,9 @@ paths:
         - Network Slice Booking Sessions
       summary: Creates a new session
       operationId: createSession
+      security:
+        - openId:
+            - network-slice-booking:create
       requestBody:
         description: Parameters to create a new session
         content:
@@ -103,6 +106,9 @@ paths:
       summary: Delete a NSB session
       description: Deleting NSB session
       operationId: deleteSession
+      security:
+        - openId:
+            - network-slice-booking:delete
       parameters:
         - name: sessionId
           in: path
@@ -134,6 +140,9 @@ paths:
       summary: Get NSB session information
       description: Querying for NSB session resource information details
       operationId: getSession
+      security:
+        - openId:
+            - network-slice-booking:read
       parameters:
         - name: sessionId
           in: path
@@ -170,6 +179,10 @@ paths:
           $ref: "#/components/responses/Generic503"
 
 components:
+  securitySchemes:
+    openId:
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
   headers:
     x-correlator:
       description: Correlation id for the different services
