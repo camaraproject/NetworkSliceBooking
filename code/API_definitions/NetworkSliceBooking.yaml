@@ -81,8 +81,10 @@ paths:
 
       responses:
         "200":
+          description: Session created successfully
           $ref: "#/components/responses/Generic200"              
         "204":
+          description: Session creation failed, e.g. due to insufficient resources or unsupported service area or unsupported service time
           $ref: "#/components/responses/Generic204"
         "400":
          $ref: "#/components/responses/Generic400"
@@ -94,10 +96,6 @@ paths:
           $ref: "#/components/responses/Generic410"
         "429":
           $ref: "#/components/responses/Generic429"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
 
   /sessions/{sessionId}:
     delete:
@@ -129,10 +127,6 @@ paths:
           $ref: "#/components/responses/Generic404"
         "429":
           $ref: "#/components/responses/Generic429_requests"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
 
     get:
       tags:
@@ -173,10 +167,6 @@ paths:
           $ref: "#/components/responses/Generic404"
         "429":
           $ref: "#/components/responses/Generic429_requests"
-        "500":
-          $ref: "#/components/responses/Generic500"
-        "503":
-          $ref: "#/components/responses/Generic503"
 
 components:
   securitySchemes:
@@ -328,6 +318,7 @@ components:
 
 
     Throughput:
+      description: Specification of throughput
       type: object
       properties:
         min:
@@ -353,6 +344,7 @@ components:
       type: number
 
     Area:
+      description: Base schema for all areas
       type: object
       properties:
         areaType:
@@ -392,6 +384,7 @@ components:
               minimum: 1
 
     Polygon:
+      description: Polygonal area. The Polygon should be a simple polygon, i.e. should not intersect itself.
       allOf:
         - $ref: "#/components/schemas/Area"
         - type: object
@@ -402,6 +395,7 @@ components:
               $ref: "#/components/schemas/PointList"
 
     PointList:
+      description: List of points defining a polygon
       type: array
       items:
         $ref: "#/components/schemas/Point"
@@ -443,6 +437,7 @@ components:
 
 
     ErrorInfo:
+      description: Common schema for errors
       type: object
       properties:
         status:
@@ -617,7 +612,7 @@ components:
                       - NOT_FOUND
           examples:
             GENERIC_404_NOT_FOUND:
-              description: Specified slice resource is not found
+              description: Specified slice resource is not found based on the sessionId
               value:
                 status: 404
                 code: NOT_FOUND
@@ -707,58 +702,6 @@ components:
                 code: TOO_MANY_REQUESTS
                 message: Either out of resource quota or reaching rate limiting.
 
-    Generic500:
-      description: Internal server error
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorInfo"
-              - type: object
-                properties:
-                  status:
-                    enum:
-                      - 500
-                  code:
-                    enum:
-                      - INTERNAL
-          examples:
-            GENERIC_500_SERVER_ERROR:
-              description: Internal server error
-              value:
-                status: 500
-                code: INTERNAL
-                message: "Internal server error"
-
-
-    Generic503:
-      description: Service unavailable
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator'
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorInfo"
-              - type: object
-                properties:
-                  status:
-                    enum:
-                      - 503
-                  code:
-                    enum:
-                      - UNAVAILABLE
-          examples:
-            GENERIC_503_SERVICE_UNAVAILABLE:
-              description: Service unavailable
-              value:
-                status: 503
-                code: UNAVAILABLE
-                message: "Service unavailable"
   examples:
     RETRIEVAL_CIRCLE:
       value:
