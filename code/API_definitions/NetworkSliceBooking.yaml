@@ -65,7 +65,7 @@ paths:
       operationId: createSession
       security:
         - openId:
-            - network-slice-booking:create
+            - network-slice-booking:sessions:create
       requestBody:
         description: Parameters to create a new session
         content:
@@ -106,7 +106,7 @@ paths:
       operationId: deleteSession
       security:
         - openId:
-            - network-slice-booking:delete
+            - network-slice-booking:sessions:delete
       parameters:
         - name: sessionId
           in: path
@@ -136,7 +136,7 @@ paths:
       operationId: getSession
       security:
         - openId:
-            - network-slice-booking:read
+            - network-slice-booking:sessions:read
       parameters:
         - name: sessionId
           in: path
