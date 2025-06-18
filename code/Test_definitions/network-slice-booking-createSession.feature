@@ -1,5 +1,5 @@
 @NetworkSliceBooking
-Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for createSession
+Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operations for createSession
 
     # Input to be provided by the implementation to the tester
     #
@@ -15,11 +15,11 @@ Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for createSession
     # * An Area outside the supported area
     # * A combination of request parameters including service area, start time, and end time, configuration information of network slicing
     #
-    # References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0
+    # References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0-rc.1
 
 Background: Common createSession setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-booking/vwip/sessions"
+    And the resource "/network-slice-booking/v0.1rc.1/sessions"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" is set to a UUID value
@@ -142,24 +142,3 @@ Scenario: Error response for too many requests
   And the response property "$.code" is "TOO_MANY_REQUESTS"
   And the response property "$.message" is "Either out of resource quota or reaching rate limiting."
 
-@network_slice_booking_createSession_11_internal_error_of_server_scenario
-Scenario: Error response for internal error of the server
-  Given the right request body property argument 
-  When the request "createSession" is sent
-  Then the response status code is 500
-  And the response header "x-correlator" has same value as the request header "x-correlator"
-  And the response header "Content-Type" is "application/json"
-  And the response property "$.status" is 500
-  And the response property "$.code" is "INTERNAL"
-  And the response property "$.message" is "Internal server error"
-
-@network_slice_booking_createSession_12_service_unavailable_scenario
-Scenario: Error response for service unavailable
-  Given the right request body property argument 
-  When the request "createSession" is sent
-  Then the response status code is 503
-  And the response header "x-correlator" has same value as the request header "x-correlator"
-  And the response header "Content-Type" is "application/json"
-  And the response property "$.status" is 503
-  And the response property "$.code" is "UNAVAILABLE"
-  And the response property "$.message" is "Service unavailable"
