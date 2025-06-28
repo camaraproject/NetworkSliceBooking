@@ -19,7 +19,7 @@ Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operations for createSes
 
 Background: Common createSession setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-booking/v0.1rc.1/sessions"
+    And the resource "/network-slice-booking/v0.1rc1/sessions"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" is set to a UUID value
