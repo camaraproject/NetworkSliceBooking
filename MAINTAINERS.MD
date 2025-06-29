@@ -6,4 +6,3 @@
 | China Mobile  | Hanbai Wang     | HanbaiWang |
 | Huawei        | Kai Zhang       | Kai-hw |
 | Huawei        | Shuting Qing    | ShutingQing |
-| Ericsson      | Thorsten Lohmar | tlohmar |
