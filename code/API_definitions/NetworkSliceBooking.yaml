@@ -238,21 +238,25 @@ components:
           description: |
             MaxNumofDevices is a maxmium number of devices that can be connected to the slice
           $ref: "#/components/schemas/NumberOfDevices"
-        DLThroughputPerDevice:
+        DownstreamRatePerDevice:
           description: |
-            DLThroughputPerDevice is an attribute specifies the required downlink throughput (bits per second) per device through the 5G network.
+            DownstreamRatePerDevice is the maximum downstream rate allowed for each device connected to the slice.
+            It indicates the individual device capability required for the slice.
           $ref: "#/components/schemas/Rate"
-        ULThroughputPerDevice:
+        UpstreamRatePerDevice:
           description: |
-            ULThroughputPerDevice is an attribute specifies the required uplink throughput (bits per second) per device through the 5G network.
+            UpstreamRatePerDevice is the maximum upstream rate allowed for each device connected to the slice.
+            It indicates the individual device capability required for the slice.
           $ref: "#/components/schemas/Rate"
-        DLLatency:
+        DownstreamDelayBudget:
           description: |
-            DLLatency is an attribute specifies the required downlink packet transmission latency (millisecond) through the 5G network.
+            DownstreamDelayBudget is the maximum allowable downlink packet transmission latency (millisecond).
+            By limiting the delay, the network can provide an acceptable level of performance for various services, such as voice calls, video streaming, and data.
           $ref: "#/components/schemas/Duration"
-        ULLatency:
+        UpstreamDelayBudget:
           description: |
-            ULLatency is an attribute specifies the required uplink packet transmission latency (millisecond) through the 5G network.
+            UpstreamDelayBudget is the maximum allowable uplink packet transmission latency (millisecond).
+            By limiting the delay, the network can provide an acceptable level of performance for various services, such as voice calls, video streaming, and data.
           $ref: "#/components/schemas/Duration"
 
 
@@ -715,18 +719,18 @@ components:
           radius: 800
         QoSProfile:
           MaxNumofDevices: 5
-          DLThroughputPerDevice:
+          DownstreamRatePerDevice:
             value: 10
             unit: "bps"
-          ULThroughputPerDevice:
+          UpstreamRatePerDevice:
             value: 10
             unit: "bps"
-          DLLatency:
+          DownstreamDelayBudget:
             value: 12
-            unit: "Days"
-          ULLatency:
+            unit: "Milliseconds"
+          UpstreamDelayBudget:
             value: 12
-            unit: "Days"
+            unit: "Milliseconds"
     RETRIEVAL_POLYGON:
       value:
         ServiceTime:
@@ -745,18 +749,18 @@ components:
               longitude: 4.876353
         QoSProfile:
           MaxNumofDevices: 5
-          DLThroughputPerDevice:
+          DownstreamRatePerDevice:
             value: 10
             unit: "bps"
-          ULThroughputPerDevice:
+          UpstreamRatePerDevice:
             value: 10
             unit: "bps"
-          DLLatency:
+          DownstreamDelayBudget:
             value: 12
-            unit: "Days"
-          ULLatency:
+            unit: "Milliseconds"
+          UpstreamDelayBudget:
             value: 12
-            unit: "Days"
+            unit: "Milliseconds"
     RESPONSE_CIRCLE:
       value:
         ServiceTime:
@@ -770,18 +774,18 @@ components:
           radius: 800
         QoSProfile:
           MaxNumofDevices: 5
-          DLThroughputPerDevice:
+          DownstreamRatePerDevice:
             value: 10
             unit: "bps"
-          ULThroughputPerDevice:
+          UpstreamRatePerDevice:
             value: 10
             unit: "bps"
-          DLLatency:
+          DownstreamDelayBudget:
             value: 12
-            unit: "Days"
-          ULLatency:
+            unit: "Milliseconds"
+          UpstreamDelayBudget:
             value: 12
-            unit: "Days"
+            unit: "Milliseconds"
         status: 200
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         result: "Success"
@@ -803,18 +807,18 @@ components:
               longitude: 4.876353
         QoSProfile:
           MaxNumofDevices: 5
-          DLThroughputPerDevice:
+          DownstreamRatePerDevice:
             value: 10
             unit: "bps"
-          ULThroughputPerDevice:
+          UpstreamRatePerDevice:
             value: 10
             unit: "bps"
-          DLLatency:
+          DownstreamDelayBudget:
             value: 12
-            unit: "Days"
-          ULLatency:
+            unit: "Milliseconds"
+          UpstreamDelayBudget:
             value: 12
-            unit: "Days"
+            unit: "Milliseconds"
         status: 200
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         result: "Success"
