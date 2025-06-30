@@ -3,17 +3,19 @@ info:
   title: Network Slice Booking
   description: |
     The Network Slice Booking (NSB) API provides programmable interface for developers to reserve a slice resource of a selected area within a period, and manage device access control as needed.
-    This API predict the SLA can be guaranteed or not for the indicated time and location, and provide resource reserved network slice to guarantee the service QoS.
-    For specific details, Please refer to [Network Slice Booking API Design.md](/documentation/API_documentation/Network_Slice_Booking_API_Design.md).
+    For specific details, please refer to [Network Slice Booking API Design.md](/documentation/API_documentation/Network_Slice_Booking_API_Design.md).
     
     # Introduction
 
-    This API allows the API consumer to ask for the allocation of dedicated resource capacity , specifying the service time, service area, and quality of service (QoS) profile. The API consumer can also retrieve information about an existing session or delete a session.
+    This API allows the API consumer to book the availability of a session (also known as a "network slice"), specifying the service time, service area, and quality of service (QoS) profile. 
+    It checks whether the requested QoS profile can be guaranteed for the indicated time and area, and, if so, it reserves the network slice accordingly, and monitors that the slice delivers the QoS profile. The latter process is known as Service Level Agreement (SLA) monitoring.
     
+    The API consumer can also retrieve information about an existing session or delete a session.
+
     # API functionality
 
     The API provides the following functionality:
-    - Create a new session for network slice booking, specifying the service time, service area, and QoS profile.
+    - Create a new session (network slice), specifying the service time, service area, and QoS profile.
     - Retrieve information about an existing session, including the service time, service area, and QoS profile.
     - Delete an existing session.
 
@@ -338,10 +340,11 @@ components:
         endDate:
           type: string
           format: date-time
-          description: An instant of time, ending of the TimePeriod. If not included, then the period has no ending date.
+          description: An instant of time, ending of the TimePeriod. 
           example: "2024-06-01T12:00:00Z"
       required:
         - startDate
+        - endDate
 
     Float:
       type: number
