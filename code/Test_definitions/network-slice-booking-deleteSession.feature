@@ -15,7 +15,7 @@ Background: Common deleteSession setup
     And the resource "/network-slice-booking/v0.1rc1/sessions/{sessionId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     And the path parameter "sessionId" is set by default to a existing network slice session sessionId
 
 # Success scenarios

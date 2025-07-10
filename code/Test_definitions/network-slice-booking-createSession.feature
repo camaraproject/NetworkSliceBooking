@@ -22,7 +22,7 @@ Background: Common createSession setup
     And the resource "/network-slice-booking/v0.1rc1/sessions"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     # Properties not explicitly overwritten in the Scenarios can take any values compliant with the schema
     And the request body is set by default to a request body compliant with the schema at "/components/schemas/CreateSession"
 
@@ -50,10 +50,10 @@ Scenario: Common validations for fail scenario of area not supported
   And the response body complies with the OAS schema at "/components/schemas/SessionInfo"
   And the response property "$.status" is 204
   And the response property "$.code" is value is "Fail"
-  And the response property "$.message" is "ServiceArea is not surpported."
+  And the response property "$.message" is "ServiceArea is not supported."
 
-@network_slice_booking_createSession_03_resouces_insufficient_fail_scenario
-Scenario: Common validations for fail scenario of resouces insufficient
+@network_slice_booking_createSession_03_resources_insufficient_fail_scenario
+Scenario: Common validations for fail scenario of resources insufficient
   Given starttime, endtime, the request body property "$.ServiceArea" is set to the provided service area and the configuration of information of network slicing
   When the request "createSession" is sent
   Then the response status code is 204
@@ -62,7 +62,7 @@ Scenario: Common validations for fail scenario of resouces insufficient
   And the response body complies with the OAS schema at "/components/schemas/SessionInfo"
   And the response property "$.status" is 204
   And the response property "$.code" is value is "Fail"
-  And the response property "$.message" is "The remaining resouces are insufficient."
+  And the response property "$.message" is "The remaining resources are insufficient."
 
 @network_slice_booking_createSession_04_invalid_argument_scenario
 Scenario: Error response for invalid argument in request body
