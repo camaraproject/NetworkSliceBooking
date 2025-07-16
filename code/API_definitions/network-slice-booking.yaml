@@ -20,9 +20,9 @@ info:
     - Delete an existing session.
 
     # Request Parameters Definition:
-    * **ServiceTime**: is defined by a start time and an end time, which indicates the period during which the network slice will be reserved.
-    * **ServiceArea**: can be defined as a circle or a polygon, allowing for flexible geographical coverage. 
-    * **QoSProfile**: includes parameters such as maximum number of devices, downstream and upstream rate per device, and packet delay budget.
+    * **serviceTime**: is defined by a start time and an end time, which indicates the period during which the network slice will be reserved.
+    * **serviceArea**: can be defined as a circle or a polygon, allowing for flexible geographical coverage. 
+    * **qosProfile**: includes parameters such as maximum number of devices, downstream and upstream rate per device, and packet delay budget.
     * **SessionId**: is a unique identifier for the session, which is returned when a session is created and used to retrieve or delete the session later.
 
     # Authorization and authentication
@@ -225,51 +225,51 @@ components:
       description: Attributes required to create a session
       type: object
       properties:
-        ServiceTime:
+        serviceTime:
           description: |
-            ServiceTime is a period during which the network slice will be reserved.
+            serviceTime is a period during which the network slice will be reserved.
             It is defined by a start time and an end time.
           $ref: "#/components/schemas/TimePeriod"
-        ServiceArea:
+        serviceArea:
           description: |
-            ServiceArea is a geographical area where the network slice will be reserved.
+            serviceArea is a geographical area where the network slice will be reserved.
             It can be defined as a circle or a polygon.
           $ref: "#/components/schemas/Area"
-        QoSProfile:
+        qosProfile:
           description: |
-            QoSProfile is a set of quality of service parameters that define the requirements for the network slice.
+            qosProfile is a set of quality of service parameters that define the requirements for the network slice.
             It includes parameters such as maximum number of devices, downlink and uplink throughput per device, and latency requirements.
-          $ref: "#/components/schemas/QoSProfile"
+          $ref: "#/components/schemas/QosProfile"
       required:
-        - ServiceTime
-        - ServiceArea
-        - QoSProfile
+        - serviceTime
+        - serviceArea
+        - qosProfile
 
-    QoSProfile:
+    QosProfile:
       type: object
       properties:
-        MaxNumofDevices:
+        maxNumOfDevices:
           description: |
-            MaxNumofDevices is a maxmium number of devices that can be connected to the slice
+            maxNumOfDevices is a maxmium number of devices that can be connected to the slice
           $ref: "#/components/schemas/NumberOfDevices"
-        DownstreamRatePerDevice:
+        downStreamRatePerDevice:
           description: |
-            DownstreamRatePerDevice is the maximum downstream rate allowed for each device connected to the slice.
+            downStreamRatePerDevice is the maximum downstream rate allowed for each device connected to the slice.
             It indicates the individual device capability required for the slice.
           $ref: "#/components/schemas/Rate"
-        UpstreamRatePerDevice:
+        upStreamRatePerDevice:
           description: |
-            UpstreamRatePerDevice is the maximum upstream rate allowed for each device connected to the slice.
+            upStreamRatePerDevice is the maximum upstream rate allowed for each device connected to the slice.
             It indicates the individual device capability required for the slice.
           $ref: "#/components/schemas/Rate"
-        DownstreamDelayBudget:
+        downStreamDelayBudget:
           description: |
-            DownstreamDelayBudget is the maximum allowable downlink packet transmission latency (millisecond).
+            downStreamDelayBudget is the maximum allowable downlink packet transmission latency (millisecond).
             By limiting the delay, the network can provide an acceptable level of performance for various services, such as voice calls, video streaming, and data.
           $ref: "#/components/schemas/Duration"
-        UpstreamDelayBudget:
+        upStreamDelayBudget:
           description: |
-            UpstreamDelayBudget is the maximum allowable uplink packet transmission latency (millisecond).
+            upStreamDelayBudget is the maximum allowable uplink packet transmission latency (millisecond).
             By limiting the delay, the network can provide an acceptable level of performance for various services, such as voice calls, video streaming, and data.
           $ref: "#/components/schemas/Duration"
 
@@ -279,7 +279,7 @@ components:
       type: object
       properties:
         value:
-          description: Quantity of duration
+          description: Length of duration
           type: integer
           example: 12
           format: int32
@@ -724,35 +724,35 @@ components:
   examples:
     RETRIEVAL_CIRCLE:
       value:
-        ServiceTime:
+        serviceTime:
           startDate: "2024-06-01T12:00:00Z"
           endDate: "2024-06-02T12:00:00Z"
-        ServiceArea:
+        serviceArea:
           areaType: CIRCLE
           center:
             latitude: 45.754114
             longitude: 4.860374
           radius: 800
-        QoSProfile:
-          MaxNumofDevices: 5
-          DownstreamRatePerDevice:
+        qosProfile:
+          maxNumOfDevices: 5
+          downStreamRatePerDevice:
             value: 10
             unit: "bps"
-          UpstreamRatePerDevice:
+          upStreamRatePerDevice:
             value: 10
             unit: "bps"
-          DownstreamDelayBudget:
+          downStreamDelayBudget:
             value: 12
             unit: "Milliseconds"
-          UpstreamDelayBudget:
+          upStreamDelayBudget:
             value: 12
             unit: "Milliseconds"
     RETRIEVAL_POLYGON:
       value:
-        ServiceTime:
+        serviceTime:
           startDate: "2024-06-01T12:00:00Z"
           endDate: "2024-06-02T12:00:00Z"
-        ServiceArea:
+        serviceArea:
           areaType: POLYGON
           boundary:
             - latitude: 45.754114
@@ -763,43 +763,43 @@ components:
               longitude: 4.866531
             - latitude: 45.754116
               longitude: 4.876353
-        QoSProfile:
-          MaxNumofDevices: 5
-          DownstreamRatePerDevice:
+        qosProfile:
+          maxNumOfDevices: 5
+          downStreamRatePerDevice:
             value: 10
             unit: "bps"
-          UpstreamRatePerDevice:
+          upStreamRatePerDevice:
             value: 10
             unit: "bps"
-          DownstreamDelayBudget:
+          downStreamDelayBudget:
             value: 12
             unit: "Milliseconds"
-          UpstreamDelayBudget:
+          upStreamDelayBudget:
             value: 12
             unit: "Milliseconds"
     RESPONSE_CIRCLE:
       value:
-        ServiceTime:
+        serviceTime:
           startDate: "2024-06-01T12:00:00Z"
           endDate: "2024-06-02T12:00:00Z"
-        ServiceArea:
+        serviceArea:
           areaType: CIRCLE
           center:
             latitude: 45.754114
             longitude: 4.860374
           radius: 800
-        QoSProfile:
-          MaxNumofDevices: 5
-          DownstreamRatePerDevice:
+        qosProfile:
+          maxNumOfDevices: 5
+          downStreamRatePerDevice:
             value: 10
             unit: "bps"
-          UpstreamRatePerDevice:
+          upStreamRatePerDevice:
             value: 10
             unit: "bps"
-          DownstreamDelayBudget:
+          downStreamDelayBudget:
             value: 12
             unit: "Milliseconds"
-          UpstreamDelayBudget:
+          upStreamDelayBudget:
             value: 12
             unit: "Milliseconds"
         status: 200
@@ -807,10 +807,10 @@ components:
         result: "Success"
     RESPONSE_POLYGON:
       value:
-        ServiceTime:
+        serviceTime:
           startDate: "2024-06-01T12:00:00Z"
           endDate: "2024-06-02T12:00:00Z"
-        ServiceArea:
+        serviceArea:
           areaType: POLYGON
           boundary:
             - latitude: 45.754114
@@ -821,18 +821,18 @@ components:
               longitude: 4.866531
             - latitude: 45.754116
               longitude: 4.876353
-        QoSProfile:
-          MaxNumofDevices: 5
-          DownstreamRatePerDevice:
+        qosProfile:
+          maxNumOfDevices: 5
+          downStreamRatePerDevice:
             value: 10
             unit: "bps"
-          UpstreamRatePerDevice:
+          upStreamRatePerDevice:
             value: 10
             unit: "bps"
-          DownstreamDelayBudget:
+          downStreamDelayBudget:
             value: 12
             unit: "Milliseconds"
-          UpstreamDelayBudget:
+          upStreamDelayBudget:
             value: 12
             unit: "Milliseconds"
         status: 200

@@ -30,7 +30,7 @@ Background: Common createSession setup
 
 @network_slice_booking_createSession_01_generic_success_scenario
 Scenario: Common validations for any success scenario
-  Given starttime, endtime, the request body property "$.ServiceArea" is set to the provided service area and the configuration of information of network slicing
+  Given starttime, endtime, the request body property "$.serviceArea" is set to the provided service area and the configuration of information of network slicing
   When the request "createSession" is sent
   Then the response status code is 200
   And the response header "Content-Type" is "application/json"
@@ -42,7 +42,7 @@ Scenario: Common validations for any success scenario
 
 @network_slice_booking_createSession_02_area_not_support_fail_scenario
 Scenario: Common validations for fail scenario of area not supported
-  Given starttime, endtime, the request body property "$.ServiceArea" is set to the service area of not supported and the configuration of information of network slicing
+  Given starttime, endtime, the request body property "$.serviceArea" is set to the service area of not supported and the configuration of information of network slicing
   When the request "createSession" is sent
   Then the response status code is 204
   And the response header "Content-Type" is "application/json"
@@ -50,11 +50,11 @@ Scenario: Common validations for fail scenario of area not supported
   And the response body complies with the OAS schema at "/components/schemas/SessionInfo"
   And the response property "$.status" is 204
   And the response property "$.code" is value is "Fail"
-  And the response property "$.message" is "ServiceArea is not supported."
+  And the response property "$.message" is "serviceArea is not supported."
 
 @network_slice_booking_createSession_03_resources_insufficient_fail_scenario
 Scenario: Common validations for fail scenario of resources insufficient
-  Given starttime, endtime, the request body property "$.ServiceArea" is set to the provided service area and the configuration of information of network slicing
+  Given starttime, endtime, the request body property "$.serviceArea" is set to the provided service area and the configuration of information of network slicing
   When the request "createSession" is sent
   Then the response status code is 204
   And the response header "Content-Type" is "application/json"
