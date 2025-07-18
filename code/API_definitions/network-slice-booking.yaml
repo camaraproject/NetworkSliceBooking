@@ -23,7 +23,7 @@ info:
     * **serviceTime**: is defined by a start time and an end time, which indicates the period during which the network slice will be reserved.
     * **serviceArea**: can be defined as a circle or a polygon, allowing for flexible geographical coverage. 
     * **qosProfile**: includes parameters such as maximum number of devices, downstream and upstream rate per device, and packet delay budget.
-    * **SessionId**: is a unique identifier for the session, which is returned when a session is created and used to retrieve or delete the session later.
+    * **sessionId**: is a unique identifier for the session, which is returned when a session is created and used to retrieve or delete the session later.
 
     # Authorization and authentication
 

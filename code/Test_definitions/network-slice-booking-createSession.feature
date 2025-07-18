@@ -77,7 +77,7 @@ Scenario: Error response for invalid argument in request body
 
 @network_slice_booking_createSession_05_out_of_range_scenario
 Scenario: Error responses where the parameters in the request body are out of range
-  Given the request body property argument are out of range, for example MaxNumofTerminals is a negative integer
+  Given the request body property argument are out of range, for example maxNumOfDevices is a negative integer
   When the request "createSession" is sent
   Then the response status code is 400
   And the response header "Content-Type" is "application/json"
