@@ -1,5 +1,5 @@
 @NetworkSliceBooking
-Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for createSession
+Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operations for createSession
 
     # Input to be provided by the implementation to the tester
     #
@@ -15,14 +15,14 @@ Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for createSession
     # * An Area outside the supported area
     # * A combination of request parameters including service area, start time, and end time, configuration information of network slicing
     #
-    # References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0
+    # References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0-rc.1
 
 Background: Common createSession setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-booking/vwip/sessions"
+    And the resource "/network-slice-booking/v0.1rc1/sessions"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     # Properties not explicitly overwritten in the Scenarios can take any values compliant with the schema
     And the request body is set by default to a request body compliant with the schema at "/components/schemas/CreateSession"
 
@@ -30,7 +30,7 @@ Background: Common createSession setup
 
 @network_slice_booking_createSession_01_generic_success_scenario
 Scenario: Common validations for any success scenario
-  Given starttime, endtime, the request body property "$.ServiceArea" is set to the provided service area and the configuration of information of network slicing
+  Given starttime, endtime, the request body property "$.serviceArea" is set to the provided service area and the configuration of information of network slicing
   When the request "createSession" is sent
   Then the response status code is 200
   And the response header "Content-Type" is "application/json"
@@ -42,7 +42,7 @@ Scenario: Common validations for any success scenario
 
 @network_slice_booking_createSession_02_area_not_support_fail_scenario
 Scenario: Common validations for fail scenario of area not supported
-  Given starttime, endtime, the request body property "$.ServiceArea" is set to the service area of not supported and the configuration of information of network slicing
+  Given starttime, endtime, the request body property "$.serviceArea" is set to the service area of not supported and the configuration of information of network slicing
   When the request "createSession" is sent
   Then the response status code is 204
   And the response header "Content-Type" is "application/json"
@@ -50,11 +50,11 @@ Scenario: Common validations for fail scenario of area not supported
   And the response body complies with the OAS schema at "/components/schemas/SessionInfo"
   And the response property "$.status" is 204
   And the response property "$.code" is value is "Fail"
-  And the response property "$.message" is "ServiceArea is not surpported."
+  And the response property "$.message" is "serviceArea is not supported."
 
-@network_slice_booking_createSession_03_resouces_insufficient_fail_scenario
-Scenario: Common validations for fail scenario of resouces insufficient
-  Given starttime, endtime, the request body property "$.ServiceArea" is set to the provided service area and the configuration of information of network slicing
+@network_slice_booking_createSession_03_resources_insufficient_fail_scenario
+Scenario: Common validations for fail scenario of resources insufficient
+  Given starttime, endtime, the request body property "$.serviceArea" is set to the provided service area and the configuration of information of network slicing
   When the request "createSession" is sent
   Then the response status code is 204
   And the response header "Content-Type" is "application/json"
@@ -62,7 +62,7 @@ Scenario: Common validations for fail scenario of resouces insufficient
   And the response body complies with the OAS schema at "/components/schemas/SessionInfo"
   And the response property "$.status" is 204
   And the response property "$.code" is value is "Fail"
-  And the response property "$.message" is "The remaining resouces are insufficient."
+  And the response property "$.message" is "The remaining resources are insufficient."
 
 @network_slice_booking_createSession_04_invalid_argument_scenario
 Scenario: Error response for invalid argument in request body
@@ -77,7 +77,7 @@ Scenario: Error response for invalid argument in request body
 
 @network_slice_booking_createSession_05_out_of_range_scenario
 Scenario: Error responses where the parameters in the request body are out of range
-  Given the request body property argument are out of range, for example MaxNumofTerminals is a negative integer
+  Given the request body property argument are out of range, for example maxNumOfDevices is a negative integer
   When the request "createSession" is sent
   Then the response status code is 400
   And the response header "Content-Type" is "application/json"
@@ -142,24 +142,3 @@ Scenario: Error response for too many requests
   And the response property "$.code" is "TOO_MANY_REQUESTS"
   And the response property "$.message" is "Either out of resource quota or reaching rate limiting."
 
-@network_slice_booking_createSession_11_internal_error_of_server_scenario
-Scenario: Error response for internal error of the server
-  Given the right request body property argument 
-  When the request "createSession" is sent
-  Then the response status code is 500
-  And the response header "x-correlator" has same value as the request header "x-correlator"
-  And the response header "Content-Type" is "application/json"
-  And the response property "$.status" is 500
-  And the response property "$.code" is "INTERNAL"
-  And the response property "$.message" is "Internal server error"
-
-@network_slice_booking_createSession_12_service_unavailable_scenario
-Scenario: Error response for service unavailable
-  Given the right request body property argument 
-  When the request "createSession" is sent
-  Then the response status code is 503
-  And the response header "x-correlator" has same value as the request header "x-correlator"
-  And the response header "Content-Type" is "application/json"
-  And the response property "$.status" is 503
-  And the response property "$.code" is "UNAVAILABLE"
-  And the response property "$.message" is "Service unavailable"
