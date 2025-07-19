@@ -22,7 +22,7 @@ info:
     # Request Parameters Definition:
     * **serviceTime**: is defined by a start time and an end time, which indicates the period during which the network slice will be reserved.
     * **serviceArea**: can be defined as a circle or a polygon, allowing for flexible geographical coverage. 
-    * **qosProfile**: includes parameters such as maximum number of devices, downstream and upstream rate per device, and packet delay budget.
+    * **sliceQosProfile**: includes parameters such as maximum number of devices, downstream and upstream rate per device, and packet delay budget.
     * **sessionId**: is a unique identifier for the session, which is returned when a session is created and used to retrieve or delete the session later.
 
     # Authorization and authentication
@@ -235,17 +235,20 @@ components:
             serviceArea is a geographical area where the network slice will be reserved.
             It can be defined as a circle or a polygon.
           $ref: "#/components/schemas/Area"
-        qosProfile:
+        sliceQosProfile:
           description: |
-            qosProfile is a set of quality of service parameters that define the requirements for the network slice.
+            sliceQosProfile is a set of quality of service parameters that define the requirements for the network slice.
             It includes parameters such as maximum number of devices, downlink and uplink throughput per device, and latency requirements.
-          $ref: "#/components/schemas/QosProfile"
+          $ref: "#/components/schemas/SliceQosProfile"
       required:
         - serviceTime
         - serviceArea
-        - qosProfile
+        - sliceQosProfile
 
-    QosProfile:
+    SliceQosProfile:
+      description: |
+        Quality of service for the network slice.
+        It includes a set of predefined network slice performance characteristics.
       type: object
       properties:
         maxNumOfDevices:
@@ -733,7 +736,7 @@ components:
             latitude: 45.754114
             longitude: 4.860374
           radius: 800
-        qosProfile:
+        sliceQosProfile:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
@@ -763,7 +766,7 @@ components:
               longitude: 4.866531
             - latitude: 45.754116
               longitude: 4.876353
-        qosProfile:
+        sliceQosProfile:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
@@ -788,7 +791,7 @@ components:
             latitude: 45.754114
             longitude: 4.860374
           radius: 800
-        qosProfile:
+        sliceQosProfile:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
@@ -821,7 +824,7 @@ components:
               longitude: 4.866531
             - latitude: 45.754116
               longitude: 4.876353
-        qosProfile:
+        sliceQosProfile:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
