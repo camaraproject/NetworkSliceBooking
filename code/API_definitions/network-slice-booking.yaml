@@ -82,12 +82,9 @@ paths:
         required: true
 
       responses:
-        "200":
+        "201":
           description: Session created successfully
-          $ref: "#/components/responses/Generic200"              
-        "204":
-          description: Session creation failed, e.g. due to insufficient resources or unsupported service area or unsupported service time
-          $ref: "#/components/responses/Generic204"
+          $ref: "#/components/responses/Generic201"              
         "400":
          $ref: "#/components/responses/Generic400"
         "401":
@@ -96,6 +93,8 @@ paths:
           $ref: "#/components/responses/Generic403"
         "410":
           $ref: "#/components/responses/Generic410"
+        "422":
+          $ref: "#/components/responses/Generic422"
         "429":
           $ref: "#/components/responses/Generic429"
 
@@ -117,7 +116,7 @@ paths:
           schema:
             $ref: "#/components/schemas/SessionId"
       responses:
-        "200":
+        "204":
           description: Session deleted
         "400":
           $ref: "#/components/responses/Generic400"
@@ -476,7 +475,7 @@ components:
         - code
         - message
   responses:
-    Generic200:
+    Generic201:
       description: Session created
       content:
         application/json:
@@ -500,37 +499,6 @@ components:
           examples:
                 SUCCESS:
                   $ref: "#/components/examples/SUCCESS"
-    Generic204:
-      description: Session create failed
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                enum:
-                  - 204
-              sessionId:
-                    $ref: "#/components/schemas/SessionId"
-              result:
-                type: string
-                enum:
-                  - Fail
-              message:
-                type: string
-                enum:
-                  - SERVICEAREA NOT SUPPORTED
-                  - RESOURCES INSUFFICIENT
-            required:
-              - status
-              - result
-              - message
-          examples:
-            SERVICEAREA_NOT_SUPPORTED:
-              $ref: "#/components/examples/SERVICEAREA_NOT_SUPPORTED"
-            RESOURCES_INSUFFICIENT:
-              $ref: "#/components/examples/RESOURCES_INSUFFICIENT"
     Generic400:
       description: Bad Request
       headers:
@@ -664,7 +632,31 @@ components:
                 status: 410
                 code: GONE
                 message: Access to the target resource is no longer available.
-
+    Generic422:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 422
+                  code:
+                    enum:
+                      - NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE
+          examples:
+            NETWORK_SLICE_BOOKING_422_RESOURCES_NOT_APPLICABLE:
+              description: Request cannot be processed due to business logic validation failure, e.g. service area is not supported or resources are insufficient
+              value:
+                status: 422
+                code: NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE
+                message: The request resources are not applicable for session creation.
     Generic429:
       description: Quota Exceed or Too Many Requests
       headers:
@@ -843,19 +835,9 @@ components:
         result: "Success"
     SUCCESS:
       value:
-        status: 200
+        status: 201
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         result: "Success"
-    SERVICEAREA_NOT_SUPPORTED:
-      value:
-        status: 204
-        result: "Fail"
-        message: "Service area is not supported"
-    RESOURCES_INSUFFICIENT:
-      value:
-        status: 204
-        result: "Fail"
-        message: "The remaining resources are insufficient"
 
 
 
