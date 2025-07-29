@@ -64,6 +64,12 @@ paths:
       tags:
         - Network Slice Booking Sessions
       summary: Creates a new session
+      description: |
+        Create a new session (network slice) with the expected service time, service area, and QoS profile.
+
+        NOTES:
+        - If expected network slice resources are not available, the API consumer will receive an error response with code `422 - NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE`.
+        - If session creation is successful, the API consumer will receive a response with code `201 - Created` and a session ID.
       operationId: createSession
       security:
         - openId:
@@ -103,7 +109,13 @@ paths:
       tags:
         - Network Slice Booking Sessions
       summary: Delete a NSB session
-      description: Deleting NSB session
+      description: |
+        Release slice resources related to sessionId.
+
+        NOTES:
+        - The deletion operation takes effect immediately, e.g. if the session is deleted before the end of the service time, the service will end ahead of the scheduled time.
+        - If the session is deleted, the API consumer will not be able to retrieve information about the session.
+        - The deletion operation is idempotent, meaning that if the session is already deleted, the API consumer will receive a response with code `204 - No Content`.
       operationId: deleteSession
       security:
         - openId:
@@ -133,7 +145,12 @@ paths:
       tags:
         - Network Slice Booking Sessions
       summary: Get NSB session information
-      description: Querying for NSB session resource information details
+      description: |
+        Querying for NSB session resource information details.
+        
+        NOTES:
+        - According to sessionId, the API consumer can retrieve information about an existing session, including the service time, service area, and QoS profile.
+        - If the session is deleted, the API consumer will receive a response with code `404 - Not Found`.
       operationId: getSession
       security:
         - openId:
@@ -252,7 +269,7 @@ components:
       properties:
         maxNumOfDevices:
           description: |
-            maxNumOfDevices is a maxmium number of devices that can be connected to the slice
+            maxNumOfDevices is a maximum number of devices that can be connected to the slice
           $ref: "#/components/schemas/NumberOfDevices"
         downStreamRatePerDevice:
           description: |
