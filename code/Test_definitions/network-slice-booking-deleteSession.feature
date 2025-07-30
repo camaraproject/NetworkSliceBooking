@@ -1,5 +1,5 @@
 @NetworkSliceBooking
-Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operations for deleteSession
+Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operation deleteSession
 
     # Input to be provided by the implementation to the tester
     #
@@ -25,7 +25,7 @@ Scenario: Delete an existing network slice session
   Given an existing network slice session created by operation createSession
   And the path parameter "sessionId" is set to the value for that network slice session
   When the request "deleteSession" is sent
-  Then the response status code is 200
+  Then the response status code is 204
   And the response header "Content-Type" is "application/json"
   And the response header "x-correlator" has same value as the request header "x-correlator"
 
@@ -94,5 +94,5 @@ Scenario: Error response for too many requests
   And the response header "Content-Type" is "application/json"
   And the response property "$.status" is 429
   And the response property "$.code" is "TOO_MANY_REQUESTS"
-  And the response property "$.message" is "Either out of resource quota or reaching rate limiting."
+  And the response property "$.message" is "Rate limit reached."
 

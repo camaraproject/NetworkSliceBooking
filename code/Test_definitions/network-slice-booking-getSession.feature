@@ -1,5 +1,5 @@
 @NetworkSliceBooking
-Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operations for getSession
+Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operation getSession
 
     # Input to be provided by the implementation to the tester
     #
@@ -29,7 +29,6 @@ Scenario: Get an existing network slice session
   And the response header "Content-Type" is "application/json"
   And the response header "x-correlator" has same value as the request header "x-correlator"
   And the response body complies with the OAS schema at "/components/schemas/SessionInfo"
-  And the response property "$.result"  is "Success"
   And the response property "sessionId" is a character string and the information of The user's session id
   And the configuration information of user's network slice booking
 
@@ -98,5 +97,5 @@ Scenario: Error response for too many requests
   And the response header "Content-Type" is "application/json"
   And the response property "$.status" is 429
   And the response property "$.code" is "TOO_MANY_REQUESTS"
-  And the response property "$.message" is "Either out of resource quota or reaching rate limiting."
+  And the response property "$.message" is "Rate limit reached."
 

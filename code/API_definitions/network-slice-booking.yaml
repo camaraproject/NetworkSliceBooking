@@ -90,7 +90,15 @@ paths:
       responses:
         "201":
           description: Session created successfully
-          $ref: "#/components/responses/Generic201"              
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionInfo"   
+              examples:
+                RESPONSE_CIRCLE:
+                  $ref: "#/components/examples/RESPONSE_CIRCLE"
+                RESPONSE_POLYGON:
+                  $ref: "#/components/examples/RESPONSE_POLYGON"              
         "400":
          $ref: "#/components/responses/Generic400"
         "401":
@@ -224,17 +232,7 @@ components:
           properties:
             sessionId:
               $ref: "#/components/schemas/SessionId"
-            result:
-              type: string
-              enum:
-                - Success
-            status:
-              type: integer
-              enum:
-                - 200
           required:
-            - result
-            - status
             - sessionId
 
     CreateSession:
@@ -492,30 +490,6 @@ components:
         - code
         - message
   responses:
-    Generic201:
-      description: Session created
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                enum:
-                  - 200
-              sessionId:
-                    $ref: "#/components/schemas/SessionId"
-              result:
-                type: string
-                enum:
-                  - Success
-            required:
-              - status
-              - sessionId
-              - result
-          examples:
-                SUCCESS:
-                  $ref: "#/components/examples/SUCCESS"
     Generic400:
       description: Bad Request
       headers:
@@ -699,13 +673,13 @@ components:
               value:
                 status: 429
                 code: QUOTA_EXCEEDED
-                message: Either out of resource quota or reaching rate limiting.
+                message: Out of resource quota.
             GENERIC_429_TOO_MANY_REQUESTS:
-              description: API Server request limit is overpassed
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
               value:
                 status: 429
                 code: TOO_MANY_REQUESTS
-                message: Either out of resource quota or reaching rate limiting.
+                message: Rate limit reached.
 
     Generic429_requests:
       description: Too Many Requests
@@ -727,11 +701,11 @@ components:
                       - TOO_MANY_REQUESTS
           examples:
             GENERIC_429_TOO_MANY_REQUESTS:
-              description: API Server request limit is overpassed
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
               value:
                 status: 429
                 code: TOO_MANY_REQUESTS
-                message: Either out of resource quota or reaching rate limiting.
+                message: Rate limit reached.
 
   examples:
     RETRIEVAL_CIRCLE:
@@ -814,9 +788,7 @@ components:
           upStreamDelayBudget:
             value: 12
             unit: "Milliseconds"
-        status: 200
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-        result: "Success"
     RESPONSE_POLYGON:
       value:
         serviceTime:
@@ -847,14 +819,9 @@ components:
           upStreamDelayBudget:
             value: 12
             unit: "Milliseconds"
-        status: 200
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-        result: "Success"
-    SUCCESS:
-      value:
-        status: 201
-        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-        result: "Success"
+
+
 
 
 
