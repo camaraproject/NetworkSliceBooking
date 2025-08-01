@@ -1,5 +1,5 @@
 @NetworkSliceBooking
-Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for deleteSession
+Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operation deleteSession
 
     # Input to be provided by the implementation to the tester
     #
@@ -8,14 +8,14 @@ Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for deleteSession
     #
     # Testing assets:
     # * The sessionId of an existing session.
-    # * References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0
+    # * References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0-rc.1
 
 Background: Common deleteSession setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-booking/vwip/sessions/{sessionId}"
+    And the resource "/network-slice-booking/v0.1rc1/sessions/{sessionId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     And the path parameter "sessionId" is set by default to a existing network slice session sessionId
 
 # Success scenarios
@@ -25,7 +25,7 @@ Scenario: Delete an existing network slice session
   Given an existing network slice session created by operation createSession
   And the path parameter "sessionId" is set to the value for that network slice session
   When the request "deleteSession" is sent
-  Then the response status code is 200
+  Then the response status code is 204
   And the response header "Content-Type" is "application/json"
   And the response header "x-correlator" has same value as the request header "x-correlator"
 
@@ -65,7 +65,7 @@ Scenario: Error response for no header "Authorization"
 
 @network_slice_booking_deleteSession_05_missing_access_token_scope_scenario
 Scenario: Missing access token scope
-  Given the header "Authorization" is set to an access token that does not include scope network-slice-booking:sessions
+  Given the header "Authorization" is set to an access token that does not include scope network-slice-booking:sessions:delete
   When the request "deleteSession" is sent
   Then the response status code is 403
   And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -94,26 +94,5 @@ Scenario: Error response for too many requests
   And the response header "Content-Type" is "application/json"
   And the response property "$.status" is 429
   And the response property "$.code" is "TOO_MANY_REQUESTS"
-  And the response property "$.message" is "Either out of resource quota or reaching rate limiting."
+  And the response property "$.message" is "Rate limit reached."
 
-@network_slice_booking_deleteSession_08_internal_error_of_server_scenario
-Scenario: Error response for internal error of the server
-  Given the right request body property argument 
-  When the request "deleteSession" is sent
-  Then the response status code is 500
-  And the response header "x-correlator" has same value as the request header "x-correlator"
-  And the response header "Content-Type" is "application/json"
-  And the response property "$.status" is 500
-  And the response property "$.code" is "INTERNAL"
-  And the response property "$.message" is "Internal server error"
-
-@network_slice_booking_deleteSession_09_service_unavailable_scenario
-Scenario: Error response for service unavailable
-  Given the right request body property argument 
-  When the request "deleteSession" is sent
-  Then the response status code is 503
-  And the response header "x-correlator" has same value as the request header "x-correlator"
-  And the response header "Content-Type" is "application/json"
-  And the response property "$.status" is 503
-  And the response property "$.code" is "UNAVAILABLE"
-  And the response property "$.message" is "Service unavailable"

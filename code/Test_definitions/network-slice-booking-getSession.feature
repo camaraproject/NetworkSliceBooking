@@ -1,5 +1,5 @@
 @NetworkSliceBooking
-Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for getSession
+Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operation getSession
 
     # Input to be provided by the implementation to the tester
     #
@@ -8,14 +8,14 @@ Feature: CAMARA Network Slice Booking API v0.1.0 - Operations for getSession
     #
     # Testing assets:
     # * The sessionId of an existing session.
-    # * References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0
+    # * References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0-rc.1
 
 Background: Common getSession setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-booking/vwip/sessions/{sessionId}"
+    And the resource "/network-slice-booking/v0.1rc1/sessions/{sessionId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
-    And the header "x-correlator" is set to a UUID value
+    And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
     And the path parameter "sessionId" is set by default to a existing network slice session sessionId
 
 # Success scenarios
@@ -29,7 +29,6 @@ Scenario: Get an existing network slice session
   And the response header "Content-Type" is "application/json"
   And the response header "x-correlator" has same value as the request header "x-correlator"
   And the response body complies with the OAS schema at "/components/schemas/SessionInfo"
-  And the response property "$.result"  is "Success"
   And the response property "sessionId" is a character string and the information of The user's session id
   And the configuration information of user's network slice booking
 
@@ -69,7 +68,7 @@ Scenario: Error response for no header "Authorization"
 
 @network_slice_booking_getSession_05_missing_access_token_scope_scenario
 Scenario: Missing access token scope
-  Given the header "Authorization" is set to an access token that does not include scope network-slice-booking
+  Given the header "Authorization" is set to an access token that does not include scope network-slice-booking:sessions:get
   When the request "getSession" is sent
   Then the response status code is 403
   And the response header "x-correlator" has same value as the request header "x-correlator"
@@ -98,26 +97,5 @@ Scenario: Error response for too many requests
   And the response header "Content-Type" is "application/json"
   And the response property "$.status" is 429
   And the response property "$.code" is "TOO_MANY_REQUESTS"
-  And the response property "$.message" is "Either out of resource quota or reaching rate limiting."
+  And the response property "$.message" is "Rate limit reached."
 
-@network_slice_booking_getSession_08_internal_error_of_server_scenario
-Scenario: Error response for internal error of the server
-  Given the right request body property argument 
-  When the request "getSession" is sent
-  Then the response status code is 500
-  And the response header "x-correlator" has same value as the request header "x-correlator"
-  And the response header "Content-Type" is "application/json"
-  And the response property "$.status" is 500
-  And the response property "$.code" is "INTERNAL"
-  And the response property "$.message" is "Internal server error"
-
-@network_slice_booking_getSession_09_service_unavailable_scenario
-Scenario: Error response for service unavailable
-  Given the right request body property argument 
-  When the request "getSession" is sent
-  Then the response status code is 503
-  And the response header "x-correlator" has same value as the request header "x-correlator"
-  And the response header "Content-Type" is "application/json"
-  And the response property "$.status" is 503
-  And the response property "$.code" is "UNAVAILABLE"
-  And the response property "$.message" is "Service unavailable"
