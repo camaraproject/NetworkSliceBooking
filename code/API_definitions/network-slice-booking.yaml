@@ -98,7 +98,7 @@ paths:
                 RESPONSE_CIRCLE:
                   $ref: "#/components/examples/RESPONSE_CIRCLE"
                 RESPONSE_POLYGON:
-                  $ref: "#/components/examples/RESPONSE_POLYGON"          
+                  $ref: "#/components/examples/RESPONSE_POLYGON"
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
