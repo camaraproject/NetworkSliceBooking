@@ -4,12 +4,12 @@ info:
   description: |
     The Network Slice Booking (NSB) API provides programmable interface for developers to reserve a slice resource of a selected area within a period, and manage device access control as needed.
     For specific details, please refer to [Network Slice Booking API Design.md](/documentation/API_documentation/Network_Slice_Booking_API_Design.md).
-    
+
     # Introduction
 
-    This API allows the API consumer to book the availability of a session (also known as a "network slice"), specifying the service time, service area, and quality of service (QoS) profile. 
+    This API allows the API consumer to book the availability of a session (also known as a "network slice"), specifying the service time, service area, and quality of service (QoS) profile.
     It checks whether the requested QoS profile can be guaranteed for the indicated time and area, and, if so, it reserves the network slice accordingly, and monitors that the slice delivers the QoS profile. The latter process is known as Service Level Agreement (SLA) monitoring.
-    
+
     The API consumer can also retrieve information about an existing session or delete a session.
 
     # API functionality
@@ -21,7 +21,7 @@ info:
 
     # Request Parameters Definition:
     * **serviceTime**: is defined by a start time and an end time, which indicates the period during which the network slice will be reserved.
-    * **serviceArea**: can be defined as a circle or a polygon, allowing for flexible geographical coverage. 
+    * **serviceArea**: can be defined as a circle or a polygon, allowing for flexible geographical coverage.
     * **sliceQosProfile**: includes parameters such as maximum number of devices, downstream and upstream rate per device, and packet delay budget.
     * **sessionId**: is a unique identifier for the session, which is returned when a session is created and used to retrieve or delete the session later.
 
@@ -32,7 +32,7 @@ info:
     The specific authorization flows to be used will be agreed upon during the onboarding process, happening between the API consumer and the API provider, taking into account the declared purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.
 
     In cases where personal data is processed by the API and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of three-legged access tokens is mandatory. This ensures that the API remains in compliance with privacy regulations, upholding the principles of transparency and user-centric privacy-by-design.
-    
+
     # Additional CAMARA error responses
 
     The list of error codes in this API specification is not exhaustive. Therefore the API specification may not document some non-mandatory error statuses as indicated in `CAMARA API Design Guide`.
@@ -78,7 +78,7 @@ paths:
         description: Parameters to create a new session
         content:
           application/json:
-            schema:   
+            schema: 
               $ref: "#/components/schemas/CreateSession"
             examples:
               LOCATION_CIRCLE:
@@ -93,14 +93,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SessionInfo"   
+                $ref: "#/components/schemas/SessionInfo"
               examples:
                 RESPONSE_CIRCLE:
                   $ref: "#/components/examples/RESPONSE_CIRCLE"
                 RESPONSE_POLYGON:
-                  $ref: "#/components/examples/RESPONSE_POLYGON"              
+                  $ref: "#/components/examples/RESPONSE_POLYGON"
         "400":
-         $ref: "#/components/responses/Generic400"
+          $ref: "#/components/responses/Generic400"
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
@@ -155,7 +155,7 @@ paths:
       summary: Get NSB session information
       description: |
         Querying for NSB session resource information details.
-        
+
         NOTES:
         - According to sessionId, the API consumer can retrieve information about an existing session, including the service time, service area, and QoS profile.
         - If the session is deleted, the API consumer will receive a response with code `404 - Not Found`.
@@ -176,7 +176,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SessionInfo"   
+                $ref: "#/components/schemas/SessionInfo"
               examples:
                 RESPONSE_CIRCLE:
                   $ref: "#/components/examples/RESPONSE_CIRCLE"
@@ -184,7 +184,7 @@ paths:
                   $ref: "#/components/examples/RESPONSE_POLYGON"
 
         "400":
-         $ref: "#/components/responses/Generic400"
+          $ref: "#/components/responses/Generic400"
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
@@ -199,7 +199,7 @@ components:
     openId:
       type: openIdConnect
       openIdConnectUrl: https://example.com/.well-known/openid-configuration
-  
+
   parameters:
     x-correlator:
       name: x-correlator
@@ -213,7 +213,7 @@ components:
       description: Correlation id for the different services
       schema:
         $ref: "#/components/schemas/XCorrelator"
-  
+
   schemas:
     XCorrelator:
       description: Value for the x-correlator
@@ -243,17 +243,20 @@ components:
           description: |
             serviceTime is a period during which the network slice will be reserved.
             It is defined by a start time and an end time.
-          $ref: "#/components/schemas/TimePeriod"
+          allOf:
+            - $ref: "#/components/schemas/TimePeriod"
         serviceArea:
           description: |
             serviceArea is a geographical area where the network slice will be reserved.
             It can be defined as a circle or a polygon.
-          $ref: "#/components/schemas/Area"
+          allOf:
+            - $ref: "#/components/schemas/Area"
         sliceQosProfile:
           description: |
             sliceQosProfile is a set of quality of service parameters that define the requirements for the network slice.
             It includes parameters such as maximum number of devices, downlink and uplink throughput per device, and latency requirements.
-          $ref: "#/components/schemas/SliceQosProfile"
+          allOf:
+            - $ref: "#/components/schemas/SliceQosProfile"
       required:
         - serviceTime
         - serviceArea
@@ -268,27 +271,32 @@ components:
         maxNumOfDevices:
           description: |
             maxNumOfDevices is a maximum number of devices that can be connected to the slice
-          $ref: "#/components/schemas/NumberOfDevices"
+          allOf:
+            - $ref: "#/components/schemas/NumberOfDevices"
         downStreamRatePerDevice:
           description: |
             downStreamRatePerDevice is the maximum downstream rate allowed for each device connected to the slice.
             It indicates the individual device capability required for the slice.
-          $ref: "#/components/schemas/Rate"
+          allOf:
+            - $ref: "#/components/schemas/Rate"
         upStreamRatePerDevice:
           description: |
             upStreamRatePerDevice is the maximum upstream rate allowed for each device connected to the slice.
             It indicates the individual device capability required for the slice.
-          $ref: "#/components/schemas/Rate"
+          allOf:
+            - $ref: "#/components/schemas/Rate"
         downStreamDelayBudget:
           description: |
             downStreamDelayBudget is the maximum allowable downlink packet transmission latency (millisecond).
             By limiting the delay, the network can provide an acceptable level of performance for various services, such as voice calls, video streaming, and data.
-          $ref: "#/components/schemas/Duration"
+          allOf:
+            - $ref: "#/components/schemas/Duration"
         upStreamDelayBudget:
           description: |
             upStreamDelayBudget is the maximum allowable uplink packet transmission latency (millisecond).
             By limiting the delay, the network can provide an acceptable level of performance for various services, such as voice calls, video streaming, and data.
-          $ref: "#/components/schemas/Duration"
+          allOf:
+            - $ref: "#/components/schemas/Duration"
 
 
     Duration:
@@ -351,15 +359,6 @@ components:
       minimum: 1
       maximum: 20
 
-
-    Throughput:
-      description: Specification of throughput
-      type: object
-      properties:
-        min:
-          $ref: "#/components/schemas/Float"
-        max:
-          $ref: "#/components/schemas/Float"
     TimePeriod:
       properties:
         startDate:
@@ -375,9 +374,6 @@ components:
       required:
         - startDate
         - endDate
-
-    Float:
-      type: number
 
     Area:
       description: Base schema for all areas
@@ -467,11 +463,6 @@ components:
       minimum: -180
       maximum: 180
 
-    TimeStamp:
-      type: string
-      description: string with format "date-time"
-
-
     ErrorInfo:
       description: Common schema for errors
       type: object
@@ -542,7 +533,7 @@ components:
                       - UNAUTHENTICATED
           examples:
             GENERIC_401_UNAUTHENTICATED:
-              description:  Request cannot be authenticated and a new authentication is required
+              description: Request cannot be authenticated and a new authentication is required
               value:
                 status: 401
                 code: UNAUTHENTICATED
@@ -820,13 +811,3 @@ components:
             value: 12
             unit: "Milliseconds"
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-
-
-
-
-
-
-
-
-
-  
