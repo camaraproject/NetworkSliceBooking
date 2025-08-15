@@ -78,7 +78,7 @@ paths:
         description: Parameters to create a new session
         content:
           application/json:
-            schema: 
+            schema:
               $ref: "#/components/schemas/CreateSession"
             examples:
               LOCATION_CIRCLE:
