@@ -35,7 +35,7 @@ The API definition(s) are based on
 ### Added
 * Add centralized linting workflows to ensure code quality and API specification compliance in [#69](https://github.com/camaraproject/NetworkSliceBooking/pull/69)
 * Add text description for duration format fields in [#75](https://github.com/camaraproject/NetworkSliceBooking/issues/75)
-**Full Changelog**: https://github.com/camaraproject/NetworkSliceBooking/commits/r1.1
+**Full Changelog**: https://github.com/camaraproject/NetworkSliceBooking/commits/r1.2
 
 # r1.1
 ## Release note:
