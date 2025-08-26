@@ -1,4 +1,4 @@
-Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operation getSession
+Feature: CAMARA Network Slice Booking API v0.1.0 - Operation getSession
 
     # Input to be provided by the implementation to the tester
     #
@@ -7,11 +7,11 @@ Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operation getSession
     #
     # Testing assets:
     # * The sessionId of an existing session.
-    # * References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0-rc.1
+    # * References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0
 
   Background: Common getSession setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-booking/v0.1rc1/sessions/{sessionId}"
+    And the resource "/network-slice-booking/v0.1/sessions/{sessionId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
