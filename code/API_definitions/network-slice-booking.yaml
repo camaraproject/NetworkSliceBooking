@@ -113,7 +113,7 @@ paths:
         "410":
           $ref: "#/components/responses/Generic410"
         "422":
-          $ref: "#/components/responses/Generic422"
+          $ref: "#/components/responses/NetworkSliceBooking422"
         "429":
           $ref: "#/components/responses/Generic429"
 
@@ -626,7 +626,7 @@ components:
                 status: 410
                 code: GONE
                 message: Access to the target resource is no longer available.
-    Generic422:
+    NetworkSliceBooking422:
       description: Unprocessable Content
       headers:
         x-correlator:
