@@ -74,6 +74,8 @@ paths:
       security:
         - openId:
             - network-slice-booking:sessions:create
+      parameters:
+        - $ref: "#/components/parameters/x-correlator"
       requestBody:
         description: Parameters to create a new session
         content:
@@ -90,6 +92,9 @@ paths:
       responses:
         "201":
           description: Session created successfully
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -135,9 +140,13 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/SessionId"
+        - $ref: "#/components/parameters/x-correlator"
       responses:
         "204":
           description: Session deleted
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
@@ -170,9 +179,13 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/SessionId"
+        - $ref: "#/components/parameters/x-correlator"
       responses:
         "200":
           description: Contains information about active session
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
