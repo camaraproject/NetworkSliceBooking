@@ -3,7 +3,7 @@ info:
   title: Network Slice Booking
   description: |
     The Network Slice Booking (NSB) API provides programmable interface for developers to reserve a slice resource of a selected area within a period, and manage device access control as needed.
-    For specific details, please refer to [Network Slice Booking API Design.md](/documentation/API_documentation/Network_Slice_Booking_API_Design.md).
+    For specific details, please refer to [Network Slice Booking API Design.md](https://github.com/camaraproject/NetworkSliceBooking/blob/r1.2/documentation/API_documentation/Network_Slice_Booking_API_Design.md).
 
     # Introduction
 
