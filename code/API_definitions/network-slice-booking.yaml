@@ -673,16 +673,16 @@ components:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           upStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           downStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
           upStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
     RETRIEVAL_POLYGON:
       value:
         serviceTime:
@@ -703,16 +703,16 @@ components:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           upStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           downStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
           upStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
     RESPONSE_CIRCLE:
       value:
         serviceTime:
@@ -728,16 +728,16 @@ components:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           upStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           downStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
           upStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     RESPONSE_POLYGON:
       value:
@@ -759,14 +759,14 @@ components:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           upStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           downStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
           upStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"

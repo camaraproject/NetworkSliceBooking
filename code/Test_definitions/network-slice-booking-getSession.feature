@@ -7,7 +7,7 @@ Feature: CAMARA Network Slice Booking API v0.1.0 - Operation getSession
     #
     # Testing assets:
     # * The sessionId of an existing session.
-    # * References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0
+    # * References to OAS spec schemas refer to schemas specified in network-slice-booking.yaml, version 0.1.0
 
   Background: Common getSession setup
     Given an environment at "apiRoot"
@@ -50,7 +50,7 @@ Feature: CAMARA Network Slice Booking API v0.1.0 - Operation getSession
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response property "$.status" is 400
-    And the response property "$.code" is "INVALID_ARGUMENT"
+    And the response property "$.code" is "OUT_OF_RANGE"
     And the response property "$.message" is "Client specified an invalid range."
 
   @network_slice_booking_getSession_04_missing_authorization_scenario
