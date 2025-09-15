@@ -83,17 +83,6 @@ Feature: CAMARA Network Slice Booking API v0.1.0 - Operation createSession
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
 
-  @network_slice_booking_createSession_06_resource_exhaustion_scenario
-  Scenario: Error response for resource exhaustion
-    Given the right request body property argument
-    When the request "createSession" is sent
-    Then the response status code is 410
-    And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response header "Content-Type" is "application/json"
-    And the response property "$.status" is 410
-    And the response property "$.code" is "GONE"
-    And the response property "$.message" is "Access to the target resource is no longer available."
-
   @network_slice_booking_createSession_07_area_not_support_fail_scenario
   Scenario: Common validations for fail scenario of area not supported
     Given starttime, endtime, the request body property "$.serviceArea" is set to the service area of not supported and the configuration of information of network slicing

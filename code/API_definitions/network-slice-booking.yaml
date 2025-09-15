@@ -110,8 +110,6 @@ paths:
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
-        "410":
-          $ref: "#/components/responses/Generic410"
         "422":
           $ref: "#/components/responses/NetworkSliceBooking422"
         "429":
@@ -601,31 +599,6 @@ components:
                 status: 404
                 code: NOT_FOUND
                 message: The specified resource is not found.
-    Generic410:
-      description: Gone
-      headers:
-        x-correlator:
-          $ref: "#/components/headers/x-correlator"
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorInfo"
-              - type: object
-                properties:
-                  status:
-                    enum:
-                      - 410
-                  code:
-                    enum:
-                      - GONE
-          examples:
-            GENERIC_410_GONE:
-              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
-              value:
-                status: 410
-                code: GONE
-                message: Access to the target resource is no longer available.
     NetworkSliceBooking422:
       description: Unprocessable Content
       headers:
