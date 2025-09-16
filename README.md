@@ -23,14 +23,14 @@ Sandbox API Repository to describe, develop, document, and test the NetworkSlice
 ## Release Information
 <!-- Use/uncomment one or multiple the following options -->
 - `NEW`:Public release [r1.2](https://github.com/camaraproject/NetworkSliceBooking/releases/tag/r1.2) with network-slice-booking v0.1.0 is now available:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.2/code/API_definitions/NetworkSliceBooking.yaml&nocors)
-  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.2/code/API_definitions/NetworkSliceBooking.yaml)
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.2/code/API_definitions/network-slice-booking.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.2/code/API_definitions/network-slice-booking.yaml)
   - OpenAPI [YAML spec file](https://github.com/camaraproject/NetworkSliceBooking/blob/r1.2/code/API_definitions/network-slice-booking.yaml)
 
-<!-- The latest public release is available here: https://github.com/camaraproject/§repo_name§/releases/latest -->
-<!-- For changes see [CHANGELOG.md](https://github.com/camaraproject/§repo_name§/blob/main/CHANGELOG.md) -->
- 
+
+The latest public release is available here: https://github.com/camaraproject/NetworkSliceBooking/releases/latest
 For changes see [CHANGELOG.md](https://github.com/camaraproject/NetworkSliceBooking/blob/main/CHANGELOG.md)
+
 ## Contributing
 
 * Meetings are held virtually 
