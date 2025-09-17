@@ -1,4 +1,4 @@
-Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operation createSession
+Feature: CAMARA Network Slice Booking API v0.1.0 - Operation createSession
 
     # Input to be provided by the implementation to the tester
     #
@@ -14,11 +14,11 @@ Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operation createSession
     # * An Area outside the supported area
     # * A combination of request parameters including service area, start time, and end time, configuration information of network slicing
     #
-    # References to OAS spec schemas refer to schemas specifies in network-slice-booking.yaml, version 0.1.0-rc.1
+    # References to OAS spec schemas refer to schemas specified in network-slice-booking.yaml, version 0.1.0
 
   Background: Common createSession setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-booking/v0.1rc1/sessions"
+    And the resource "/network-slice-booking/v0.1/sessions"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
@@ -82,17 +82,6 @@ Feature: CAMARA Network Slice Booking API v0.1.0-rc.1 - Operation createSession
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
-
-  @network_slice_booking_createSession_06_resource_exhaustion_scenario
-  Scenario: Error response for resource exhaustion
-    Given the right request body property argument
-    When the request "createSession" is sent
-    Then the response status code is 410
-    And the response header "x-correlator" has same value as the request header "x-correlator"
-    And the response header "Content-Type" is "application/json"
-    And the response property "$.status" is 410
-    And the response property "$.code" is "GONE"
-    And the response property "$.message" is "Access to the target resource is no longer available."
 
   @network_slice_booking_createSession_07_area_not_support_fail_scenario
   Scenario: Common validations for fail scenario of area not supported

@@ -3,7 +3,7 @@ info:
   title: Network Slice Booking
   description: |
     The Network Slice Booking (NSB) API provides programmable interface for developers to reserve a slice resource of a selected area within a period, and manage device access control as needed.
-    For specific details, please refer to [Network Slice Booking API Design.md](/documentation/API_documentation/Network_Slice_Booking_API_Design.md).
+    For specific details, please refer to [Network Slice Booking API Design.md](https://github.com/camaraproject/NetworkSliceBooking/blob/r1.2/documentation/API_documentation/Network_Slice_Booking_API_Design.md).
 
     # Introduction
 
@@ -41,7 +41,7 @@ info:
 
     As a specific rule, error `501 - NOT_IMPLEMENTED` can be only a possible error response if it is explicitly documented in the API.
 
-  version: 0.1.0-rc.1
+  version: 0.1.0
   x-camara-commonalities: 0.6
   license:
     name: Apache 2.0
@@ -50,7 +50,7 @@ externalDocs:
   description: Project documentation at CAMARA
   url: https://github.com/camaraproject/NetworkSliceBooking
 servers:
-  - url: "{apiRoot}/network-slice-booking/v0.1rc1"
+  - url: "{apiRoot}/network-slice-booking/v0.1"
     variables:
       apiRoot:
         default: http://localhost:9100
@@ -74,6 +74,8 @@ paths:
       security:
         - openId:
             - network-slice-booking:sessions:create
+      parameters:
+        - $ref: "#/components/parameters/x-correlator"
       requestBody:
         description: Parameters to create a new session
         content:
@@ -90,6 +92,9 @@ paths:
       responses:
         "201":
           description: Session created successfully
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -105,10 +110,8 @@ paths:
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
-        "410":
-          $ref: "#/components/responses/Generic410"
         "422":
-          $ref: "#/components/responses/Generic422"
+          $ref: "#/components/responses/NetworkSliceBooking422"
         "429":
           $ref: "#/components/responses/Generic429"
 
@@ -135,9 +138,13 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/SessionId"
+        - $ref: "#/components/parameters/x-correlator"
       responses:
         "204":
           description: Session deleted
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
@@ -170,9 +177,13 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/SessionId"
+        - $ref: "#/components/parameters/x-correlator"
       responses:
         "200":
           description: Contains information about active session
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
@@ -588,32 +599,7 @@ components:
                 status: 404
                 code: NOT_FOUND
                 message: The specified resource is not found.
-    Generic410:
-      description: Gone
-      headers:
-        x-correlator:
-          $ref: "#/components/headers/x-correlator"
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/ErrorInfo"
-              - type: object
-                properties:
-                  status:
-                    enum:
-                      - 410
-                  code:
-                    enum:
-                      - GONE
-          examples:
-            GENERIC_410_GONE:
-              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
-              value:
-                status: 410
-                code: GONE
-                message: Access to the target resource is no longer available.
-    Generic422:
+    NetworkSliceBooking422:
       description: Unprocessable Content
       headers:
         x-correlator:
@@ -687,16 +673,16 @@ components:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           upStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           downStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
           upStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
     RETRIEVAL_POLYGON:
       value:
         serviceTime:
@@ -717,16 +703,16 @@ components:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           upStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           downStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
           upStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
     RESPONSE_CIRCLE:
       value:
         serviceTime:
@@ -742,16 +728,16 @@ components:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           upStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           downStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
           upStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     RESPONSE_POLYGON:
       value:
@@ -773,14 +759,14 @@ components:
           maxNumOfDevices: 5
           downStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           upStreamRatePerDevice:
             value: 10
-            unit: "bps"
+            unit: bps
           downStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
           upStreamDelayBudget:
             value: 12
-            unit: "Milliseconds"
+            unit: Milliseconds
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"

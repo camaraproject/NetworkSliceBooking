@@ -1,6 +1,7 @@
 # Changelog Network Slice Booking
 
 ## Table of Contents
+- [r1.2](#r1.2)
 - [r1.1](#r1.1)
 
 
@@ -13,8 +14,34 @@ The below sections record the changes for each API version in each release as fo
 * for subsequent release-candidate(s), only the delta to the previous release-candidate
 * for a public release, the consolidated changes since the previous public release
 
+# r1.2
+## Release Notes
+This release contains the definition and documentation of
+
+- network-slice-booking v0.1.0
+
+The API definition(s) are based on
+
+- Commonalities v0.6.0
+- Identity and Consent Management v0.4.0
+## network-slice-booking v0.1.0
+
+**network-slice-booking v0.1.0 is first public release version of the network-slice-booking API**
+
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.2/code/API_definitions/network-slice-booking.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.2/code/API_definitions/network-slice-booking.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/NetworkSliceBooking/blob/r1.2/code/API_definitions/network-slice-booking.yaml)
+### Changed
+* Align the error name to Generic429 and change mandatory description for date-time string format in [#75](https://github.com/camaraproject/NetworkSliceBooking/issues/75)
+### Added
+* Add centralized linting workflows to ensure code quality and API specification compliance in [#69](https://github.com/camaraproject/NetworkSliceBooking/pull/69)
+* Add text description for duration format fields in [#75](https://github.com/camaraproject/NetworkSliceBooking/issues/75)
+
+**Full Changelog**: https://github.com/camaraproject/NetworkSliceBooking/commits/r1.2
+
 # r1.1
-## Release note:
+## Release Notes
 This release contains the definition and documentation of
 
 - network-slice-booking v0.1.0-rc.1
@@ -28,9 +55,9 @@ The API definition(s) are based on
 **network-slice-booking v0.1.0-rc.1 is first pre-release version of the network-slice-booking API**
 
 - API definition **with inline documentation**:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.1/code/API_definitions/NetworkSliceBooking.yaml&nocors)
-  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.1/code/API_definitions/NetworkSliceBooking.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/NetworkSliceBooking/blob/r1.1/code/API_definitions/NetworkSliceBooking.yaml)
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.1/code/API_definitions/network-slice-booking.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.1/code/API_definitions/network-slice-booking.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/NetworkSliceBooking/blob/r1.1/code/API_definitions/network-slice-booking.yaml)
 ### Added
 * Upload Network Slice Booking API initial documentation in [#4](https://github.com/camaraproject/NetworkSliceBooking/pull/4) 
 * Add Network Slice Booking API user story in [#13](https://github.com/camaraproject/NetworkSliceBooking/pull/13)
@@ -40,3 +67,6 @@ The API definition(s) are based on
 * Update API yaml, modify and format the status codes 200, 204, 404, 409 aligment with commonalities in [#50](https://github.com/camaraproject/NetworkSliceBooking/pull/50)
 * Update API yaml, remove AUTHENTICATION_REQUIRED error code in [#55](https://github.com/camaraproject/NetworkSliceBooking/pull/55)
 * Add the test file of Network Slice Booking API and update the file of checklist in [#57](https://github.com/camaraproject/NetworkSliceBooking/pull/57)
+* Align the API definition with Commonalities r3.2 and ICM r3.2 in [#59](https://github.com/camaraproject/NetworkSliceBooking/pull/59)
+
+**Full Changelog**: https://github.com/camaraproject/NetworkSliceBooking/commits/r1.1
