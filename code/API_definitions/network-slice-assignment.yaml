@@ -1,0 +1,1449 @@
+openapi: 3.0.3
+info:
+  title: Network Slice Assignment
+  description: |
+    This API enables the assignment and release of devices to/from an existing network slice session, as well as retrieving information about devices assigned to a session or sessions assigned to a device.
+
+    # Functionality
+    The Network Slice Assignment API provides the following functionalities:
+    - **Assign Devices**: Allows the API consumer to assign multiple devices to an existing network slice session, ensuring that the number of devices does not exceed the maximum defined in the slice QoS profile.
+    - **Release Devices**: Enables the API consumer to release multiple devices from an existing network slice session.
+    - **Get Assigned Devices**: Retrieves information about devices currently assigned to a specific network slice session.
+    - **Retrieve Sessions by Device**: Retrieves the list of network slice sessions to which a specific device is assigned.
+
+    # Terms and Definitions
+
+    * **Device**: End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+    * **Identifier for Device**: The developer can choose to provide one or more of the following device identifiers:
+        - `ipv4Address`
+        - `ipv6Address`
+        - `phoneNumber`
+        - `networkAccessIdentifier`
+      NOTE1: the network operator might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different network operators. In this case the identifiers MUST belong to the same device.
+      NOTE2: NetworkAccessIdentifier is defined for future use and will not be currently supported with v0.1 of the API.
+    * **Notification Sink and Token**: 
+    API consumers can provide a notification sink URL and an optional sink credential when assigning devices to a session. The notification sink is the URL where the API response will be asynchronously delivered, using the HTTP protocol. The sink credential provides authentication or authorization information necessary to enable delivery of events to the target.
+
+    # Parameters
+
+    * **sliceQosProfile**: A set of quality of service parameters that define the requirements for the network slice. It includes parameters such as maximum number of devices, downlink and uplink throughput per device, and latency requirements.
+    * **sessionId**: A unique identifier for a network slice session, obtained from the createSession operation of the Network Slice Booking API.
+
+    # Authorization and authentication
+
+    The "Camara Security and Interoperability Profile" provides details of how an API consumer requests an access token. Please refer to Identity and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the profile.
+
+    The specific authorization flows to be used will be agreed upon during the onboarding process, happening between the API consumer and the API provider, taking into account the declared purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.
+
+    In cases where personal data is processed by the API and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of three-legged access tokens is mandatory. This ensures that the API remains in compliance with privacy regulations, upholding the principles of transparency and user-centric privacy-by-design.
+
+    # Additional CAMARA error responses
+
+    The list of error codes in this API specification is not exhaustive. Therefore the API specification may not document some non-mandatory error statuses as indicated in `CAMARA API Design Guide`.
+
+    Please refer to the `CAMARA_common.yaml` of the Commonalities Release associated to this API version for a complete list of error responses. The applicable Commonalities Release can be identified in the `API Readiness Checklist` document associated to this API version.
+
+    As a specific rule, error `501 - NOT_IMPLEMENTED` can be only a possible error response if it is explicitly documented in the API.
+
+  version: 0.1.0
+  x-camara-commonalities: 0.6
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+externalDocs:
+  description: Project documentation at CAMARA
+  url: https://github.com/camaraproject/NetworkSliceBooking
+servers:
+  - url: "{apiRoot}/network-slice-assignment/vwip"
+    variables:
+      apiRoot:
+        default: http://localhost:9100
+        description: API root, defined by the service provider, e.g. `api.example.com` or `api.example.com/somepath`
+tags:
+  - name: Network Slice Assignment
+    description: Manage Network Slice Assignment
+paths:
+  /sessions/{sessionId}/devices/assign:
+    post:
+      tags:
+        - Network Slice Assignment
+      summary: Assign devices to a network slice session
+      description: |
+        Assign a list of devices to an existing network slice session.
+
+        NOTES:
+        - The API consumer can assign multiple devices to an existing session.
+        - The API consumer must ensure that the number of devices assigned does not exceed the maximum number of devices defined in the slice QoS profile of the session.
+      operationId: assignDevices
+      security:
+        - openId:
+            - network-slice-assignment:devices:create
+      parameters:
+        - name: sessionId
+          in: path
+          description: Session ID that was obtained from the createSession operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/SessionId"
+        - $ref: "#/components/parameters/x-correlator"
+      requestBody:
+        description: Parameters to assign devices to a network slice session
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceInput"
+            examples:
+              ASSIGN_DEVICES_INPUT_ALL:
+                $ref: "#/components/examples/ASSIGN_DEVICES_INPUT_ALL"
+              ASSIGN_DEVICES_INPUT_NUMBER:
+                $ref: "#/components/examples/ASSIGN_DEVICES_INPUT_NUMBER"
+        required: true
+      callbacks:
+        networkSliceAssignmentSinkCallback:
+          "{request.body#/sink}":
+            post:
+              tags:
+                - Network Slice Assignment Callback
+              summary: Network slice assignment callback
+              description: Callback for network slice assignment events
+              operationId: postNetworkSliceAssignmentNotification
+              requestBody:
+                content:
+                  application/cloudevents+json:
+                    schema:
+                      $ref: "#/components/schemas/CloudEvent"
+                    examples:
+                      ASSIGNMENT_COMPLETED_EVENT:
+                        $ref: "#/components/examples/ASSIGNMENT_COMPLETED_EVENT"
+                required: true                                
+              responses:
+                "204":
+                  description: Successful notification
+                  headers:
+                    x-correlator:
+                      $ref: "#/components/headers/x-correlator"
+                "400":
+                  $ref: "#/components/responses/Generic400"
+                "401":
+                  $ref: "#/components/responses/Generic401"
+                "403":
+                  $ref: "#/components/responses/Generic403"
+                "410":
+                  $ref: "#/components/responses/Generic410"
+                "429":
+                  $ref: "#/components/responses/Generic429"
+              security:
+                - {}
+                - notificationsBearerAuth: []
+      responses:
+        "201":
+          description: At least one device assigned to the session.
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceOutput"
+              examples:
+                ASSIGN_DEVICES_SUCCESSFUL:
+                  $ref: "#/components/examples/ASSIGN_DEVICES_SUCCESSFUL"
+                ASSIGN_DEVICES_PARTIAL_SUCCESS:
+                  $ref: "#/components/examples/ASSIGN_DEVICES_PARTIAL_SUCCESS"
+                ASSIGN_DEVICES_FAILURE:
+                  $ref: "#/components/examples/ASSIGN_DEVICES_FAILURE"
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "422":
+          $ref: "#/components/responses/Generic422"
+        "429":
+          $ref: "#/components/responses/Generic429"
+
+  /sessions/{sessionId}/devices/release:
+    post:
+      tags:
+        - Network Slice Assignment
+      summary: Release devices from a network slice session
+      description: |
+        Release a list of devices from an existing network slice session.
+
+        NOTES:
+        - The API consumer can release multiple devices from an existing session.
+      operationId: releaseDevices
+      security:
+        - openId:
+            - network-slice-assignment:devices:delete
+      parameters:
+        - name: sessionId
+          in: path
+          description: Session ID that was obtained from the createSession operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/SessionId"
+        - $ref: "#/components/parameters/x-correlator"
+      requestBody:
+        description: Parameters to release devices from a network slice session
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceInput"
+            examples:
+              RELEASE_DEVICES_INPUT_ALL:
+                $ref: "#/components/examples/RELEASE_DEVICES_INPUT_ALL"
+              RELEASE_DEVICES_INPUT_NUMBER:
+                $ref: "#/components/examples/RELEASE_DEVICES_INPUT_NUMBER"
+        required: true
+      responses:
+        "200":
+          description: At least one device released from the session.
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceOutput"
+              examples:
+                RELEASE_DEVICES_SUCCESSFUL:
+                  $ref: "#/components/examples/RELEASE_DEVICES_SUCCESSFUL"
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "422":
+          $ref: "#/components/responses/Generic422"
+        "429":
+          $ref: "#/components/responses/Generic429"
+
+  /sessions/{sessionId}/devices/get:
+    get:
+      tags:
+        - Network Slice Assignment
+      summary: Get devices assigned to a network slice session
+      description: |
+        Get information about devices assigned to an existing network slice session.
+      operationId: getDevices
+      security:
+        - openId:
+            - network-slice-assignment:devices:get
+      parameters:
+        - name: sessionId
+          in: path
+          description: Session ID that was obtained from the createSession operation
+          required: true
+          schema:
+            $ref: "#/components/schemas/SessionId"
+        - $ref: "#/components/parameters/x-correlator"
+      responses:
+        "200":
+          description: Contains information about active session
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionDevice"
+              examples:
+                GET_DEVICES_SUCCESSFUL:
+                  $ref: "#/components/examples/GET_DEVICES_SUCCESSFUL"
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "429":
+          $ref: "#/components/responses/Generic429"
+
+  /sessions/devices/retrieve:
+    post:
+      tags:
+        - Network Slice Assignment
+      summary: Retrieve all network slice sessions corresponds to a device
+      description: |
+        Retrieve the list of network slice sessions to which a device is assigned.
+      operationId: retrieveSessionsByDevice
+      security:
+        - openId:
+            - network-slice-assignment:devices:retrieve
+      parameters:
+        - $ref: "#/components/parameters/x-correlator"
+      requestBody:
+        description: Parameters to retrieve sessions by device
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Device"
+            examples:
+              RETRIEVE_INPUT_PHONENUMBER:
+                $ref: "#/components/examples/RETRIEVE_INPUT_PHONENUMBER"
+        required: true
+      responses:
+        "200":
+          description: List of sessions the device is assigned to
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetrievedSessionsOutput"
+              examples:
+                RETRIEVE_SUCCESSFUL:
+                  $ref: "#/components/examples/RETRIEVE_SUCCESSFUL"
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "429":
+          $ref: "#/components/responses/Generic429"
+components:
+  securitySchemes:
+    openId:
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        $ref: "#/components/schemas/XCorrelator"
+
+  headers:
+    x-correlator:
+      description: Correlation id for the different services
+      schema:
+        $ref: "#/components/schemas/XCorrelator"
+
+  schemas:
+    XCorrelator:
+      description: Value for the x-correlator
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: "b4333c46-49c0-4f62-80d7-f0ef930f1c46"
+    SessionId:
+      description: Session ID in UUID format
+      type: string
+      format: uuid
+    DeviceInput:
+      description: Request to add or release devices to a session
+      type: object
+      properties:
+        deviceList:
+          $ref: "#/components/schemas/Devices"
+        sink:
+          type: string
+          format: uri
+          description: The URL where the API response will be asynchronously delivered, using the HTTP protocol.
+          example: "https://endpoint.example.com/sink"
+        sinkCredential:
+          description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
+          allOf:
+            - $ref: "#/components/schemas/SinkCredential"
+      required:
+        - deviceList
+    Devices:
+      description: List of device identifiers
+      type: array
+      items:
+        $ref: "#/components/schemas/Device"
+      minItems: 1
+    Device:
+      description: |
+        End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+            The developer can choose to provide the below specified device identifiers:
+            * `ipv4Address`
+            * `ipv6Address`
+            * `phoneNumber`
+            * `networkAccessIdentifier`
+            NOTE1: the network operator might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different network operators. In this case the identifiers MUST belong to the same device.
+            NOTE2: as for this Commonalities release, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
+      type: object
+      properties:
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumber"
+        networkAccessIdentifier:
+          $ref: "#/components/schemas/NetworkAccessIdentifier"
+        ipv4Address:
+          $ref: "#/components/schemas/DeviceIpv4Addr"
+        ipv6Address:
+          $ref: "#/components/schemas/DeviceIpv6Address"
+      minProperties: 1
+    PhoneNumber:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: '^\+[1-9][0-9]{4,14}$'
+      example: "+123456789"
+
+    NetworkAccessIdentifier:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: "123456789@example.com"
+
+    DeviceIpv4Addr:
+      type: object
+      description: |
+        The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+      properties:
+        publicAddress:
+          $ref: "#/components/schemas/SingleIpv4Addr"
+        privateAddress:
+          $ref: "#/components/schemas/SingleIpv4Addr"
+        publicPort:
+          $ref: "#/components/schemas/Port"
+      anyOf:
+        - required: [publicAddress, privateAddress]
+        - required: [publicAddress, publicPort]
+      example:
+        publicAddress: "84.125.93.10"
+        publicPort: 59765
+    SingleIpv4Addr:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: "84.125.93.10"
+
+    Port:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+
+    DeviceIpv6Address:
+      description: |
+        The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+
+    DeviceOutput:
+      description: Response after assigning devices to a session
+      type: object
+      properties:        
+        sessionId:
+          $ref: "#/components/schemas/SessionId"
+        resultList:
+          $ref: "#/components/schemas/ResultList"
+        status:
+          $ref: "#/components/schemas/AssignmentStatus"
+        statusInfo:
+          $ref: "#/components/schemas/AssignmentStatusInfo"
+      required:
+        - sessionId
+        - status
+        - statusInfo
+    AssignmentStatus:
+      description: |
+        Status of the device assignment operation
+        * `SUCCESS` - All devices were successfully assigned to the session
+        * `PARTIALLY_SUCCESS` - Some devices were successfully assigned to the session, while others failed
+        * `FAILURE` - No devices were assigned to the session
+        * `PENDING` - The assignment operation is still in progress
+      type: string
+      enum:
+        - SUCCESS
+        - PARTIALLY_SUCCESS
+        - FAILURE
+        - PENDING
+    AssignmentStatusInfo:
+      description: |
+        Additional information about the assignment status
+        * `ASSIGNMENT_COMPLETED` - The assignment operation has been completed
+        * `ASSIGNMENT_COMPLETED_WITH_FAILURES` - The assignment operation has been completed with some failures
+        * `MAX_DEVICES_EXCEEDED` - The number of devices exceeds the maximum allowed for the session
+        * `INVALID_DEVICE_IDENTIFIER` - One or more device identifiers are invalid
+        * `DEVICE_NOT_FOUND` - One or more devices were not found
+        * `DEVICE_ALREADY_ASSIGNED` - One or more devices are already assigned to the session
+        * `SESSION_NOT_FOUND` - The specified session ID does not exist
+      type: string
+      enum:
+        - ASSIGNMENT_COMPLETED
+        - ASSIGNMENT_COMPLETED_WITH_FAILURES
+        - MAX_DEVICES_EXCEEDED
+        - INVALID_DEVICE_IDENTIFIER
+        - DEVICE_NOT_FOUND
+        - DEVICE_ALREADY_ASSIGNED
+        - SESSION_NOT_FOUND
+    ResultList:
+      description: List of devices that failed to be assigned to the session
+      type: array
+      items:
+        $ref: "#/components/schemas/AssignmentResult"
+    AssignmentResult:
+      description: Result of a device assignment attempt
+      type: object
+      properties:
+        device:
+          $ref: "#/components/schemas/Device"
+        result:
+          type: string
+          description: result of the assignment attempt for the device
+          enum:
+            - SUCCESS
+            - FAILURE
+        message:
+          type: string
+          description: Detailed reason for failure, if applicable
+      required:
+        - device
+        - result
+    RetrievedSessionsOutput:
+      description: Response containing sessions assigned to a device
+      type: object
+      properties:
+        sliceList:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionInfo"
+          minItems: 0
+
+    SessionDevice:
+      description: Information about devices assigned to a session
+      type: object
+      properties:
+        deviceList:
+          $ref: "#/components/schemas/Devices"
+        sliceInfo:
+          $ref: "#/components/schemas/SessionInfo"
+      required:
+        - deviceList
+        - sliceInfo
+    SessionInfo:
+      description: Session related information.
+      allOf:
+        - $ref: "#/components/schemas/CreateSession"
+        - type: object
+          properties:
+            sessionId:
+              $ref: "#/components/schemas/SessionId"
+          required:
+            - sessionId
+    CreateSession:
+      description: Attributes required to create a session
+      type: object
+      properties:
+        serviceTime:
+          description: |
+            serviceTime is a period during which the network slice will be reserved.
+            It is defined by a start time and an end time.
+          allOf:
+            - $ref: "#/components/schemas/TimePeriod"
+        serviceArea:
+          description: |
+            serviceArea is a geographical area where the network slice will be reserved.
+            It can be defined as a circle or a polygon.
+          allOf:
+            - $ref: "#/components/schemas/Area"
+        sliceQosProfile:
+          description: |
+            sliceQosProfile is a set of quality of service parameters that define the requirements for the network slice.
+            It includes parameters such as maximum number of devices, downlink and uplink throughput per device, and latency requirements.
+          allOf:
+            - $ref: "#/components/schemas/SliceQosProfile"
+        sink:
+          type: string
+          format: uri
+          description: The URL where the API response will be asynchronously delivered, using the HTTP protocol.
+          example: "https://endpoint.example.com/sink"
+        sinkCredential:
+          description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
+          allOf:
+            - $ref: "#/components/schemas/SinkCredential"
+      required:
+        - serviceTime
+        - serviceArea
+        - sliceQosProfile
+
+    SliceQosProfile:
+      description: |
+        Quality of service for the network slice.
+        It includes a set of predefined network slice performance characteristics.
+      type: object
+      properties:
+        maxNumOfDevices:
+          description: |
+            maxNumOfDevices is a maximum number of devices that can be connected to the slice
+          allOf:
+            - $ref: "#/components/schemas/NumberOfDevices"
+        downStreamRatePerDevice:
+          description: |
+            downStreamRatePerDevice is the maximum downstream rate allowed for each device connected to the slice.
+            It indicates the individual device capability required for the slice.
+          allOf:
+            - $ref: "#/components/schemas/Rate"
+        upStreamRatePerDevice:
+          description: |
+            upStreamRatePerDevice is the maximum upstream rate allowed for each device connected to the slice.
+            It indicates the individual device capability required for the slice.
+          allOf:
+            - $ref: "#/components/schemas/Rate"
+        downStreamDelayBudget:
+          description: |
+            downStreamDelayBudget is the maximum allowable downlink packet transmission latency (millisecond).
+            By limiting the delay, the network can provide an acceptable level of performance for various services, such as voice calls, video streaming, and data.
+          allOf:
+            - $ref: "#/components/schemas/Duration"
+        upStreamDelayBudget:
+          description: |
+            upStreamDelayBudget is the maximum allowable uplink packet transmission latency (millisecond).
+            By limiting the delay, the network can provide an acceptable level of performance for various services, such as voice calls, video streaming, and data.
+          allOf:
+            - $ref: "#/components/schemas/Duration"
+
+
+    Duration:
+      description: Specification of duration. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#appendix-A) for duration.
+      type: object
+      properties:
+        value:
+          description: Length of duration
+          type: integer
+          example: 12
+          format: int32
+          minimum: 1
+        unit:
+          $ref: "#/components/schemas/TimeUnitEnum"
+
+
+    TimeUnitEnum:
+      description: Units of time
+      type: string
+      enum:
+        - Days
+        - Hours
+        - Minutes
+        - Seconds
+        - Milliseconds
+        - Microseconds
+        - Nanoseconds
+
+
+    Rate:
+      description: Specification of rate
+      type: object
+      properties:
+        value:
+          description: Quantity of rate
+          type: integer
+          example: 10
+          format: int32
+          minimum: 0
+          maximum: 1024
+        unit:
+          $ref: "#/components/schemas/RateUnitEnum"
+
+    RateUnitEnum:
+      description: Units of rate
+      type: string
+      enum:
+        - bps
+        - kbps
+        - Mbps
+        - Gbps
+        - Tbps
+
+    NumberOfDevices:
+      type: integer
+      example: 5
+      description: Maximum number of devices that is allowed to be connected to the network at any point in time.
+
+      format: int32
+      minimum: 1
+      maximum: 20
+
+    TimePeriod:
+      properties:
+        startDate:
+          type: string
+          format: date-time
+          description: An instant of time, starting of the TimePeriod. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+          example: "2024-06-01T12:00:00Z"
+        endDate:
+          type: string
+          format: date-time
+          description: An instant of time, ending of the TimePeriod. If not included, then the period has no ending date. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+          example: "2024-06-02T12:00:00Z"
+      required:
+        - startDate
+
+    Area:
+      description: Base schema for all areas
+      type: object
+      properties:
+        areaType:
+          $ref: "#/components/schemas/AreaType"
+      required:
+        - areaType
+      discriminator:
+        propertyName: areaType
+        mapping:
+          CIRCLE: "#/components/schemas/Circle"
+          POLYGON: "#/components/schemas/Polygon"
+
+    AreaType:
+      type: string
+      description: |
+        Type of this area.
+        CIRCLE - The area is defined as a circle.
+        POLYGON - The area is defined as a polygon.
+      enum:
+        - CIRCLE
+        - POLYGON
+
+    Circle:
+      description: Circular area
+      allOf:
+        - $ref: "#/components/schemas/Area"
+        - type: object
+          required:
+            - center
+            - radius
+          properties:
+            center:
+              $ref: "#/components/schemas/Point"
+            radius:
+              type: number
+              description: Distance from the center in meters
+              minimum: 1
+
+    Polygon:
+      description: Polygonal area. The Polygon should be a simple polygon, i.e. should not intersect itself.
+      allOf:
+        - $ref: "#/components/schemas/Area"
+        - type: object
+          required:
+            - boundary
+          properties:
+            boundary:
+              $ref: "#/components/schemas/PointList"
+
+    PointList:
+      description: List of points defining a polygon
+      type: array
+      items:
+        $ref: "#/components/schemas/Point"
+      minItems: 3
+      maxItems: 15
+
+    Point:
+      type: object
+      description: Coordinates (latitude, longitude) defining a location in a map
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          $ref: "#/components/schemas/Latitude"
+        longitude:
+          $ref: "#/components/schemas/Longitude"
+      example:
+        latitude: 31.22529
+        longitude: 121.48905
+
+    Latitude:
+      description: Latitude component of a location
+      type: number
+      format: double
+      minimum: -90
+      maximum: 90
+
+    Longitude:
+      description: Longitude component of location
+      type: number
+      format: double
+      minimum: -180
+      maximum: 180
+
+    ErrorInfo:
+      description: Common schema for errors
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+      required:
+        - status
+        - code
+        - message
+
+    CloudEvent:
+      description: The notification callback
+      required:
+        - id
+        - source
+        - specversion
+        - type
+        - time
+      properties:
+        id:
+          type: string
+          description: identifier of this event, that must be unique in the source context.
+          minLength: 1
+        source:
+          $ref: '#/components/schemas/Source'
+        type:
+          type: string
+          description: The type of the event
+          enum:
+            -  "org.camaraproject.network-slice-booking.v1.session-created"
+          minLength: 25
+        specversion:
+          type: string
+          description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
+          enum:
+            - "1.0"
+        datacontenttype:
+          type: string
+          description: 'media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs'
+          enum:
+            - application/json
+        data:
+          type: object
+          description: Event details payload described in each CAMARA API and referenced by its type
+        time:
+          $ref: "#/components/schemas/DateTime"
+      discriminator:
+        propertyName: type
+        mapping:
+          org.camaraproject.network-slice-booking.v1.session-created: "#/components/schemas/SessionCreatedEventData"
+
+    SessionCreatedEventData:
+      description: Data for session created event
+      allOf:
+        - $ref: "#/components/schemas/CloudEvent"
+        - type: object
+          properties:
+            data:
+              description: Details of the created session
+              allOf:
+                - $ref: "#/components/schemas/SessionInfo"
+          required:
+            - data
+
+    DateTime:
+      type: string
+      format: date-time
+      description: |
+        Timestamp of when the occurrence happened. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+        WARN: This optional field in CloudEvents specification is required in CAMARA APIs implementation.
+      example: '2018-04-05T17:31:00Z'
+
+    Source:
+      type: string
+      format: uri-reference
+      minLength: 1
+      description: |
+        Identifies the context in which an event happened - be a non-empty `URI-reference` like:
+        - URI with a DNS authority:
+          * https://github.com/cloudevents
+          * mailto:cncf-wg-serverless@lists.cncf.io
+        - Universally-unique URN with a UUID:
+          * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66
+        - Application-specific identifier:
+          * /cloudevents/spec/pull/123
+          * 1-555-123-4567
+      example: "https://notificationSendServer12.example.com"
+
+    SinkCredential:
+      description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
+      type: object
+      properties:
+        credentialType:
+          type: string
+          enum:
+            - PLAIN
+            - ACCESSTOKEN
+            - REFRESHTOKEN
+          description: |
+            The type of the credential. 
+            Note: Type of the credential - MUST be set to ACCESSTOKEN for now
+      discriminator:
+        propertyName: credentialType
+        mapping:
+          PLAIN: "#/components/schemas/PlainCredential"
+          ACCESSTOKEN: "#/components/schemas/AccessTokenCredential"
+          REFRESHTOKEN: "#/components/schemas/RefreshTokenCredential"
+      required:
+        - credentialType
+    PlainCredential:
+      type: object
+      description: A plain credential as a combination of an identifier and a secret.
+      allOf:
+        - $ref: "#/components/schemas/SinkCredential"
+        - type: object
+          required:
+            - identifier
+            - secret
+          properties:
+            identifier:
+              description: The identifier might be an account or username.
+              type: string
+            secret:
+              description: The secret might be a password or passphrase.
+              type: string
+    AccessTokenCredential:
+      type: object
+      description: An access token credential.
+      allOf:
+        - $ref: "#/components/schemas/SinkCredential"
+        - type: object
+          properties:
+            accessToken:
+              description: REQUIRED. An access token is a previously acquired token granting access to the target resource.
+              type: string
+            accessTokenExpiresUtc:
+              type: string
+              format: date-time
+              description: |
+                REQUIRED. An absolute (UTC) timestamp at which the token shall be considered expired.
+                In the case of an ACCESS_TOKEN_EXPIRED termination reason, implementation should notify the client before the expiration date.
+                If the access token is a JWT and registered "exp" (Expiration Time) claim is present, the two expiry times should match.
+                It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+              example: "2023-07-03T12:27:08.312Z"
+            accessTokenType:
+              description: REQUIRED. Type of the access token (See [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-7.1)).
+              type: string
+              enum:
+                - bearer
+          required:
+            - accessToken
+            - accessTokenExpiresUtc
+            - accessTokenType
+    RefreshTokenCredential:
+      type: object
+      description: An access token credential with a refresh token.
+      allOf:
+        - $ref: "#/components/schemas/SinkCredential"
+        - type: object
+          properties:
+            accessToken:
+              description: REQUIRED. An access token is a previously acquired token granting access to the target resource.
+              type: string
+            accessTokenExpiresUtc:
+              type: string
+              format: date-time
+              description: |
+                REQUIRED. An absolute (UTC) timestamp at which the token shall be considered expired.
+                In the case of an ACCESS_TOKEN_EXPIRED termination reason, implementation should notify the client before the expiration date.
+                If the access token is a JWT and registered "exp" (Expiration Time) claim is present, the two expiry times should match.
+                It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+              example: "2023-07-03T12:27:08.312Z"
+            accessTokenType:
+              description: REQUIRED. Type of the access token (See [OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-7.1)).
+              type: string
+              enum:
+                - bearer
+            refreshToken:
+              description: REQUIRED. An refresh token credential used to acquire access tokens.
+              type: string
+            refreshTokenEndpoint:
+              type: string
+              format: uri
+              description: REQUIRED. A URL at which the refresh token can be traded for an access token.
+      required:
+        - accessToken
+        - accessTokenExpiresUtc
+        - accessTokenType
+        - refreshToken
+        - refreshTokenEndpoint
+
+  responses:
+    Generic400:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
+                      - OUT_OF_RANGE
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_OUT_OF_RANGE:
+              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
+              value:
+                status: 400
+                code: OUT_OF_RANGE
+                message: Client specified an invalid range.
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 401
+                  code:
+                    enum:
+                      - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated and a new authentication is required
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+
+    Generic403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator'
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 403
+                  code:
+                    enum:
+                      - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    Generic404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 404
+                  code:
+                    enum:
+                      - NOT_FOUND
+                      - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Specified slice resource is not found based on the sessionId
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: Some identifier cannot be matched to a device
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: Device identifier not found.
+    Generic410:
+      description: Gone
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 410
+                  code:
+                    enum:
+                      - GONE
+          examples:
+            GENERIC_410_GONE:
+              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+              value:
+                status: 410
+                code: GONE
+                message: Access to the target resource is no longer available.   
+    NetworkSliceBooking422:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 422
+                  code:
+                    enum:
+                      - NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE
+          examples:
+            NETWORK_SLICE_BOOKING_422_RESOURCES_NOT_APPLICABLE:
+              description: Request cannot be processed due to business logic validation failure, e.g. service area is not supported or resources are insufficient
+              value:
+                status: 422
+                code: NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE
+                message: The request resources are not applicable for session creation.
+    Generic422:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 422
+                  code:
+                    enum:
+                      - SERVICE_NOT_APPLICABLE
+                      - MISSING_IDENTIFIER
+                      - UNSUPPORTED_IDENTIFIER
+                      - UNNECESSARY_IDENTIFIER
+          examples:
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service not applicable for the provided identifier
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not available for the provided identifier.
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: The device cannot be identified.
+            GENERIC_422_UNSUPPORTED_IDENTIFIER:
+              description: None of the provided identifiers is supported by the implementation
+              value:
+                status: 422
+                code: UNSUPPORTED_IDENTIFIER
+                message: The identifier provided is not supported.
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit identifier is provided when a device or phone number has already been identified from the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: The device is already identified by the access token.
+    Generic429:
+      description: Quota Exceed or Too Many Requests
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 429
+                  code:
+                    enum:
+                      - QUOTA_EXCEEDED
+                      - TOO_MANY_REQUESTS
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Out of resource quota.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Rate limit reached.
+
+  examples:
+    ASSIGNMENT_COMPLETED_EVENT:
+      value:
+        id: "83a0d986-0866-4f38-b8c0-fc65bfcda452"
+        source: "https://notificationSendServer12.example.com"
+        specversion: "1.0"
+        type: "org.camaraproject.network-slice-booking.v1.assignment-completed"
+        datacontenttype: "application/json"
+        time: "2024-06-01T12:00:00Z"
+        data:
+          sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          resultList:
+            - phoneNumber: "+123456789"
+              result: "success"
+              message: "assigned successfully"
+            - networkAccessIdentifier: "123456789@example.com"
+              result: "success"
+              message: "assigned successfully"
+            - ipv4Address:
+                publicAddress: "84.125.93.10"
+                publicPort: 59765
+              result: "success"
+              message: "assigned successfully"
+            - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+              result: "success"
+              message: "assigned successfully"
+          status: "SUCCESS"
+          statusInfo: "ASSIGNMENT_COMPLETED"
+    ASSIGN_DEVICES_INPUT_ALL:
+      summary: Assign devices - All Identifiers
+      description: Example of request to assign devices to a network slice using all supported identifiers
+      value:
+        deviceList:
+          - phoneNumber: "+123456789"
+          - networkAccessIdentifier: "123456789@example.com"
+          - ipv4Address:
+              publicAddress: "84.125.93.10"
+              publicPort: 59765
+          - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+        sink:
+          "https://endpoint.example.com/sink"
+        sinkCredential:
+          credentialType: ACCESSTOKEN
+          accessToken: "<access_token>"
+          accessTokenExpiresUtc: "2025-12-31T23:59:59Z"
+          accessTokenType: bearer
+    ASSIGN_DEVICES_INPUT_NUMBER:
+      summary: Assign devices - Phone Number Identifier
+      description: Example of request to assign devices to a network slice using phone number identifier
+      value:
+        deviceList:
+          - phoneNumber: "+123456789"
+          - PhoneNumber: "+987654321"
+        sink:
+          "https://endpoint.example.com/sink"
+        sinkCredential:
+          credentialType: ACCESSTOKEN
+          accessToken: "<access_token>"
+          accessTokenExpiresUtc: "2025-12-31T23:59:59Z"
+          accessTokenType: bearer
+    ASSIGN_DEVICES_SUCCESSFUL:
+      summary: Assignment Successful
+      description: Example of successful response for assigning devices to a network slice request
+      value:
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        resultList:
+          - phoneNumber: "+123456789"
+            result: "success"
+            message: "assigned successfully"
+          - networkAccessIdentifier: "123456789@example.com"
+            result: "success"
+            message: "assigned successfully"
+          - ipv4Address:
+              publicAddress: "84.125.93.10"
+              publicPort: 59765
+            result: "success"
+            message: "assigned successfully"
+          - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+            result: "success"
+            message: "assigned successfully"
+        status: "SUCCESS"
+        statusInfo: "ASSIGNMENT_COMPLETED"
+    ASSIGN_DEVICES_PARTIAL_SUCCESS:
+      summary: Assignment Partial Successful
+      description: Example of partial successful response for assigning devices to a network slice request
+      value:
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        resultList:
+          - phoneNumber: "+123456789"
+            result: "success"
+            message: "assigned successfully"
+          - networkAccessIdentifier: "123456789@example.com"
+            result: "failure"
+            message: "device not found"
+          - ipv4Address:
+              publicAddress: "84.125.93.10"
+              publicPort: 59765
+            result: "failure"
+            message: "device already assigned"
+          - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+            result: "success"
+            message: "assigned successfully"
+        status: "PARTIAL_SUCCESS"
+        statusInfo: "ASSIGNMENT_COMPLETED_WITH_FAILURES"
+    ASSIGN_DEVICES_FAILURE:
+      summary: Assignment Failure for Session Not Found
+      description: Example of failed response for assigning devices to a network slice request
+      value:
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        status: "FAILURE"
+        statusInfo: "SESSION_NOT_FOUND"
+    RELEASE_DEVICES_INPUT_ALL:
+      summary: Release devices - All Identifiers
+      description: Example of request to release devices from a network slice using all supported identifiers
+      value:
+        deviceList:
+          - phoneNumber: "+123456789"
+          - networkAccessIdentifier: "123456789@example.com"
+          - ipv4Address:
+              publicAddress: "84.125.93.10"
+              publicPort: 59765
+          - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+    RELEASE_DEVICES_INPUT_NUMBER:
+      summary: Release devices - Phone Number Identifier
+      description: Example of request to assign devices to a network slice using phone number identifier
+      value:
+        deviceList:
+          - phoneNumber: "+123456789"
+          - PhoneNumber: "+987654321"
+        sink:
+          "https://endpoint.example.com/sink"
+        sinkCredential:
+          credentialType: ACCESSTOKEN
+          accessToken: "<access_token>"
+          accessTokenExpiresUtc: "2025-12-31T23:59:59Z"
+          accessTokenType: bearer
+    RELEASE_DEVICES_SUCCESSFUL:
+      summary: Release Successful
+      description: Example of successful response for releasing devices from a network slice request
+      value:
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        resultList:
+          - phoneNumber: "+123456789"
+            result: "success"
+            message: "released successfully"
+          - networkAccessIdentifier: "123456789@example.com"
+            result: "success"
+            message: "released successfully"
+          - ipv4Address:
+              publicAddress: "84.125.93.10"
+              publicPort: 59765
+            result: "success"
+            message: "released successfully"
+          - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+            result: "success"
+            message: "released successfully"
+        status: "SUCCESS"
+        statusInfo: "ASSIGNMENT_COMPLETED"
+    GET_DEVICES_SUCCESSFUL:
+      summary: Get Devices Successful
+      description: Example of successful response for getting devices assigned to a network slice request
+      value:
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        deviceList:
+          - phoneNumber: "+123456789"
+          - networkAccessIdentifier: "123456789@example.com"
+        sliceInfo:
+          serviceTime:
+            startDate: "2024-06-01T12:00:00Z"
+            endDate: "2024-06-02T12:00:00Z"
+          serviceArea:
+            areaType: CIRCLE
+            center:
+              latitude: 45.754114
+              longitude: 4.860374
+            radius: 800
+          sliceQosProfile:
+            maxNumOfDevices: 5
+            downStreamRatePerDevice:
+              value: 10
+              unit: bps
+            upStreamRatePerDevice:
+              value: 10
+              unit: bps
+            downStreamDelayBudget:
+              value: 12
+              unit: Milliseconds
+            upStreamDelayBudget:
+              value: 12
+              unit: Milliseconds
+    RETRIEVE_INPUT_PHONENUMBER:
+      summary: Retrieve Slice Info - Phone Number Identifier
+      description: Example of request to retrieve network slice info using phone number identifier
+      value:
+        device:
+          phoneNumber: "+123456789"
+    RETRIEVE_SUCCESSFUL:
+      summary: Retrieve Slice Info Successful
+      description: Example of successful response for retrieving network slice info request
+      value:
+        sliceList:
+          - serviceTime:
+              startDate: "2024-06-01T12:00:00Z"
+              endDate: "2024-06-02T12:00:00Z"
+            serviceArea:
+              areaType: CIRCLE
+              center:
+                latitude: 45.754114
+                longitude: 4.860374
+              radius: 800
+            sliceQosProfile:
+              maxNumOfDevices: 5
+              downStreamRatePerDevice:
+                value: 10
+                unit: bps
+              upStreamRatePerDevice:
+                value: 10
+                unit: bps
+              downStreamDelayBudget:
+                value: 12
+                unit: Milliseconds
+              upStreamDelayBudget:
+                value: 12
+                unit: Milliseconds
+            sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        
