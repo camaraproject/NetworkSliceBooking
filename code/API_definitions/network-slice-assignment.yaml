@@ -2,25 +2,19 @@ openapi: 3.0.3
 info:
   title: Network Slice Assignment
   description: |
-    This API enables the assignment and release of devices to/from an existing network slice session, as well as retrieving information about devices assigned to a session or sessions assigned to a device.
+    This API enables the assignment and release of devices to an existing network slice session, as well as retrieving information about devices assigned to a session or sessions assigned to a device.
+
+    This API works with the Network Slice Booking API, which is responsible for creating and managing network slice sessions. The Network Slice Assignment API allows API consumers to manage user subscription to the network slices.
 
     # Functionality
     The Network Slice Assignment API provides the following functionalities:
-    - **Assign Devices**: Allows the API consumer to assign multiple devices to an existing network slice session, ensuring that the number of devices does not exceed the maximum defined in the slice QoS profile.
-    - **Release Devices**: Enables the API consumer to release multiple devices from an existing network slice session.
+    - **Assign Devices**: Allows the API consumer to assign devices to an existing network slice session, ensuring that the number of devices does not exceed the maximum defined in the slice QoS profile.
+    - **Release Devices**: Enables the API consumer to release devices from an existing network slice session.
     - **Get Assigned Devices**: Retrieves information about devices currently assigned to a specific network slice session.
     - **Retrieve Sessions by Device**: Retrieves the list of network slice sessions to which a specific device is assigned.
 
     # Terms and Definitions
 
-    * **Device**: End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
-    * **Identifier for Device**: The developer can choose to provide one or more of the following device identifiers:
-        - `ipv4Address`
-        - `ipv6Address`
-        - `phoneNumber`
-        - `networkAccessIdentifier`
-      NOTE1: the network operator might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different network operators. In this case the identifiers MUST belong to the same device.
-      NOTE2: NetworkAccessIdentifier is defined for future use and will not be currently supported with v0.1 of the API.
     * **Notification Sink and Token**: 
     API consumers can provide a notification sink URL and an optional sink credential when assigning devices to a session. The notification sink is the URL where the API response will be asynchronously delivered, using the HTTP protocol. The sink credential provides authentication or authorization information necessary to enable delivery of events to the target.
 
@@ -69,11 +63,11 @@ paths:
         - Network Slice Assignment
       summary: Assign devices to a network slice session
       description: |
-        Assign a list of devices to an existing network slice session.
-
-        NOTES:
-        - The API consumer can assign multiple devices to an existing session.
-        - The API consumer must ensure that the number of devices assigned does not exceed the maximum number of devices defined in the slice QoS profile of the session.
+        Assign a device identified by its phone number to an existing network slice session. The number of devices assigned to the session must not exceed the maximum number defined in the slice QoS profile.
+        - If the assignment operation is successful, the response will indicate the status as `SUCCESS`.
+        - If the number of devices exceeds the maximum allowed for the session, the response will indicate the status as `FAILURE` with statusInfo as `MAX_DEVICES_EXCEEDED`.
+        - Id the device is already assigned to the session, the response will indicate the status as `FAILURE` with statusInfo as `DEVICE_ALREADY_ASSIGNED`.
+        - If the assignment operation is still in progress, the response will indicate the status as `PENDING`.
       operationId: assignDevices
       security:
         - openId:
@@ -93,9 +87,7 @@ paths:
             schema:
               $ref: "#/components/schemas/DeviceInput"
             examples:
-              ASSIGN_DEVICES_INPUT_ALL:
-                $ref: "#/components/examples/ASSIGN_DEVICES_INPUT_ALL"
-              ASSIGN_DEVICES_INPUT_NUMBER:
+              ASSIGN_DEVICES_INPUT:
                 $ref: "#/components/examples/ASSIGN_DEVICES_INPUT_NUMBER"
         required: true
       callbacks:
@@ -115,6 +107,8 @@ paths:
                     examples:
                       ASSIGNMENT_COMPLETED_EVENT:
                         $ref: "#/components/examples/ASSIGNMENT_COMPLETED_EVENT"
+                      ASSIGNMENT_DEVICE_EXCEED_EVENT:
+                        $ref: "#/components/examples/ASSIGNMENT_DEVICE_EXCEED_EVENT"
                 required: true                                
               responses:
                 "204":
@@ -137,7 +131,7 @@ paths:
                 - notificationsBearerAuth: []
       responses:
         "201":
-          description: At least one device assigned to the session.
+          description: The result of the device assignment operation
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
@@ -148,10 +142,10 @@ paths:
               examples:
                 ASSIGN_DEVICES_SUCCESSFUL:
                   $ref: "#/components/examples/ASSIGN_DEVICES_SUCCESSFUL"
-                ASSIGN_DEVICES_PARTIAL_SUCCESS:
-                  $ref: "#/components/examples/ASSIGN_DEVICES_PARTIAL_SUCCESS"
-                ASSIGN_DEVICES_FAILURE:
-                  $ref: "#/components/examples/ASSIGN_DEVICES_FAILURE"
+                ASSIGN_DEVICES_FAILURE_EXCEEDED:
+                  $ref: "#/components/examples/ASSIGN_DEVICES_FAILURE_EXCEEDED"
+                ASSIGN_DEVICES_ALREADY_ASSIGNED:
+                  $ref: "#/components/examples/ASSIGN_DEVICES_ALREADY_ASSIGNED"
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
@@ -171,10 +165,9 @@ paths:
         - Network Slice Assignment
       summary: Release devices from a network slice session
       description: |
-        Release a list of devices from an existing network slice session.
-
-        NOTES:
-        - The API consumer can release multiple devices from an existing session.
+        Unbind devices to an existing network slice session.
+        - If a device is not assigned to the session, it will return `FAILURE` status with statusInfo as `DEVICE_NOT_ASSIGNED` for that device in the response.
+        - If a device is successfully released from the session, it will return `SUCCESS` status.
       operationId: releaseDevices
       security:
         - openId:
@@ -192,16 +185,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DeviceInput"
+              $ref: "#/components/schemas/ReleaseDeviceInput"
             examples:
-              RELEASE_DEVICES_INPUT_ALL:
-                $ref: "#/components/examples/RELEASE_DEVICES_INPUT_ALL"
               RELEASE_DEVICES_INPUT_NUMBER:
                 $ref: "#/components/examples/RELEASE_DEVICES_INPUT_NUMBER"
         required: true
       responses:
         "200":
-          description: At least one device released from the session.
+          description: The result of the device release operation
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
@@ -286,7 +277,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Device"
+              $ref: "#/components/schemas/PhoneNumber"
             examples:
               RETRIEVE_INPUT_PHONENUMBER:
                 $ref: "#/components/examples/RETRIEVE_INPUT_PHONENUMBER"
@@ -343,11 +334,11 @@ components:
       type: string
       format: uuid
     DeviceInput:
-      description: Request to add or release devices to a session
+      description: Request to add devices to a session
       type: object
       properties:
-        deviceList:
-          $ref: "#/components/schemas/Devices"
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumber"
         sink:
           type: string
           format: uri
@@ -358,158 +349,61 @@ components:
           allOf:
             - $ref: "#/components/schemas/SinkCredential"
       required:
-        - deviceList
-    Devices:
-      description: List of device identifiers
-      type: array
-      items:
-        $ref: "#/components/schemas/Device"
-      minItems: 1
-    Device:
-      description: |
-        End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
-            The developer can choose to provide the below specified device identifiers:
-            * `ipv4Address`
-            * `ipv6Address`
-            * `phoneNumber`
-            * `networkAccessIdentifier`
-            NOTE1: the network operator might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different network operators. In this case the identifiers MUST belong to the same device.
-            NOTE2: as for this Commonalities release, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
-      type: object
-      properties:
-        phoneNumber:
-          $ref: "#/components/schemas/PhoneNumber"
-        networkAccessIdentifier:
-          $ref: "#/components/schemas/NetworkAccessIdentifier"
-        ipv4Address:
-          $ref: "#/components/schemas/DeviceIpv4Addr"
-        ipv6Address:
-          $ref: "#/components/schemas/DeviceIpv6Address"
-      minProperties: 1
+        - phoneNumber
     PhoneNumber:
       description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
       type: string
       pattern: '^\+[1-9][0-9]{4,14}$'
       example: "+123456789"
-
-    NetworkAccessIdentifier:
-      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
-      type: string
-      example: "123456789@example.com"
-
-    DeviceIpv4Addr:
+    ReleaseDeviceInput:
+      description: Request to release devices from a session
       type: object
-      description: |
-        The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
-
-        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
-
-        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
-
-        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
       properties:
-        publicAddress:
-          $ref: "#/components/schemas/SingleIpv4Addr"
-        privateAddress:
-          $ref: "#/components/schemas/SingleIpv4Addr"
-        publicPort:
-          $ref: "#/components/schemas/Port"
-      anyOf:
-        - required: [publicAddress, privateAddress]
-        - required: [publicAddress, publicPort]
-      example:
-        publicAddress: "84.125.93.10"
-        publicPort: 59765
-    SingleIpv4Addr:
-      description: A single IPv4 address with no subnet mask
-      type: string
-      format: ipv4
-      example: "84.125.93.10"
-
-    Port:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
-
-    DeviceIpv6Address:
-      description: |
-        The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
-      type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumber"
+      required:
+        - phoneNumber
     DeviceOutput:
       description: Response after assigning devices to a session
       type: object
       properties:        
         sessionId:
           $ref: "#/components/schemas/SessionId"
-        resultList:
-          $ref: "#/components/schemas/ResultList"
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumber"
         status:
           $ref: "#/components/schemas/AssignmentStatus"
         statusInfo:
           $ref: "#/components/schemas/AssignmentStatusInfo"
       required:
         - sessionId
+        - phoneNumber
         - status
         - statusInfo
     AssignmentStatus:
       description: |
         Status of the device assignment operation
         * `SUCCESS` - All devices were successfully assigned to the session
-        * `PARTIALLY_SUCCESS` - Some devices were successfully assigned to the session, while others failed
         * `FAILURE` - No devices were assigned to the session
         * `PENDING` - The assignment operation is still in progress
       type: string
       enum:
         - SUCCESS
-        - PARTIALLY_SUCCESS
         - FAILURE
         - PENDING
     AssignmentStatusInfo:
       description: |
         Additional information about the assignment status
         * `ASSIGNMENT_COMPLETED` - The assignment operation has been completed
-        * `ASSIGNMENT_COMPLETED_WITH_FAILURES` - The assignment operation has been completed with some failures
         * `MAX_DEVICES_EXCEEDED` - The number of devices exceeds the maximum allowed for the session
-        * `INVALID_DEVICE_IDENTIFIER` - One or more device identifiers are invalid
-        * `DEVICE_NOT_FOUND` - One or more devices were not found
-        * `DEVICE_ALREADY_ASSIGNED` - One or more devices are already assigned to the session
-        * `SESSION_NOT_FOUND` - The specified session ID does not exist
+        * `DEVICE_ALREADY_ASSIGNED` - Devices are already assigned to the session
+        * `DEVICE_NOT_ASSIGNED` - Devices are not assigned to the session
       type: string
       enum:
         - ASSIGNMENT_COMPLETED
-        - ASSIGNMENT_COMPLETED_WITH_FAILURES
         - MAX_DEVICES_EXCEEDED
-        - INVALID_DEVICE_IDENTIFIER
-        - DEVICE_NOT_FOUND
         - DEVICE_ALREADY_ASSIGNED
-        - SESSION_NOT_FOUND
-    ResultList:
-      description: List of devices that failed to be assigned to the session
-      type: array
-      items:
-        $ref: "#/components/schemas/AssignmentResult"
-    AssignmentResult:
-      description: Result of a device assignment attempt
-      type: object
-      properties:
-        device:
-          $ref: "#/components/schemas/Device"
-        result:
-          type: string
-          description: result of the assignment attempt for the device
-          enum:
-            - SUCCESS
-            - FAILURE
-        message:
-          type: string
-          description: Detailed reason for failure, if applicable
-      required:
-        - device
-        - result
+        - DEVICE_NOT_ASSIGNED
     RetrievedSessionsOutput:
       description: Response containing sessions assigned to a device
       type: object
@@ -525,7 +419,10 @@ components:
       type: object
       properties:
         deviceList:
-          $ref: "#/components/schemas/Devices"
+          type: array
+          items:
+            $ref: "#/components/schemas/PhoneNumber"
+          minItems: 0
         sliceInfo:
           $ref: "#/components/schemas/SessionInfo"
       required:
@@ -1223,6 +1120,8 @@ components:
 
   examples:
     ASSIGNMENT_COMPLETED_EVENT:
+      summary: Assignment Completed Event
+      description: Example of notification event sent when device assignment is completed
       value:
         id: "83a0d986-0866-4f38-b8c0-fc65bfcda452"
         source: "https://notificationSendServer12.example.com"
@@ -1232,48 +1131,30 @@ components:
         time: "2024-06-01T12:00:00Z"
         data:
           sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-          resultList:
-            - phoneNumber: "+123456789"
-              result: "success"
-              message: "assigned successfully"
-            - networkAccessIdentifier: "123456789@example.com"
-              result: "success"
-              message: "assigned successfully"
-            - ipv4Address:
-                publicAddress: "84.125.93.10"
-                publicPort: 59765
-              result: "success"
-              message: "assigned successfully"
-            - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
-              result: "success"
-              message: "assigned successfully"
+          phoneNumber: "+123456789"
           status: "SUCCESS"
           statusInfo: "ASSIGNMENT_COMPLETED"
-    ASSIGN_DEVICES_INPUT_ALL:
-      summary: Assign devices - All Identifiers
-      description: Example of request to assign devices to a network slice using all supported identifiers
+    ASSIGNMENT_DEVICE_EXCEED_EVENT:
+      summary: Assignment Device Exceed Event
+      description: Example of notification event sent when device assignment fails due to maximum devices exceeded
       value:
-        deviceList:
-          - phoneNumber: "+123456789"
-          - networkAccessIdentifier: "123456789@example.com"
-          - ipv4Address:
-              publicAddress: "84.125.93.10"
-              publicPort: 59765
-          - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
-        sink:
-          "https://endpoint.example.com/sink"
-        sinkCredential:
-          credentialType: ACCESSTOKEN
-          accessToken: "<access_token>"
-          accessTokenExpiresUtc: "2025-12-31T23:59:59Z"
-          accessTokenType: bearer
+        id: "83a0d986-0866-4f38-b8c0-fc65bfcda452"
+        source: "https://notificationSendServer12.example.com"
+        specversion: "1.0"
+        type: "org.camaraproject.network-slice-booking.v1.assignment-device-exceed"
+        datacontenttype: "application/json"
+        time: "2024-06-01T12:00:00Z"
+        data:
+          sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          phoneNumber: "+123456789"
+          status: "FAILURE"
+          statusInfo: "MAX_DEVICES_EXCEEDED"
     ASSIGN_DEVICES_INPUT_NUMBER:
       summary: Assign devices - Phone Number Identifier
       description: Example of request to assign devices to a network slice using phone number identifier
       value:
-        deviceList:
+        device:
           - phoneNumber: "+123456789"
-          - PhoneNumber: "+987654321"
         sink:
           "https://endpoint.example.com/sink"
         sinkCredential:
@@ -1286,97 +1167,38 @@ components:
       description: Example of successful response for assigning devices to a network slice request
       value:
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-        resultList:
-          - phoneNumber: "+123456789"
-            result: "success"
-            message: "assigned successfully"
-          - networkAccessIdentifier: "123456789@example.com"
-            result: "success"
-            message: "assigned successfully"
-          - ipv4Address:
-              publicAddress: "84.125.93.10"
-              publicPort: 59765
-            result: "success"
-            message: "assigned successfully"
-          - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
-            result: "success"
-            message: "assigned successfully"
+        phoneNumber: "+123456789"
         status: "SUCCESS"
         statusInfo: "ASSIGNMENT_COMPLETED"
-    ASSIGN_DEVICES_PARTIAL_SUCCESS:
-      summary: Assignment Partial Successful
-      description: Example of partial successful response for assigning devices to a network slice request
+    ASSIGN_DEVICES_FAILURE_EXCEEDED:
+      summary: Assignment Failure for DeviceNum Exceeded
+      description: Example of failure response for assigning devices to a network slice request due to maximum devices exceeded
       value:
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-        resultList:
-          - phoneNumber: "+123456789"
-            result: "success"
-            message: "assigned successfully"
-          - networkAccessIdentifier: "123456789@example.com"
-            result: "failure"
-            message: "device not found"
-          - ipv4Address:
-              publicAddress: "84.125.93.10"
-              publicPort: 59765
-            result: "failure"
-            message: "device already assigned"
-          - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
-            result: "success"
-            message: "assigned successfully"
-        status: "PARTIAL_SUCCESS"
-        statusInfo: "ASSIGNMENT_COMPLETED_WITH_FAILURES"
-    ASSIGN_DEVICES_FAILURE:
-      summary: Assignment Failure for Session Not Found
-      description: Example of failed response for assigning devices to a network slice request
-      value:
-        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        phoneNumber: "+123456789"
         status: "FAILURE"
-        statusInfo: "SESSION_NOT_FOUND"
-    RELEASE_DEVICES_INPUT_ALL:
-      summary: Release devices - All Identifiers
-      description: Example of request to release devices from a network slice using all supported identifiers
+        statusInfo: "MAX_DEVICES_EXCEEDED"
+    ASSIGN_DEVICES_ALREADY_ASSIGNED:
+      summary: Assignment Failure for Device Already Assigned
+      description: Example of failure response for assigning devices to a network slice request due to device already assigned
       value:
-        deviceList:
-          - phoneNumber: "+123456789"
-          - networkAccessIdentifier: "123456789@example.com"
-          - ipv4Address:
-              publicAddress: "84.125.93.10"
-              publicPort: 59765
-          - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        phoneNumber: "+123456789"
+        status: "FAILURE"
+        statusInfo: "DEVICE_ALREADY_ASSIGNED"
+
     RELEASE_DEVICES_INPUT_NUMBER:
       summary: Release devices - Phone Number Identifier
       description: Example of request to assign devices to a network slice using phone number identifier
       value:
-        deviceList:
-          - phoneNumber: "+123456789"
-          - PhoneNumber: "+987654321"
-        sink:
-          "https://endpoint.example.com/sink"
-        sinkCredential:
-          credentialType: ACCESSTOKEN
-          accessToken: "<access_token>"
-          accessTokenExpiresUtc: "2025-12-31T23:59:59Z"
-          accessTokenType: bearer
+        phoneNumber: "+123456789"
+
     RELEASE_DEVICES_SUCCESSFUL:
       summary: Release Successful
       description: Example of successful response for releasing devices from a network slice request
       value:
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-        resultList:
-          - phoneNumber: "+123456789"
-            result: "success"
-            message: "released successfully"
-          - networkAccessIdentifier: "123456789@example.com"
-            result: "success"
-            message: "released successfully"
-          - ipv4Address:
-              publicAddress: "84.125.93.10"
-              publicPort: 59765
-            result: "success"
-            message: "released successfully"
-          - ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
-            result: "success"
-            message: "released successfully"
+        phoneNumber: "+123456789"
         status: "SUCCESS"
         statusInfo: "ASSIGNMENT_COMPLETED"
     GET_DEVICES_SUCCESSFUL:
@@ -1384,9 +1206,7 @@ components:
       description: Example of successful response for getting devices assigned to a network slice request
       value:
         sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-        deviceList:
-          - phoneNumber: "+123456789"
-          - networkAccessIdentifier: "123456789@example.com"
+        phoneNumber: "+123456789"
         sliceInfo:
           serviceTime:
             startDate: "2024-06-01T12:00:00Z"
@@ -1415,8 +1235,7 @@ components:
       summary: Retrieve Slice Info - Phone Number Identifier
       description: Example of request to retrieve network slice info using phone number identifier
       value:
-        device:
-          phoneNumber: "+123456789"
+        phoneNumber: "+123456789"
     RETRIEVE_SUCCESSFUL:
       summary: Retrieve Slice Info Successful
       description: Example of successful response for retrieving network slice info request
