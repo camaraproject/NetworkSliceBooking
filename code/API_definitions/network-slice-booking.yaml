@@ -7,23 +7,23 @@ info:
 
     # Introduction
 
-    This API allows the API consumer to book the availability of a session (also known as a "network slice"), specifying the service time, service area, and quality of service (QoS) profile.
+    This API allows the API consumer to book the availability of a network slice, specifying the service time, service area, and quality of service (QoS) profile.
     It checks whether the requested QoS profile can be guaranteed for the indicated time and area, and, if so, it reserves the network slice accordingly, and monitors that the slice delivers the QoS profile. The latter process is known as Service Level Agreement (SLA) monitoring.
 
-    The API consumer can also retrieve information about an existing session or delete a session.
+    The API consumer can also retrieve information about an existing slice or delete a slice.
 
     # API functionality
 
     The API provides the following functionality:
-    - Create a new session (network slice), specifying the service time, service area, and QoS profile.
-    - Retrieve information about an existing session, including the service time, service area, and QoS profile.
-    - Delete an existing session.
+    - Create a new network slice, specifying the service time, service area, and QoS profile.
+    - Retrieve information about an existing slice, including the service time, service area, and QoS profile.
+    - Delete an existing slice.
 
     # Request Parameters Definition:
     * **serviceTime**: is defined by a start time and an end time, which indicates the period during which the network slice will be reserved.
     * **serviceArea**: can be defined as a circle or a polygon, allowing for flexible geographical coverage.
     * **sliceQosProfile**: includes parameters such as maximum number of devices, downstream and upstream rate per device, and packet delay budget.
-    * **sessionId**: is a unique identifier for the session, which is returned when a session is created and used to retrieve or delete the session later.
+    * **sliceId**: is a unique identifier for the network slice, which is returned when a slice is created and used to retrieve or delete the slice later.
 
     # Authorization and authentication
 
@@ -56,32 +56,32 @@ servers:
         default: http://localhost:9100
         description: API root, defined by the service provider, e.g. `api.example.com` or `api.example.com/somepath`
 tags:
-  - name: Network Slice Booking Sessions
-    description: Manage Network Slice Booking sessions
+  - name: Network Slice Booking
+    description: Manage Network Slice Booking
 paths:
-  /sessions:
+  /slices:
     post:
       tags:
-        - Network Slice Booking Sessions
-      summary: Creates a new session
+        - Network Slice Booking
+      summary: Creates a new network slice
       description: |
-        Create a new session (network slice) with the expected service time, service area, and QoS profile.
+        Create a new network slice with the expected service time, service area, and QoS profile.
 
         NOTES:
         - If expected network slice resources are not available, the API consumer will receive an error response with code `422 - NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE`.
-        - If session creation is successful, the API consumer will receive a response with code `201 - Created` and a session ID.
-      operationId: createSession
+        - If newtwork slice creation is successful, the API consumer will receive a response with code `201 - Created` and a slice ID.
+      operationId: createSlice
       security:
         - openId:
-            - network-slice-booking:sessions:create
+            - network-slice-booking:slices:create
       parameters:
         - $ref: "#/components/parameters/x-correlator"
       requestBody:
-        description: Parameters to create a new session
+        description: Parameters to create a new network slice
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateSession"
+              $ref: "#/components/schemas/CreateSlice"
             examples:
               LOCATION_CIRCLE:
                 $ref: "#/components/examples/RETRIEVAL_CIRCLE"
@@ -104,10 +104,10 @@ paths:
                     schema:
                       $ref: "#/components/schemas/CloudEvent"
                     examples:
-                      SESSION_CREATED_EVENT_CIRCLE:
-                        $ref: "#/components/examples/SESSION_CREATED_EVENT_CIRCLE"
-                      SESSION_CREATED_EVENT_POLYGON:
-                        $ref: "#/components/examples/SESSION_CREATED_EVENT_POLYGON"                     
+                      SLICE_CREATED_EVENT_CIRCLE:
+                        $ref: "#/components/examples/SLICE_CREATED_EVENT_CIRCLE"
+                      SLICE_CREATED_EVENT_POLYGON:
+                        $ref: "#/components/examples/SLICE_CREATED_EVENT_POLYGON"                     
               responses:
                 "204":
                   description: Successful notification
@@ -129,14 +129,14 @@ paths:
                 - notificationsBearerAuth: []
       responses:
         "201":
-          description: Session created successfully
+          description: Slice created successfully
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SessionInfo"
+                $ref: "#/components/schemas/SliceInfo"
               examples:
                 RESPONSE_CIRCLE:
                   $ref: "#/components/examples/RESPONSE_CIRCLE"
@@ -153,33 +153,33 @@ paths:
         "429":
           $ref: "#/components/responses/Generic429"
 
-  /sessions/{sessionId}:
+  /slices/{sliceId}:
     delete:
       tags:
-        - Network Slice Booking Sessions
-      summary: Delete a NSB session
+        - Network Slice Booking
+      summary: Delete a network slice
       description: |
-        Release slice resources related to sessionId.
+        Release slice resources related to sliceId.
 
         NOTES:
-        - The deletion operation takes effect immediately, e.g. if the session is deleted before the end of the service time, the service will end ahead of the scheduled time.
-        - If the session is deleted, the API consumer will not be able to retrieve information about the session.
-        - The deletion operation is idempotent, meaning that if the session is already deleted, the API consumer will receive a response with code `204 - No Content`.
-      operationId: deleteSession
+        - The deletion operation takes effect immediately, e.g. if the slice is deleted before the end of the service time, the service will end ahead of the scheduled time.
+        - If the slice is deleted, the API consumer will not be able to retrieve information about the slice.
+        - The deletion operation is idempotent, meaning that if the slice is already deleted, the API consumer will receive a response with code `204 - No Content`.
+      operationId: deleteSlice
       security:
         - openId:
-            - network-slice-booking:sessions:delete
+            - network-slice-booking:slices:delete
       parameters:
-        - name: sessionId
+        - name: sliceId
           in: path
-          description: Session ID that was obtained from the createSession operation
+          description: Slice ID that was obtained from the createSlice operation
           required: true
           schema:
-            $ref: "#/components/schemas/SessionId"
+            $ref: "#/components/schemas/SliceId"
         - $ref: "#/components/parameters/x-correlator"
       responses:
         "204":
-          description: Session deleted
+          description: Slice deleted
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
@@ -196,36 +196,36 @@ paths:
 
     get:
       tags:
-        - Network Slice Booking Sessions
-      summary: Get NSB session information
+        - Network Slice Booking
+      summary: Get network slcie booking information
       description: |
-        Querying for NSB session resource information details.
+        Querying for network slcie booking resource information details.
 
         NOTES:
-        - According to sessionId, the API consumer can retrieve information about an existing session, including the service time, service area, and QoS profile.
-        - If the session is deleted, the API consumer will receive a response with code `404 - Not Found`.
-      operationId: getSession
+        - According to sliceId, the API consumer can retrieve information about an existing slice, including the service time, service area, and QoS profile.
+        - If the slice is deleted, the API consumer will receive a response with code `404 - Not Found`.
+      operationId: getSlice
       security:
         - openId:
-            - network-slice-booking:sessions:get
+            - network-slice-booking:slices:get
       parameters:
-        - name: sessionId
+        - name: sliceId
           in: path
-          description: Session ID that was obtained from the createSession operation
+          description: Slice ID that was obtained from the createSlice operation
           required: true
           schema:
-            $ref: "#/components/schemas/SessionId"
+            $ref: "#/components/schemas/SliceId"
         - $ref: "#/components/parameters/x-correlator"
       responses:
         "200":
-          description: Contains information about active session
+          description: Contains information about network slice booking
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SessionInfo"
+                $ref: "#/components/schemas/SliceInfo"
               examples:
                 RESPONSE_CIRCLE:
                   $ref: "#/components/examples/RESPONSE_CIRCLE"
@@ -269,23 +269,23 @@ components:
       type: string
       pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
       example: "b4333c46-49c0-4f62-80d7-f0ef930f1c46"
-    SessionId:
-      description: Session ID in UUID format
+    SliceId:
+      description: Slice ID in UUID format
       type: string
       format: uuid
-    SessionInfo:
-      description: Session related information.
+    SliceInfo:
+      description: Slice related information.
       allOf:
-        - $ref: "#/components/schemas/CreateSession"
+        - $ref: "#/components/schemas/CreateSlice"
         - type: object
           properties:
-            sessionId:
-              $ref: "#/components/schemas/SessionId"
+            sliceId:
+              $ref: "#/components/schemas/SliceId"
           required:
-            - sessionId
+            - sliceId
 
-    CreateSession:
-      description: Attributes required to create a session
+    CreateSlice:
+      description: Attributes required to create a slice
       type: object
       properties:
         serviceTime:
@@ -557,7 +557,7 @@ components:
           type: string
           description: The type of the event
           enum:
-            -  "org.camaraproject.network-slice-booking.v1.session-created"
+            -  "org.camaraproject.network-slice-booking.v1.slice-created"
           minLength: 25
         specversion:
           type: string
@@ -577,18 +577,18 @@ components:
       discriminator:
         propertyName: type
         mapping:
-          org.camaraproject.network-slice-booking.v1.session-created: "#/components/schemas/SessionCreatedEventData"
+          org.camaraproject.network-slice-booking.v1.slice-created: "#/components/schemas/SliceCreatedEventData"
 
-    SessionCreatedEventData:
-      description: Data for session created event
+    SliceCreatedEventData:
+      description: Data for slice created event
       allOf:
         - $ref: "#/components/schemas/CloudEvent"
         - type: object
           properties:
             data:
-              description: Details of the created session
+              description: Details of the created slice
               allOf:
-                - $ref: "#/components/schemas/SessionInfo"
+                - $ref: "#/components/schemas/SliceInfo"
           required:
             - data
 
@@ -823,7 +823,7 @@ components:
                       - NOT_FOUND
           examples:
             GENERIC_404_NOT_FOUND:
-              description: Specified slice resource is not found based on the sessionId
+              description: Specified slice resource is not found based on the sliceId
               value:
                 status: 404
                 code: NOT_FOUND
@@ -877,7 +877,7 @@ components:
               value:
                 status: 422
                 code: NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE
-                message: The request resources are not applicable for session creation.
+                message: The request resources are not applicable for slice creation.
     Generic429:
       description: Quota Exceed or Too Many Requests
       headers:
@@ -992,7 +992,7 @@ components:
           upStreamDelayBudget:
             value: 12
             unit: Milliseconds
-        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     RESPONSE_POLYGON:
       value:
         serviceTime:
@@ -1023,13 +1023,13 @@ components:
           upStreamDelayBudget:
             value: 12
             unit: Milliseconds
-        sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-    SESSION_CREATED_EVENT_CIRCLE:
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    SLICE_CREATED_EVENT_CIRCLE:
       value:
         id: "83a0d986-0866-4f38-b8c0-fc65bfcda452"
         source: "https://notificationSendServer12.example.com"
         specversion: "1.0"
-        type: "org.camaraproject.network-slice-booking.v1.session-created"
+        type: "org.camaraproject.network-slice-booking.v1.slice-created"
         datacontenttype: "application/json"
         time: "2024-06-01T12:00:00Z"
         data:
@@ -1056,13 +1056,13 @@ components:
             upStreamDelayBudget:
               value: 12
               unit: Milliseconds
-          sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-    SESSION_CREATED_EVENT_POLYGON:
+          sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    SLICE_CREATED_EVENT_POLYGON:
       value:
         id: "83a0d986-0866-4f38-b8c0-fc65bfcda452"
         source: "https://notificationSendServer12.example.com"
         specversion: "1.0"
-        type: "org.camaraproject.network-slice-booking.v1.session-created"
+        type: "org.camaraproject.network-slice-booking.v1.slice-created"
         datacontenttype: "application/json"
         time: "2024-06-01T12:00:00Z"
         data:
@@ -1094,4 +1094,4 @@ components:
             upStreamDelayBudget:
               value: 12
               unit: Milliseconds
-          sessionId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
