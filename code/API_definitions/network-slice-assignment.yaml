@@ -174,8 +174,8 @@ paths:
       summary: Release a device from an exsiting network slice
       description: |
         Unbind a device to an existing network slice.
-        - If a device is not assigned to the slice, it will return `FAILURE` status with statusInfo as `DEVICE_NOT_ASSIGNED` for that device in the response.
-        - If a device is successfully released from the slice, it will return `SUCCESS` status.
+        - If the release operation is successful, the response will indicate the status as `SUCCESS` with statusInfo as `RELEASE_COMPLETED`.
+        - If the device is not assigned to the slice, the response will indicate the status as `FAILURE` with statusInfo as `DEVICE_ALREADY_RELEASED`.
 
         **NOTES:**
         - The access token may be either 2-legged or 3-legged. See "Identifying the device from the access token" for further information
@@ -308,6 +308,8 @@ paths:
           $ref: "#/components/responses/Generic401"
         "403":
           $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
         "429":
           $ref: "#/components/responses/Generic429"
 components:
@@ -488,13 +490,15 @@ components:
         * `ASSIGNMENT_COMPLETED` - The assignment operation has been completed
         * `MAX_DEVICES_EXCEEDED` - The number of devices exceeds the maximum allowed for the slice
         * `DEVICE_ALREADY_ASSIGNED` - Device is already assigned to the slice
-        * `DEVICE_NOT_ASSIGNED` - Device fail to assign to the slice
+        * `SLICE_NOT_FOUND` - The specified sliceId does not exist
+        * `ASSIGNMENT_UNKOWN_ERROR` - The assignment operation failed due to an unknown error
       type: string
       enum:
         - ASSIGNMENT_COMPLETED
         - MAX_DEVICES_EXCEEDED
         - DEVICE_ALREADY_ASSIGNED
-        - DEVICE_NOT_ASSIGNED
+        - SLICE_NOT_FOUND
+        - ASSIGNMENT_UNKOWN_ERROR
     DeviceReleaseInfo:
       description: |
         Information about the device release from network slice operation returned in the response. 
@@ -527,12 +531,14 @@ components:
         Additional information about the release status
         * `RELEASE_COMPLETED` - The release operation has been completed
         * `DEVICE_ALREADY_RELEASED` - Device is already released from the slice
-        * `DEVICE_NOT_RELEASED` - Device fail to release from the slice
+        * `SLICE_NOT_FOUND` - The specified sliceId does not exist
+        * `RELEASE_UNKOWN_ERROR` - The release operation failed due to an unknown error
       type: string
       enum:
         - RELEASE_COMPLETED
         - DEVICE_ALREADY_RELEASED
-        - DEVICE_NOT_RELEASED
+        - SLICE_NOT_FOUND
+        - RELEASE_UNKOWN_ERROR
     RetrievedSlicesOutput:
       description: Response containing slices assigned to a device
       type: object
@@ -1107,7 +1113,7 @@ components:
                       - IDENTIFIER_NOT_FOUND
           examples:
             GENERIC_404_NOT_FOUND:
-              description: Specified slice resource is not found based on the sliceId
+              description: Resource is not found
               value:
                 status: 404
                 code: NOT_FOUND
