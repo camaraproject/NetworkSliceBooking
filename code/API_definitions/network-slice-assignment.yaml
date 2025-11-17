@@ -95,8 +95,10 @@ paths:
             schema:
               $ref: "#/components/schemas/DeviceInput"
             examples:
-              ASSIGN_DEVICE_INPUT:
-                $ref: "#/components/examples/ASSIGN_DEVICE_INPUT_NUMBER"
+              ASSIGN_DEVICE_INPUT_ALL:
+                $ref: "#/components/examples/ASSIGN_DEVICE_INPUT_ALL"
+              ASSIGN_DEVICE_INPUT_NUMBER:
+                $ref: "#/components/examples/ASSIGN_DEVICE_INPUT_NUMBER"         
         required: true
       callbacks:
         networkSliceAssignmentSinkCallback:
@@ -194,6 +196,8 @@ paths:
             schema:
               $ref: "#/components/schemas/ReleaseDeviceInput"
             examples:
+              RELEASE_DEVICE_INPUT_ALL:
+                $ref: "#/components/examples/RELEASE_DEVICE_INPUT_ALL"
               RELEASE_DEVICE_INPUT_NUMBER:
                 $ref: "#/components/examples/RELEASE_DEVICE_INPUT_NUMBER"
         required: true
@@ -343,7 +347,10 @@ components:
       type: string
       format: uuid
     DeviceInput:
-      description: Request to add device to a slice
+      description: |
+        Request to add device to a slice
+        **NOTES:**
+          - It is the responsibility of the API consumer to ensure that the identifiers they are using are associated with the same device. If unable to do that, only a single identifier SHOULD be provided to the API provider.
       type: object
       properties:
         device:
@@ -1286,6 +1293,25 @@ components:
             phoneNumber: "+123456789"
           status: "FAILURE"
           statusInfo: "MAX_DEVICES_EXCEEDED"
+    ASSIGN_DEVICE_INPUT_ALL:
+      summary: Assign device - All Identifiers
+      description: Example of request to assign a device to a network slice using all identifiers
+      value:
+        device:
+          phoneNumber: "+123456789"
+          networkAccessIdentifier: "123456789@domain.com"
+          ipv4Address: 
+            publicAddress: "84.125.93.10"
+            publicPort: 59765
+          ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        sink:
+          "https://endpoint.example.com/sink"
+        sinkCredential:
+          credentialType: ACCESSTOKEN
+          accessToken: "<access_token>"
+          accessTokenExpiresUtc: "2025-12-31T23:59:59Z"
+          accessTokenType: bearer
     ASSIGN_DEVICE_INPUT_NUMBER:
       summary: Assign device - Phone Number Identifier
       description: Example of request to assign a device to a network slice using phone number identifier
@@ -1334,7 +1360,17 @@ components:
       value:
         device:
           phoneNumber: "+123456789"
-
+    RELEASE_DEVICE_INPUT_ALL:
+      summary: Release device - All Identifiers
+      description: Example of request to assign a device to a network slice using all identifiers
+      value:
+        device:
+          phoneNumber: "+123456789"
+          networkAccessIdentifier: "123456789@domain.com"
+          ipv4Address:
+            publicAddress: "84.125.93.10"
+            publicPort: 59765
+          ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
     RELEASE_DEVICE_SUCCESSFUL:
       summary: Release Successful
       description: Example of successful response for releasing a device from a network slice request
