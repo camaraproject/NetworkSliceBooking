@@ -156,6 +156,12 @@ paths:
                   $ref: "#/components/examples/ASSIGN_DEVICE_FAILURE_EXCEEDED"
                 ASSIGN_DEVICE_ALREADY_ASSIGNED:
                   $ref: "#/components/examples/ASSIGN_DEVICE_ALREADY_ASSIGNED"
+                ASSIGN_DEVICE_SLICE_NOT_FOUND:
+                  $ref: "#/components/examples/ASSIGN_DEVICE_SLICE_NOT_FOUND"
+                ASSIGN_DEVICE_UNKNOWN_ERROR:
+                  $ref: "#/components/examples/ASSIGN_DEVICE_UNKNOWN_ERROR"
+                ASSIGN_DEVICE_PENDING:
+                  $ref: "#/components/examples/ASSIGN_DEVICE_PENDING"
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
@@ -173,7 +179,7 @@ paths:
     post:
       tags:
         - Network Slice Assignment
-      summary: Release a device from an exsiting network slice
+      summary: Release a device from an existing network slice
       description: |
         Unbind a device to an existing network slice.
         - If the release operation is successful, the response will indicate the status as `SUCCESS` with statusInfo as `RELEASE_COMPLETED`.
@@ -214,6 +220,12 @@ paths:
               examples:
                 RELEASE_DEVICE_SUCCESSFUL:
                   $ref: "#/components/examples/RELEASE_DEVICE_SUCCESSFUL"
+                RELEASE_DEVICE_ALREADY_RELEASED:
+                  $ref: "#/components/examples/RELEASE_DEVICE_ALREADY_RELEASED"
+                RELEASE_DEVICE_SLICE_NOT_FOUND:
+                  $ref: "#/components/examples/RELEASE_DEVICE_SLICE_NOT_FOUND"
+                RELEASE_DEVICE_UNKNOWN_ERROR:
+                  $ref: "#/components/examples/RELEASE_DEVICE_UNKNOWN_ERROR"
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
@@ -498,14 +510,16 @@ components:
         * `MAX_DEVICES_EXCEEDED` - The number of devices exceeds the maximum allowed for the slice
         * `DEVICE_ALREADY_ASSIGNED` - Device is already assigned to the slice
         * `SLICE_NOT_FOUND` - The specified sliceId does not exist
-        * `ASSIGNMENT_UNKOWN_ERROR` - The assignment operation failed due to an unknown error
+        * `ASSIGNMENT_UNKNOWN_ERROR` - The assignment operation failed due to an unknown error
+        * `VALIDATION_PENDING` - The assignment request is pending for validation and verification
       type: string
       enum:
         - ASSIGNMENT_COMPLETED
         - MAX_DEVICES_EXCEEDED
         - DEVICE_ALREADY_ASSIGNED
         - SLICE_NOT_FOUND
-        - ASSIGNMENT_UNKOWN_ERROR
+        - ASSIGNMENT_UNKNOWN_ERROR
+        - VALIDATION_PENDING
     DeviceReleaseInfo:
       description: |
         Information about the device release from network slice operation returned in the response. 
@@ -539,13 +553,13 @@ components:
         * `RELEASE_COMPLETED` - The release operation has been completed
         * `DEVICE_ALREADY_RELEASED` - Device is already released from the slice
         * `SLICE_NOT_FOUND` - The specified sliceId does not exist
-        * `RELEASE_UNKOWN_ERROR` - The release operation failed due to an unknown error
+        * `RELEASE_UNKNOWN_ERROR` - The release operation failed due to an unknown error
       type: string
       enum:
         - RELEASE_COMPLETED
         - DEVICE_ALREADY_RELEASED
         - SLICE_NOT_FOUND
-        - RELEASE_UNKOWN_ERROR
+        - RELEASE_UNKNOWN_ERROR
     RetrievedSlicesOutput:
       description: Response containing slices assigned to a device
       type: object
@@ -1353,7 +1367,33 @@ components:
           phoneNumber: "+123456789"
         status: "FAILURE"
         statusInfo: "DEVICE_ALREADY_ASSIGNED"
-
+    ASSIGN_DEVICE_SLICE_NOT_FOUND:
+      summary: Assignment Failure for Slice Not Found
+      description: Example of failure response for assigning a device to a network slice request due to sliceId not found
+      value:
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        device:
+          phoneNumber: "+123456789"
+        status: "FAILURE"
+        statusInfo: "SLICE_NOT_FOUND"
+    ASSIGN_DEVICE_UNKNOWN_ERROR:
+      summary: Assignment Failure for Unknown Error
+      description: Example of failure response for assigning a device to a network slice request due to unknown error
+      value:
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        device:
+          phoneNumber: "+123456789"
+        status: "FAILURE"
+        statusInfo: "ASSIGNMENT_UNKNOWN_ERROR"
+    ASSIGN_DEVICE_PENDING:
+      summary: Assignment Pending
+      description: Example of pending response for assigning a device to a network slice request
+      value:
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        device:
+          phoneNumber: "+123456789"
+        status: "PENDING"
+        statusInfo: "VALIDATION_PENDING"
     RELEASE_DEVICE_INPUT_NUMBER:
       summary: Release device - Phone Number Identifier
       description: Example of request to assign a device to a network slice using phone number identifier
@@ -1380,6 +1420,33 @@ components:
           phoneNumber: "+123456789"
         status: "SUCCESS"
         statusInfo: "RELEASE_COMPLETED"
+    RELEASE_DEVICE_ALREADY_RELEASED:
+      summary: Release Failure for Device Already Released
+      description: Example of failure response for releasing a device from a network slice request due to device already not assigned to the slice
+      value:
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        device:
+          phoneNumber: "+123456789"
+        status: "FAILURE"
+        statusInfo: "DEVICE_ALREADY_RELEASED"
+    RELEASE_DEVICE_SLICE_NOT_FOUND:
+      summary: Release Failure for Slice Not Found
+      description: Example of failure response for releasing a device from a network slice request due to sliceId not found
+      value:
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        device:
+          phoneNumber: "+123456789"
+        status: "FAILURE"
+        statusInfo: "SLICE_NOT_FOUND"
+    RELEASE_DEVICE_UNKNOWN_ERROR:
+      summary: Release Failure for Unknown Error
+      description: Example of failure response for releasing a device from a network slice request due to unknown error
+      value:
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        device:
+          phoneNumber: "+123456789"
+        status: "FAILURE"
+        statusInfo: "RELEASE_UNKNOWN_ERROR"
     GET_DEVICES_SUCCESSFUL:
       summary: Get Devices Successful
       description: Example of successful response for getting devices assigned to a network slice request
