@@ -27,9 +27,9 @@ Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation assign
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/AssignmentInfo"
     And the response property "$.sliceId" is a character string
-	  And the response property "$.device" exists only if provided in the request body and with the same value
+    And the response property "$.device" exists only if provided in the request body and with the same value
     And the assigned status include in "SUCCESS" and "FAILURE"
-	  And the corresponding status prompt information
+    And the corresponding status prompt information
 
   @network_slice_booking_assignSlice_02_invalid_argument_scenario
   Scenario: Error response for invalid argument in request body

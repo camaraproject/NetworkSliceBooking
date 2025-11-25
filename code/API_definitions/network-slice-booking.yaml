@@ -1064,7 +1064,7 @@ components:
         id: "83a0d986-0866-4f38-b8c0-fc65bfcda452"
         source: "https://notificationSendServer12.example.com"
         specversion: "1.0"
-        type: "org.camaraproject.network-slice-booking.v1.slice-created"
+        type: "org.camaraproject.network-slice-booking.v0.status-changed"
         datacontenttype: "application/json"
         time: "2024-06-01T12:00:00Z"
         data:

@@ -80,7 +80,7 @@ Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation retrieve
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
-	
+
   @network_slice_booking_retrieveSlice_06_server_resource_not_found_scenario
   Scenario: Error response for not found server resouce
     Given an correct format and existing network slice id

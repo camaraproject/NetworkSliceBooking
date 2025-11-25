@@ -98,7 +98,7 @@ paths:
               ASSIGN_DEVICE_INPUT_ALL:
                 $ref: "#/components/examples/ASSIGN_DEVICE_INPUT_ALL"
               ASSIGN_DEVICE_INPUT_NUMBER:
-                $ref: "#/components/examples/ASSIGN_DEVICE_INPUT_NUMBER" 
+                $ref: "#/components/examples/ASSIGN_DEVICE_INPUT_NUMBER"
         required: true
       callbacks:
         networkSliceAssignmentSinkCallback:
@@ -1400,6 +1400,7 @@ components:
       value:
         device:
           phoneNumber: "+123456789"
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     RELEASE_DEVICE_INPUT_ALL:
       summary: Release device - All Identifiers
       description: Example of request to assign a device to a network slice using all identifiers
@@ -1411,6 +1412,7 @@ components:
             publicAddress: "84.125.93.10"
             publicPort: 59765
           ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     RELEASE_DEVICE_SUCCESSFUL:
       summary: Release Successful
       description: Example of successful response for releasing a device from a network slice request
@@ -1451,7 +1453,6 @@ components:
       summary: Get Devices Successful
       description: Example of successful response for getting devices assigned to a network slice request
       value:
-        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         deviceList:
           - device:
               phoneNumber: "+123456789"
@@ -1481,6 +1482,7 @@ components:
             upStreamDelayBudget:
               value: 12
               unit: Milliseconds
+          sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     RETRIEVE_INPUT_PHONENUMBER:
       summary: Retrieve Slice Info - Phone Number Identifier
       description: Example of request to retrieve network slice info using phone number identifier
