@@ -1,12 +1,12 @@
 Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation get
 
 	# Get information about devices assigned to an existing network slice.
-	
+
     # Input to be provided by the implementation to the tester
     #
 	# Implementation indications:
 	# * apiRoot: API root of the server URL
-  
+
     # Input to be provided by the implementation to the tester
     #
 	# Implementation indications:
@@ -35,7 +35,7 @@ Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation get
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response property "$.sliceId" is a character string
-	And the response property "$.deviceList" is an array format that stores device information under slices
+	  And the response property "$.deviceList" is an array format that stores device information under slices
     And the response property "$.sliceInfo"  is a json format that stores the configuration information of slice resources
 
   @network_slice_booking_getDevice_02_invalid_argument_scenario
@@ -82,7 +82,7 @@ Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation get
     And the response property "$.status" is 403
     And the response property "$.code" is "PERMISSION_DENIED"
     And the response property "$.message" contains a user friendly text
-		
+	
   @network_slice_booking_getDevice_06_server_resource_not_found_scenario
   Scenario: Error response for not found server resouce
     Given an correct format and existing network slice id
@@ -93,7 +93,7 @@ Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation get
     And the response property "$.status" is 404
     And the response property "$.code" is "NOT_FOUND"
     And the response property "$.message" contains a user friendly text
-	
+
   @network_slice_booking_getDevice_07_business_resource_not_found_scenario
   Scenario: Error response for not found bussiness resouce
     Given an correct format and not existing network slice id
@@ -104,7 +104,7 @@ Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation get
     And the response property "$.status" is 404
     And the response property "$.code" is "IDENTIFIER_NOT_FOUND"
     And the response property "$.message" contains a user friendly text
-	
+
   @network_slice_booking_getDevice_08_service_not_applicable_scenario
   Scenario: Common validations for fail scenario of area not supported
     Given the correct slice id is not supported by the service
@@ -115,7 +115,7 @@ Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation get
     And the response property "$.status" is 422
     And the response property "$.code" is "SERVICE_NOT_APPLICABLE"
     And the response property "$.message" is "The service is not available for the provided identifier."
-	
+
   @network_slice_booking_getDevice_09_inapposite_identifier_scenario
   Scenario: Common validations for fail scenario of inapposite identifier
     Given inapposite identifier or identifier is lost

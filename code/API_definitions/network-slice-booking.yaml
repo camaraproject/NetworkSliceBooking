@@ -109,7 +109,7 @@ paths:
                       SLICE_CREATED_EVENT_CIRCLE:
                         $ref: "#/components/examples/SLICE_CREATED_EVENT_CIRCLE"
                       SLICE_CREATED_EVENT_POLYGON:
-                        $ref: "#/components/examples/SLICE_CREATED_EVENT_POLYGON"                     
+                        $ref: "#/components/examples/SLICE_CREATED_EVENT_POLYGON"
               responses:
                 "204":
                   description: Successful notification
@@ -559,7 +559,7 @@ components:
           type: string
           description: The type of the event
           enum:
-            -  "org.camaraproject.network-slice-booking.v1.slice-created"
+            - "org.camaraproject.network-slice-booking.v0.status-changed"
           minLength: 25
         specversion:
           type: string
@@ -579,16 +579,16 @@ components:
       discriminator:
         propertyName: type
         mapping:
-          org.camaraproject.network-slice-booking.v1.slice-created: "#/components/schemas/SliceCreatedEventData"
+          org.camaraproject.network-slice-booking.v0.status-changed: "#/components/schemas/SliceCreatedEvent"
 
-    SliceCreatedEventData:
-      description: Data for slice created event
+    SliceCreatedEvent:
+      description: Event to notify a slice creation status change
       allOf:
         - $ref: "#/components/schemas/CloudEvent"
         - type: object
           properties:
             data:
-              description: Details of the created slice
+              description: Event details depending on the event type
               allOf:
                 - $ref: "#/components/schemas/SliceInfo"
           required:
@@ -629,7 +629,7 @@ components:
             - ACCESSTOKEN
             - REFRESHTOKEN
           description: |
-            The type of the credential. 
+            The type of the credential.
             Note: Type of the credential - MUST be set to ACCESSTOKEN for now
       discriminator:
         propertyName: credentialType
@@ -854,7 +854,7 @@ components:
               value:
                 status: 410
                 code: GONE
-                message: Access to the target resource is no longer available.   
+                message: Access to the target resource is no longer available.
     NetworkSliceBooking422:
       description: Unprocessable Content
       headers:
@@ -1031,7 +1031,7 @@ components:
         id: "83a0d986-0866-4f38-b8c0-fc65bfcda452"
         source: "https://notificationSendServer12.example.com"
         specversion: "1.0"
-        type: "org.camaraproject.network-slice-booking.v1.slice-created"
+        type: "org.camaraproject.network-slice-booking.v0.status-changed"
         datacontenttype: "application/json"
         time: "2024-06-01T12:00:00Z"
         data:

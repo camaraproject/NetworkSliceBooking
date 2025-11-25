@@ -15,7 +15,7 @@ info:
 
     # Terms and Definitions
 
-    * **Notification Sink and Token**: 
+    * **Notification Sink and Token**:
     API consumers can provide a notification sink URL and an optional sink credential when assigning a device to a slice. The notification sink is the URL where the API response will be asynchronously delivered, using the HTTP protocol. The sink credential provides authentication or authorization information necessary to enable delivery of events to the target.
 
     # Parameters
@@ -77,7 +77,7 @@ paths:
         - If the number of devices exceeds the maximum allowed for the slice, the response will indicate the status as `FAILURE` with statusInfo as `MAX_DEVICES_EXCEEDED`.
         - If the device is already assigned to the slice, the response will indicate the status as `FAILURE` with statusInfo as `DEVICE_ALREADY_ASSIGNED`.
         - If the assignment operation is still in progress, the response will indicate the status as `PENDING`.
-        
+
         **NOTES:**
         - The access token may be either 2-legged or 3-legged. See "Identifying the device from the access token" for further information
           - When the API is invoked using a two-legged access token, the subject will be identified from the optional `device` object, which therefore MUST be provided.
@@ -98,7 +98,7 @@ paths:
               ASSIGN_DEVICE_INPUT_ALL:
                 $ref: "#/components/examples/ASSIGN_DEVICE_INPUT_ALL"
               ASSIGN_DEVICE_INPUT_NUMBER:
-                $ref: "#/components/examples/ASSIGN_DEVICE_INPUT_NUMBER"         
+                $ref: "#/components/examples/ASSIGN_DEVICE_INPUT_NUMBER" 
         required: true
       callbacks:
         networkSliceAssignmentSinkCallback:
@@ -119,7 +119,7 @@ paths:
                         $ref: "#/components/examples/ASSIGNMENT_COMPLETED_EVENT"
                       ASSIGNMENT_DEVICE_EXCEED_EVENT:
                         $ref: "#/components/examples/ASSIGNMENT_DEVICE_EXCEED_EVENT"
-                required: true                                
+                required: true
               responses:
                 "204":
                   description: Successful notification
@@ -476,11 +476,11 @@ components:
         - sliceId
     DeviceAssignmentInfo:
       description: |
-        Information about the device assignment operation returned in the response. 
+        Information about the device assignment operation returned in the response.
         - If more than one type of device identifier is provided in the request, only one identifier will be returned.
         - In some situations (ex: assignments using 3-legged access token) the device details should not be disclosed as per the privacy and other legal requirements.
       type: object
-      properties:        
+      properties:
         device:
           $ref: "#/components/schemas/DeviceResponse"
         sliceId:
@@ -522,11 +522,11 @@ components:
         - VALIDATION_PENDING
     DeviceReleaseInfo:
       description: |
-        Information about the device release from network slice operation returned in the response. 
+        Information about the device release from network slice operation returned in the response.
         - If more than one type of device identifier is provided in the request, only one identifier will be returned.
         - In some situations (ex: assignments using 3-legged access token) the device details should not be disclosed as per the privacy and other legal requirements.
       type: object
-      properties:        
+      properties:
         device:
           $ref: "#/components/schemas/DeviceResponse"
         sliceId:
@@ -867,7 +867,7 @@ components:
           type: string
           description: The type of the event
           enum:
-            -  "org.camaraproject.network-slice-booking.v1.slice-created"
+            - "org.camaraproject.network-slice-assignment.v0.status-changed"
           minLength: 25
         specversion:
           type: string
@@ -887,18 +887,18 @@ components:
       discriminator:
         propertyName: type
         mapping:
-          org.camaraproject.network-slice-booking.v1.slice-created: "#/components/schemas/SliceCreatedEventData"
+          org.camaraproject.network-slice-assignment.v0.status-changed: "#/components/schemas/AssignmentDeviceEvent"
 
-    SliceCreatedEventData:
-      description: Data for slice created event
+    AssignmentDeviceEvent:
+      description: Event to notify about device assignment status change
       allOf:
         - $ref: "#/components/schemas/CloudEvent"
         - type: object
           properties:
             data:
-              description: Details of the created slice
+              description: Event details depending on the event type
               allOf:
-                - $ref: "#/components/schemas/SliceInfo"
+                - $ref: "#/components/schemas/DeviceAssignmentInfo"
           required:
             - data
 
@@ -937,7 +937,7 @@ components:
             - ACCESSTOKEN
             - REFRESHTOKEN
           description: |
-            The type of the credential. 
+            The type of the credential.
             Note: Type of the credential - MUST be set to ACCESSTOKEN for now
       discriminator:
         propertyName: credentialType
@@ -1169,7 +1169,7 @@ components:
               value:
                 status: 410
                 code: GONE
-                message: Access to the target resource is no longer available.   
+                message: Access to the target resource is no longer available.
     NetworkSliceBooking422:
       description: Unprocessable Content
       headers:
@@ -1282,7 +1282,7 @@ components:
         id: "83a0d986-0866-4f38-b8c0-fc65bfcda452"
         source: "https://notificationSendServer12.example.com"
         specversion: "1.0"
-        type: "org.camaraproject.network-slice-booking.v1.assignment-completed"
+        type: "org.camaraproject.network-slice-assignment.v0.status-changed"
         datacontenttype: "application/json"
         time: "2024-06-01T12:00:00Z"
         data:
@@ -1298,7 +1298,7 @@ components:
         id: "83a0d986-0866-4f38-b8c0-fc65bfcda452"
         source: "https://notificationSendServer12.example.com"
         specversion: "1.0"
-        type: "org.camaraproject.network-slice-booking.v1.assignment-device-exceed"
+        type: "org.camaraproject.network-slice-assignment.v0.status-changed"
         datacontenttype: "application/json"
         time: "2024-06-01T12:00:00Z"
         data:
@@ -1314,7 +1314,7 @@ components:
         device:
           phoneNumber: "+123456789"
           networkAccessIdentifier: "123456789@domain.com"
-          ipv4Address: 
+          ipv4Address:
             publicAddress: "84.125.93.10"
             publicPort: 59765
           ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
@@ -1516,4 +1516,3 @@ components:
                 value: 12
                 unit: Milliseconds
             sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-        
