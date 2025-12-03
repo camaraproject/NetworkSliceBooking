@@ -15,19 +15,12 @@ There are emerging requirements in high-rate time-critical applications in the a
 
 **Operators:**
 
-Telecom Provide Network Slice Booking API on NaaS Platform or Aggregator Platform
+Telecom Provide Network Slice Booking API, Providing enterprise customers with the ability to order network slice resources at designated times in designated areas, laying the foundation for subsequent enterprise customer service to end users.
 
 **API Consumers:** 
 
 OTT as API consumer. Eg: Tiktok
-1. TitTok book a bunch of slice resources using the "Slice Resource Booking" APIs. 
-ps: At this time, Tiktok may know or may not know about who would like buy "Dedicate/Premium Streaming Service" from Tiktok then.  
-
-**API End Users:**  
-
-OTT Customers Eg: Tiktok Influencer Studios 
-1. Influencers Companies or Studios may order "Dedicate/Premium Streaming Service" provided by Tiktok.
-2. Tiktok then help Influencer Companies on binding their devices into the Slice by calling the Network Slice Booking APIs.
+TitTok can order network slicing resources for a specific area at a specific time by this API, These resources lay the foundation for providing network guarantee services to end users in the future.
 
 ## ***Scenarios - Booking Scenario 2***
 
@@ -38,11 +31,4 @@ Telecom Provide Network Slice Booking API on NaaS Platform or Aggregator Platfor
 **API Consumers:** 
 
 Enterprises Developer. Eg: TV Station Developer
-1. TV Stations usually have grand TV Live Streaming Business. They need Slice Assurance Services to assure that they have dedicated network resources for their streaming. 
-2. TV Stations APP developer call Slice Assurance Services provided by Telecom NaaS Platform/Aggregator Platform directly. And developer make it "Streaming Assurance" function on the APP.
-
-**API End Users:**
-
-Enterprise. Eg: TV Station 
-1. Live Video Streaming Team One have a Live Streaming Task. Team One order the "Streaming Assurance" Service on TV Stations APP.
-2. Operator provide slice service on given the given date and area.
+TV Stations APP developer call Network Slice Booking API provided by Telecom NaaS Platform/Aggregator Platform directly to order network slice resources for the TV station. It provide a resource foundation for the "Streaming Assurance" function on the APP
