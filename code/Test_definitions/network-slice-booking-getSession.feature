@@ -1,4 +1,4 @@
-Feature: CAMARA Network Slice Booking API v0.1.0 - Operation getSlice
+Feature: CAMARA Network Slice Booking API vwip - Operation getSlice
 
     # Input to be provided by the implementation to the tester
     #
@@ -7,11 +7,11 @@ Feature: CAMARA Network Slice Booking API v0.1.0 - Operation getSlice
     #
     # Testing assets:
     # * The sliceId of an existing slice.
-    # * References to OAS spec schemas refer to schemas specified in network-slice-booking.yaml, version 0.1.0
+    # * References to OAS spec schemas refer to schemas specified in network-slice-booking.yaml, version wip
 
   Background: Common getSlice setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-booking/v0.1/slices/{sliceId}"
+    And the resource "/network-slice-booking/vwip/slices/{sliceId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"

@@ -1,4 +1,4 @@
-Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation retrieve
+Feature: CAMARA Network Slice Assignment API vwip - Operation retrieve
 
 	# Retrieve the list of network slices to which a device is assigned.
 
@@ -14,11 +14,11 @@ Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation retrieve
 	# * List of device identifier types which are not supported, among: phoneNumber, ipv4Address, ipv6Address.
 	# * For this version, CAMARA does not allow the use of networkAccessIdentifier, so it is considered by default as not supported.
 	#
-    # References to OAS spec schemas refer to schemas specified in network-slice-assignment.yaml, version 0.1.0
+    # References to OAS spec schemas refer to schemas specified in network-slice-assignment.yaml, version wip
 
   Background: Common retrieveSlice setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-assignment/v0.1/slices/devices/retrieve"
+    And the resource "/network-slice-assignment/vwip/slices/devices/retrieve"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
