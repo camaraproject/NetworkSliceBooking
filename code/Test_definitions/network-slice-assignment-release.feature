@@ -1,4 +1,4 @@
-Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation release
+Feature: CAMARA Network Slice Assignment API vwip - Operation release
 
     # Input to be provided by the implementation to the tester
     #
@@ -9,11 +9,11 @@ Feature: CAMARA Network Slice Assignment API v0.1.0 - Operation release
 	# * The AssignmentInfo of an existing Slice assignment
 	# * The AssignmentInfo of an existing Slice assignment with status "AVAILABLE", and with provided values for "sink" and "sinkCredential"
 	#
-    # References to OAS spec schemas refer to schemas specified in network-slice-assignment.yaml, version 0.1.0
+    # References to OAS spec schemas refer to schemas specified in network-slice-assignment.yaml, version wip
 
   Background: Common releaseSlice setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-assignment/v0.1/slices/devices/release"
+    And the resource "/network-slice-assignment/vwip/slices/devices/release"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
