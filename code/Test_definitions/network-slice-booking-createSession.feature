@@ -91,10 +91,21 @@ Feature: CAMARA Network Slice Booking API vwip - Operation createSlice
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response header "Content-Type" is "application/json"
     And the response property "$.status" is 422
-    And the response property "$.code" is "NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE"
-    And the response property "$.message" is "The request resources are not applicable for slice creation."
+    And the response property "$.code" is "NETWORK_SLICE_BOOKING.SERVICEAREA_NOT_SUPPORTED"
+    And the response property "$.message" is "The requested service area is not supported."
 
-  @network_slice_booking_createSlice_08_quota_exceeded_scenario
+  @network_slice_booking_createSlice_08_resource_insufficient_scenario
+  Scenario: Common validations for fail scenario of the left resources not sufficient for the requested slice resources
+    Given the configuration of information of network slicing that exceeds slice resources
+    When the request "createSlice" is sent
+    Then the response status code is 422
+    And the response header "x-correlator" has same value as the request header "x-correlator"
+    And the response header "Content-Type" is "application/json"
+    And the response property "$.status" is 422
+    And the response property "$.code" is "NETWORK_SLICE_BOOKING.RESOURCES_INSUFFICIENT"
+    And the response property "$.message" is "The left resources are not sufficient for the requested slice resources."
+
+  @network_slice_booking_createSlice_09_quota_exceeded_scenario
   Scenario: Error response for quota exceeded
     Given the right request body property argument
     When the request "createSlice" is sent
@@ -105,7 +116,7 @@ Feature: CAMARA Network Slice Booking API vwip - Operation createSlice
     And the response property "$.code" is "QUOTA_EXCEEDED"
     And the response property "$.message" is "Out of resource quota."
 
-  @network_slice_booking_createSlice_09_too_many_requests_scenario
+  @network_slice_booking_createSlice_10_too_many_requests_scenario
   Scenario: Error response for too many requests
     Given the right request body property argument
     When the request "createSlice" is sent
