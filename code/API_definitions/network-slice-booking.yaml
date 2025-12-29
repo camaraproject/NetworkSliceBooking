@@ -70,8 +70,9 @@ paths:
         Create a new network slice with the expected service time, service area, and QoS profile.
 
         NOTES:
-        - If expected network slice resources are not available, the API consumer will receive an error response with code `422 - NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE`.
         - If newtwork slice creation is successful, the API consumer will receive a response with code `201 - Created` and a slice ID.
+        - If requested service area is not supported, the API consumer will receive a response with code `422 - NETWORK_SLICE_BOOKING.SERVICEAREA_NOT_SUPPORTED`.
+        - If the left resources are not sufficient for the requested slice resources, the API consumer will receive a response with code `422 - NETWORK_SLICE_BOOKING.RESOURCES_INSUFFICIENT`.
       operationId: createSlice
       security:
         - openId:
@@ -872,14 +873,21 @@ components:
                       - 422
                   code:
                     enum:
-                      - NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE
+                      - NETWORK_SLICE_BOOKING.SERVICEAREA_NOT_SUPPORTED
+                      - NETWORK_SLICE_BOOKING.RESOURCES_INSUFFICIENT
           examples:
-            NETWORK_SLICE_BOOKING_422_RESOURCES_NOT_APPLICABLE:
-              description: Request cannot be processed due to business logic validation failure, e.g. service area is not supported or resources are insufficient
+            NETWORK_SLICE_BOOKING_422_SERVICE_AREA_NOT_SUPPORTED:
+              description: Business logic exception use when the requested service area is not supported
               value:
                 status: 422
-                code: NETWORK_SLICE_BOOKING.RESOURCES_NOT_APPLICABLE
-                message: The request resources are not applicable for slice creation.
+                code: NETWORK_SLICE_BOOKING.SERVICEAREA_NOT_SUPPORTED
+                message: The requested service area is not supported.
+            NETWORK_SLICE_BOOKING_422_RESOURCES_INSUFFICIENT:
+              description: Business logic exception use when the left resources are not sufficient for the requested slice resources
+              value:
+                status: 422
+                code: NETWORK_SLICE_BOOKING.RESOURCES_INSUFFICIENT
+                message: The left resources are not sufficient for the requested slice resources.
     Generic429:
       description: Quota Exceed or Too Many Requests
       headers:
