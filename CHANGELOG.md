@@ -14,6 +14,37 @@ The below sections record the changes for each API version in each release as fo
 * for subsequent release-candidate(s), only the delta to the previous release-candidate
 * for a public release, the consolidated changes since the previous public release
 
+# r2.1
+## Release Notes
+This release contains the definition and documentation of
+
+- network-slice-booking v0.2.0-rc.1
+- network-slice-assignment v0.1.0-rc.1
+
+The API definition(s) are based on
+
+- Commonalities v1.0.0
+- Identity and Consent Management v0.5.0
+## network-slice-booking v0.2.0-rc.1
+**network-slice-booking v0.2.0-rc.1 is the first release candidate of the version 0.2.0**
+network-slice-booking v0.2.0 will be a minor update of the API, and is backward compatible with v0.1.0.
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.1/code/API_definitions/network-slice-booking.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.1/code/API_definitions/network-slice-booking.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/NetworkSliceBooking/blob/r2.1/code/API_definitions/network-slice-booking.yaml)
+### Changed
+* Modify the term session to slice in [#87](https://github.com/camaraproject/NetworkSliceBooking/pull/87)
+* Split NetworkSliceBooking422-SERVICE_NOT_APPLICABLE into SERVICE_AREA_NOT_SUPPORTED and RESOURCES_INSUFFICIENT in [#92](https://github.com/camaraproject/NetworkSliceBooking/pull/92)
+
+## network-slice-assignment v0.1.0-rc.1
+**network-slice-assignment v0.1.0-rc.1 is the first release-candidate version of the network-slice-assignment API**
+- API definition **with inline documentation**:
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.1/code/API_definitions/network-slice-assignment.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.1/code/API_definitions/network-slice-assignment.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/NetworkSliceBooking/blob/r2.1/code/API_definitions/network-slice-assignment.yaml)
+### Added
+* Add network-slice-assignment API initial definition in [#87](https://github.com/camaraproject/NetworkSliceBooking/pull/87)
+
 # r1.2
 ## Release Notes
 This release contains the definition and documentation of
