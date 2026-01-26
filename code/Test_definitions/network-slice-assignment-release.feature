@@ -13,7 +13,7 @@ Feature: CAMARA Network Slice Assignment API vwip - Operation release
 
   Background: Common releaseSlice setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-assignment/vwip/slices/devices/release"
+    And the resource "/network-slice-assignment/vwip/slices/{sliceId}/release"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"

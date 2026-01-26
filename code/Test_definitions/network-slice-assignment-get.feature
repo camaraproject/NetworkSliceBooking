@@ -18,7 +18,7 @@ Feature: CAMARA Network Slice Assignment API vwip - Operation get
 
   Background: Common getDevice setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-assignment/vwip/slices/devices/get/{sliceId}"
+    And the resource "/network-slice-assignment/vwip/slices/{sliceId}/devices"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"

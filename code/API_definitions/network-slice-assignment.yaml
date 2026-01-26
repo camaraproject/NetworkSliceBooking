@@ -66,7 +66,7 @@ tags:
   - name: Network Slice Assignment
     description: Manage Network Slice Assignment
 paths:
-  /slices/devices/assign:
+  /slices/{sliceId}/devices:
     post:
       tags:
         - Network Slice Assignment
@@ -87,6 +87,7 @@ paths:
         - openId:
             - network-slice-assignment:devices:create
       parameters:
+        - $ref: "#/components/parameters/sliceId"
         - $ref: "#/components/parameters/x-correlator"
       requestBody:
         description: Parameters to assign a device to a network slice
@@ -174,14 +175,51 @@ paths:
           $ref: "#/components/responses/Generic422"
         "429":
           $ref: "#/components/responses/Generic429"
+    
+    get:
+      tags:
+        - Network Slice Assignment
+      summary: Get devices assigned to a network slice
+      description: |
+        Get information about devices assigned to an existing network slice.
+      operationId: getDevices
+      security:
+        - openId:
+            - network-slice-assignment:devices:get
+      parameters:
+        - $ref: "#/components/parameters/sliceId"
+        - $ref: "#/components/parameters/x-correlator"
+      responses:
+        "200":
+          description: Contains information about active slice
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SliceDevices"
+              examples:
+                GET_DEVICES_SUCCESSFUL:
+                  $ref: "#/components/examples/GET_DEVICES_SUCCESSFUL"
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "429":
+          $ref: "#/components/responses/Generic429"
 
-  /slices/devices/release:
+  /slices/{sliceId}/release:
     post:
       tags:
         - Network Slice Assignment
       summary: Release a device from an existing network slice
       description: |
-        Unbind a device to an existing network slice.
+        Release a device from an existing network slice.
         - If the release operation is successful, the response will indicate the status as `SUCCESS` with statusInfo as `RELEASE_COMPLETED`.
         - If the device is not assigned to the slice, the response will indicate the status as `FAILURE` with statusInfo as `DEVICE_ALREADY_RELEASED`.
 
@@ -194,6 +232,7 @@ paths:
         - openId:
             - network-slice-assignment:devices:delete
       parameters:
+        - $ref: "#/components/parameters/sliceId"
         - $ref: "#/components/parameters/x-correlator"
       requestBody:
         description: Parameters to release a device from a network slice
@@ -237,56 +276,13 @@ paths:
         "422":
           $ref: "#/components/responses/Generic422"
         "429":
-          $ref: "#/components/responses/Generic429"
+          $ref: "#/components/responses/Generic429"   
 
-  /slices/devices/get/{sliceId}:
-    get:
-      tags:
-        - Network Slice Assignment
-      summary: Get devices assigned to a network slice
-      description: |
-        Get information about devices assigned to an existing network slice.
-      operationId: getDevices
-      security:
-        - openId:
-            - network-slice-assignment:devices:get
-      parameters:
-        - name: sliceId
-          in: path
-          description: Slice ID that was obtained from the createSlice operation
-          required: true
-          schema:
-            $ref: "#/components/schemas/SliceId"
-        - $ref: "#/components/parameters/x-correlator"
-      responses:
-        "200":
-          description: Contains information about active slice
-          headers:
-            x-correlator:
-              $ref: "#/components/headers/x-correlator"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SliceDevice"
-              examples:
-                GET_DEVICES_SUCCESSFUL:
-                  $ref: "#/components/examples/GET_DEVICES_SUCCESSFUL"
-        "400":
-          $ref: "#/components/responses/Generic400"
-        "401":
-          $ref: "#/components/responses/Generic401"
-        "403":
-          $ref: "#/components/responses/Generic403"
-        "404":
-          $ref: "#/components/responses/Generic404"
-        "429":
-          $ref: "#/components/responses/Generic429"
-
-  /slices/devices/retrieve:
+  /retrieve-slices:
     post:
       tags:
         - Network Slice Assignment
-      summary: Retrieve all network slices corresponds to a device
+      summary: Retrieve all network slices by device
       description: |
         Retrieve the list of network slices to which a device is assigned.
       operationId: retrieveSlicesByDevice
@@ -331,8 +327,14 @@ paths:
 components:
   securitySchemes:
     openId:
+      description: OpenID Connect authentication
       type: openIdConnect
       openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    notificationsBearerAuth:
+      description: Bearer authentication for notifications
+      type: http
+      scheme: bearer
+      bearerFormat: "{$request.body#sinkCredential.credentialType}"
 
   parameters:
     x-correlator:
@@ -341,7 +343,14 @@ components:
       description: Correlation id for the different services
       schema:
         $ref: "#/components/schemas/XCorrelator"
-
+    sliceId:
+      name: sliceId
+      in: path
+      description: Slice ID that was obtained from the createSlice operation
+      required: true
+      schema:
+        $ref: "#/components/schemas/SliceId"
+      
   headers:
     x-correlator:
       description: Correlation id for the different services
@@ -367,8 +376,6 @@ components:
       properties:
         device:
           $ref: "#/components/schemas/Device"
-        sliceId:
-          $ref: "#/components/schemas/SliceId"
         sink:
           type: string
           format: uri
@@ -378,8 +385,6 @@ components:
           description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
           allOf:
             - $ref: "#/components/schemas/SinkCredential"
-      required:
-        - sliceId
     Device:
       description: |
         End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
@@ -469,11 +474,8 @@ components:
       properties:
         device:
           $ref: "#/components/schemas/Device"
-        sliceId:
-          $ref: "#/components/schemas/SliceId"
       required:
         - device
-        - sliceId
     DeviceAssignmentInfo:
       description: |
         Information about the device assignment operation returned in the response.
@@ -570,7 +572,7 @@ components:
             $ref: "#/components/schemas/SliceInfo"
           minItems: 0
 
-    SliceDevice:
+    SliceDevices:
       description: Information about devices assigned to a slice
       type: object
       properties:
@@ -587,15 +589,15 @@ components:
     SliceInfo:
       description: Slice related information.
       allOf:
-        - $ref: "#/components/schemas/CreateSlice"
+        - $ref: "#/components/schemas/SliceAttributes"
         - type: object
           properties:
             sliceId:
               $ref: "#/components/schemas/SliceId"
           required:
             - sliceId
-    CreateSlice:
-      description: Attributes required to create a slice
+    SliceAttributes:
+      description: Attributes defining the characteristics of the slice
       type: object
       properties:
         serviceTime:
@@ -1318,7 +1320,6 @@ components:
             publicAddress: "84.125.93.10"
             publicPort: 59765
           ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
-        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         sink:
           "https://endpoint.example.com/sink"
         sinkCredential:
@@ -1332,7 +1333,6 @@ components:
       value:
         device:
           phoneNumber: "+123456789"
-        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         sink:
           "https://endpoint.example.com/sink"
         sinkCredential:
@@ -1400,7 +1400,6 @@ components:
       value:
         device:
           phoneNumber: "+123456789"
-        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     RELEASE_DEVICE_INPUT_ALL:
       summary: Release device - All Identifiers
       description: Example of request to assign a device to a network slice using all identifiers
@@ -1412,7 +1411,6 @@ components:
             publicAddress: "84.125.93.10"
             publicPort: 59765
           ipv6Address: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
-        sliceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     RELEASE_DEVICE_SUCCESSFUL:
       summary: Release Successful
       description: Example of successful response for releasing a device from a network slice request
