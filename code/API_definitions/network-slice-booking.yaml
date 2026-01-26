@@ -84,7 +84,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateSlice"
+              $ref: "#/components/schemas/SliceAttributes"
             examples:
               LOCATION_CIRCLE:
                 $ref: "#/components/examples/RETRIEVAL_CIRCLE"
@@ -249,8 +249,14 @@ paths:
 components:
   securitySchemes:
     openId:
+      description: Bearer authentication for notifications
       type: openIdConnect
       openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    notificationsBearerAuth:
+      description: Bearer authentication for notifications
+      type: http
+      scheme: bearer
+      bearerFormat: "{$request.body#sinkCredential.credentialType}"
 
   parameters:
     x-correlator:
@@ -279,7 +285,7 @@ components:
     SliceInfo:
       description: Slice related information.
       allOf:
-        - $ref: "#/components/schemas/CreateSlice"
+        - $ref: "#/components/schemas/SliceAttributes"
         - type: object
           properties:
             sliceId:
@@ -287,8 +293,8 @@ components:
           required:
             - sliceId
 
-    CreateSlice:
-      description: Attributes required to create a slice
+    SliceAttributes:
+      description: Attributes defining the characteristics of the slice
       type: object
       properties:
         serviceTime:
