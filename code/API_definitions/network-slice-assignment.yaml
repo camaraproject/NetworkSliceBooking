@@ -85,7 +85,7 @@ paths:
       operationId: assignDevice
       security:
         - openId:
-            - network-slice-assignment:devices:create
+            - network-slice-assignment:devices:assign
       parameters:
         - $ref: "#/components/parameters/sliceId"
         - $ref: "#/components/parameters/x-correlator"
@@ -175,7 +175,7 @@ paths:
           $ref: "#/components/responses/Generic422"
         "429":
           $ref: "#/components/responses/Generic429"
-    
+
     get:
       tags:
         - Network Slice Assignment
@@ -276,7 +276,7 @@ paths:
         "422":
           $ref: "#/components/responses/Generic422"
         "429":
-          $ref: "#/components/responses/Generic429"   
+          $ref: "#/components/responses/Generic429"
 
   /retrieve-slices:
     post:
@@ -350,7 +350,7 @@ components:
       required: true
       schema:
         $ref: "#/components/schemas/SliceId"
-      
+
   headers:
     x-correlator:
       description: Correlation id for the different services
