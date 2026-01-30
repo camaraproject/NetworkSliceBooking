@@ -1,4 +1,4 @@
-Feature: CAMARA Network Slice Assignment API vwip - Operation releaseDevice
+Feature: CAMARA Network Slice Assignment API v0.1.0-rc.1 - Operation releaseDevice
 
     # Input to be provided by the implementation to the tester
     #
@@ -13,7 +13,7 @@ Feature: CAMARA Network Slice Assignment API vwip - Operation releaseDevice
 
   Background: Common releaseDevice setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-assignment/vwip/slices/{sliceId}/release"
+    And the resource "/network-slice-assignment/v0.1rc1/slices/{sliceId}/release"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"

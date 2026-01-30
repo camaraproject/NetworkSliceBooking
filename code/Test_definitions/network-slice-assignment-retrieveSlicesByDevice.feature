@@ -1,4 +1,4 @@
-Feature: CAMARA Network Slice Assignment API vwip - Operation retrieveSlicesByDevice
+Feature: CAMARA Network Slice Assignment API v0.1.0-rc.1 - Operation retrieveSlicesByDevice
 
 	# Retrieve the list of network slices to which a device is assigned.
 
@@ -18,7 +18,7 @@ Feature: CAMARA Network Slice Assignment API vwip - Operation retrieveSlicesByDe
 
   Background: Common retrieveSlicesByDevice setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-assignment/vwip/retrieve-slices"
+    And the resource "/network-slice-assignment/v0.1rc1/retrieve-slices"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"

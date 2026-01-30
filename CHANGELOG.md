@@ -1,6 +1,7 @@
 # Changelog Network Slice Booking
 
 ## Table of Contents
+- [r2.1](#r2.1)
 - [r1.2](#r1.2)
 - [r1.1](#r1.1)
 
@@ -44,6 +45,8 @@ network-slice-booking v0.2.0 will be a minor update of the API, and is backward 
   - OpenAPI [YAML spec file](https://github.com/camaraproject/NetworkSliceBooking/blob/r2.1/code/API_definitions/network-slice-assignment.yaml)
 ### Added
 * Add network-slice-assignment API initial definition in [#87](https://github.com/camaraproject/NetworkSliceBooking/pull/87)
+### Changed
+* Modified the paths structure with `sliceId` in path and `device` in request body in [#96](https://github.com/camaraproject/NetworkSliceBooking/pull/96)
 
 # r1.2
 ## Release Notes
