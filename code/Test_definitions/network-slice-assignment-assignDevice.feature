@@ -1,4 +1,4 @@
-Feature: CAMARA Network Slice Assignment API vwip - Operation assignDevice
+Feature: CAMARA Network Slice Assignment API v0.1.0-rc.1 - Operation assignDevice
 
     # Input to be provided by the implementation to the tester
     #
@@ -7,11 +7,11 @@ Feature: CAMARA Network Slice Assignment API vwip - Operation assignDevice
 	# * List of device identifier types which are not supported, among: phoneNumber, ipv4Address, ipv6Address.
 	# * For this version, CAMARA does not allow the use of networkAccessIdentifier, so it is considered by default as not supported.
 	#
-    # References to OAS spec schemas refer to schemas specified in network-slice-assignment.yaml, version wip
+    # References to OAS spec schemas refer to schemas specified in network-slice-assignment.yaml, version 0.1.0-rc.1
 
   Background: Common assignDevice setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-assignment/vwip/slices/{sliceId}/devices"
+    And the resource "/network-slice-assignment/v0.1rc1/slices/{sliceId}/devices"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"

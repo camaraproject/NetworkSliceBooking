@@ -1,4 +1,4 @@
-Feature: CAMARA Network Slice Booking API vwip - Operation deleteSlice
+Feature: CAMARA Network Slice Booking API v0.2.0-rc.1 - Operation deleteSlice
 
     # Input to be provided by the implementation to the tester
     #
@@ -7,11 +7,11 @@ Feature: CAMARA Network Slice Booking API vwip - Operation deleteSlice
     #
     # Testing assets:
     # * The sliceId of an existing slice.
-    # * References to OAS spec schemas refer to schemas specified in network-slice-booking.yaml, version wip
+    # * References to OAS spec schemas refer to schemas specified in network-slice-booking.yaml, version 0.2.0-rc.1
 
   Background: Common deleteSlice setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-booking/vwip/slices/{sliceId}"
+    And the resource "/network-slice-booking/v0.2rc1/slices/{sliceId}"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
