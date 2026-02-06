@@ -16,7 +16,8 @@ Sandbox API Repository to describe, develop, document, and test the NetworkSlice
 ## Scope
 * Service APIs for “Network Slice Booking” (see APIBacklog.md)  
 * It provides the API consumer with the ability to:  
-  * reserve, dynamically provisioning, query, dynamically delete a slice with customized SLA assurance capabilities, customized service duration, expected slice covered locations. 
+  * reserve, dynamically provisioning, query, dynamically delete a slice with customized SLA assurance capabilities, customized service duration, expected slice covered locations.
+  * manage user subscription to the network slices.
 * Describe, develop, document and test the APIs (with 1-2 Telcos)  
 * Started: January 2024
 
@@ -28,11 +29,15 @@ Sandbox API Repository to describe, develop, document, and test the NetworkSlice
 > [!NOTE]
 > Please be aware that the project will have frequent updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until a new release is created. For example, changes may be reverted before a release is created. **For best results, use the latest available release**.
 
-* **NEW**: The latest public release is [r1.2](https://github.com/camaraproject/NetworkSliceBooking/releases/tag/r1.2) (Fall25), with the following API versions:
-  * **network-slice-booking v0.1.0**
-  [[YAML]](https://github.com/camaraproject/NetworkSliceBooking/blob/r1.2/code/API_definitions/network-slice-booking.yaml)
-  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.2/code/API_definitions/network-slice-booking.yaml&nocors)
-  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r1.2/code/API_definitions/network-slice-booking.yaml)
+* **NEW**: The latest pre-release is [r2.1](https://github.com/camaraproject/NetworkSliceBooking/releases/tag/r2.1), with the following API versions:
+  * **network-slice-booking v0.2.0-rc.1**
+  [[YAML]](https://github.com/camaraproject/NetworkSliceBooking/blob/r2.1/code/API_definitions/network-slice-booking.yaml)
+  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.1/code/API_definitions/network-slice-booking.yaml&nocors)
+  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.1/code/API_definitions/network-slice-booking.yaml)
+  * **network-slice-assignment v0.1.0-rc.1**
+  [[YAML]](https://github.com/camaraproject/NetworkSliceBooking/blob/r2.1/code/API_definitions/network-slice-assignment.yaml)
+  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.1/code/API_definitions/network-slice-assignment.yaml&nocors)
+  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.1/code/API_definitions/network-slice-assignment.yaml)
 * The latest public release is always available here: https://github.com/camaraproject/NetworkSliceBooking/releases/latest
 * Other releases of this repository are available in https://github.com/camaraproject/NetworkSliceBooking/releases
 * For changes see [CHANGELOG.md](https://github.com/camaraproject/NetworkSliceBooking/blob/main/CHANGELOG.md)

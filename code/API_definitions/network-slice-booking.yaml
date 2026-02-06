@@ -43,7 +43,7 @@ info:
 
     As a specific rule, error `501 - NOT_IMPLEMENTED` can be only a possible error response if it is explicitly documented in the API.
 
-  version: wip
+  version: 0.2.0-rc.1
   x-camara-commonalities: "0.7"
   license:
     name: Apache 2.0
@@ -52,7 +52,7 @@ externalDocs:
   description: Project documentation at CAMARA
   url: https://github.com/camaraproject/NetworkSliceBooking
 servers:
-  - url: "{apiRoot}/network-slice-booking/vwip"
+  - url: "{apiRoot}/network-slice-booking/v0.2rc1"
     variables:
       apiRoot:
         default: http://localhost:9100
