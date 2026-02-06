@@ -24,7 +24,7 @@ This release contains the definition and documentation of
 
 The API definition(s) are based on
 
-- Commonalities v1.0.0
+- Commonalities v0.7.0
 - Identity and Consent Management v0.5.0
 ## network-slice-booking v0.2.0-rc.1
 **network-slice-booking v0.2.0-rc.1 is the first release candidate of the version 0.2.0**
