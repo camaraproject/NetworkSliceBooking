@@ -27,7 +27,7 @@ Feature: CAMARA Network Slice Assignment API vwip - Operation assignDevice
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response body complies with the OAS schema at "/components/schemas/DeviceAssignmentInfo"
     And the response property "$.sliceId" is a character string
-    And the response property "$.device" exists only if provided in the request body and with the same value
+    And the response property "$.device" exists only if provided in the request body and always if more than one device identifier is provided, And contains a single device identifier that was included in the request
     And the assigned status include in "SUCCESS" and "FAILURE"
     And the corresponding status prompt information
 
