@@ -30,7 +30,7 @@ Feature: CAMARA Network Slice Assignment API v0.1.0-rc.1 - Operation releaseDevi
     And the response header "Content-Type" is "application/json"
     And the response header "x-correlator" has same value as the request header "x-correlator"
     And the response property "$.sliceId" is a character string
-    And the response property "$.device" exists only if provided in the request body and with the same value
+    And the response property "$.device" exists only if provided in the request body and always if more than one device identifier is provided, And contains a single device identifier that was included in the request
     And the response property "$.status"  include in "SUCCESS" and "FAILURE"
     And the response property "$.statusInfo" contains a user friendly text
 

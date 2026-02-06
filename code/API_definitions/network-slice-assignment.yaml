@@ -49,7 +49,7 @@ info:
     As a specific rule, error `501 - NOT_IMPLEMENTED` can be only a possible error response if it is explicitly documented in the API.
 
   version: 0.1.0-rc.1
-  x-camara-commonalities: 0.6
+  x-camara-commonalities: "0.7"
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -393,7 +393,7 @@ components:
             * `ipv6Address`
             * `phoneNumber`
             * `networkAccessIdentifier`
-            NOTE1: the network operator might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different network operators. In this case the identifiers MUST belong to the same device.
+            NOTE1: the network operator might support only a subset of these options. The API Consumer can provide multiple identifiers to ensure compatibility across different network operators. In this case, the API Provider will use one of the identifiers for the API logic without performing any matching checks among the provided identifiers.
             NOTE2: as for this Commonalities release, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
       type: object
       properties:
@@ -402,7 +402,7 @@ components:
         networkAccessIdentifier:
           $ref: "#/components/schemas/NetworkAccessIdentifier"
         ipv4Address:
-          $ref: "#/components/schemas/DeviceIpv4Addr"
+          $ref: "#/components/schemas/DeviceIpv4Address"
         ipv6Address:
           $ref: "#/components/schemas/DeviceIpv6Address"
       minProperties: 1
@@ -426,7 +426,7 @@ components:
       type: string
       example: "123456789@example.com"
 
-    DeviceIpv4Addr:
+    DeviceIpv4Address:
       type: object
       description: |
         The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
@@ -438,9 +438,9 @@ components:
         In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
       properties:
         publicAddress:
-          $ref: "#/components/schemas/SingleIpv4Addr"
+          $ref: "#/components/schemas/SingleIpv4Address"
         privateAddress:
-          $ref: "#/components/schemas/SingleIpv4Addr"
+          $ref: "#/components/schemas/SingleIpv4Address"
         publicPort:
           $ref: "#/components/schemas/Port"
       anyOf:
@@ -449,7 +449,7 @@ components:
       example:
         publicAddress: "84.125.93.10"
         publicPort: 59765
-    SingleIpv4Addr:
+    SingleIpv4Address:
       description: A single IPv4 address with no subnet mask
       type: string
       format: ipv4
