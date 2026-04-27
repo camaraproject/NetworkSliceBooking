@@ -114,7 +114,7 @@ paths:
                 content:
                   application/cloudevents+json:
                     schema:
-                      $ref: "#/components/schemas/CloudEvent"
+                      $ref: "#/components/schemas/ApiNotificationEvent"
                     examples:
                       ASSIGNMENT_COMPLETED_EVENT:
                         $ref: "#/components/examples/ASSIGNMENT_COMPLETED_EVENT"
@@ -860,7 +860,12 @@ components:
           description: A human-readable description of what the event represents
 
     CloudEvent:
-      description: The notification callback
+      type: object
+      description: |
+        CloudEvents 1.0 specification envelope.
+        This schema is the stable base for all CAMARA event notifications.
+        It imposes no constraints on `type` values or `data` structure —
+        those concerns belong to the API-specific and lifecycle group schemas.
       required:
         - id
         - source
@@ -870,16 +875,17 @@ components:
       properties:
         id:
           type: string
-          description: identifier of this event, that must be unique in the source context.
-          minLength: 1
+          maxLength: 256
+          description: Identifier of this event, unique within the source context.
         source:
-          $ref: '#/components/schemas/Source'
+          $ref: "#/components/schemas/Source"
         type:
           type: string
-          description: The type of the event
-          enum:
-            - "org.camaraproject.network-slice-assignment.v0.status-changed"
-          minLength: 25
+          maxLength: 512
+          description: |
+            Identifies the event type. CAMARA APIs use reverse-DNS notation:
+            `org.camaraproject.<api-name>.<event-version>.<event-name>`
+            The api-name segment makes each type globally unique across API groups.
         specversion:
           type: string
           description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
@@ -892,21 +898,44 @@ components:
             - application/json
         data:
           type: object
-          description: Event details payload described in each CAMARA API and referenced by its type
+          description: Event details payload. Structure is defined by each concrete event schema.
         time:
           $ref: "#/components/schemas/DateTime"
-      discriminator:
-        propertyName: type
-        mapping:
-          org.camaraproject.network-slice-assignment.v0.status-changed: "#/components/schemas/AssignmentDeviceEvent"
 
-    AssignmentDeviceEvent:
-      description: Event to notify about device assignment status change
+    ApiEventType:
+      type: string
+      description: |
+        Enum of API-specific event type strings for this API project.
+        The reverse-DNS prefix `org.camaraproject.<api-name>` makes each value
+        globally unique, so two different API groups can independently define
+        identically-named event types without any collision risk.
+      enum:
+        - org.camaraproject.network-slice-assignment.v0.status-changed
+    ApiNotificationEvent:
+      description: |
+        API-specific notification event group.
+        Extends the CloudEvent envelope and constrains `type` to the set of
+        event types defined by this API project.
+        Adding a new event type only requires updating ApiEventType and the
+        discriminator mapping below — the CloudEvent base never changes.
       allOf:
         - $ref: "#/components/schemas/CloudEvent"
         - type: object
           properties:
+            type:
+              $ref: "#/components/schemas/ApiEventType"
+      discriminator:
+        propertyName: "type"
+        mapping:
+          org.camaraproject.network-slice-assignment.v0.status-changed: "#/components/schemas/AssignmentDeviceEvent"
+    AssignmentDeviceEvent:
+      description: Event to notify about device assignment status change
+      allOf:
+        - $ref: "#/components/schemas/ApiNotificationEvent"
+        - type: object
+          properties:
             data:
+              type: object
               description: Event details depending on the event type
               allOf:
                 - $ref: "#/components/schemas/DeviceAssignmentInfo"
