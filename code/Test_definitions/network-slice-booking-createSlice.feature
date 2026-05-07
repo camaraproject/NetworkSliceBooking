@@ -1,4 +1,4 @@
-Feature: CAMARA Network Slice Booking API vwip - Operation createSlice
+Feature: CAMARA Network Slice Booking API v0.2.0 - Operation createSlice
 
     # Input to be provided by the implementation to the tester
     #
@@ -18,7 +18,7 @@ Feature: CAMARA Network Slice Booking API vwip - Operation createSlice
 
   Background: Common createSlice setup
     Given an environment at "apiRoot"
-    And the resource "/network-slice-booking/vwip/slices"
+    And the resource "/network-slice-booking/v0.2/slices"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"

@@ -1,0 +1,16 @@
+repository:
+  repository_name: NetworkSliceBooking
+  release_tag: r2.2
+  release_type: public-release
+  release_date: null
+  src_commit_sha: 15ce6410a77a5f30aafdb135b9eb5d00f653e472
+apis:
+- api_name: network-slice-booking
+  api_version: 0.2.0
+  api_title: Network Slice Booking
+- api_name: network-slice-assignment
+  api_version: 0.1.0
+  api_title: Network Slice Assignment
+dependencies:
+  commonalities_release: r4.2 (0.8.0-rc.2)
+  identity_consent_management_release: r4.2 (0.5.0)
