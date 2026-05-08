@@ -63,19 +63,14 @@ The API definition(s) are based on
 
 ### Added
 
-* _To be filled during release review_
+* Add maxLength requirement applies to all string properties in https://github.com/camaraproject/NetworkSliceBooking/pull/108
+* Add maxItems requirement for array properties, maximum requirement for object properties and description for all properties in https://github.com/camaraproject/NetworkSliceBooking/pull/116
 
 ### Changed
 
-* _To be filled during release review_
+* Change the callback requestbody schema changes from CloudEvent to ApiNotificationEvent aligning with commonalities r4.2 in https://github.com/camaraproject/NetworkSliceBooking/pull/108
+* Modify the apiRoot path to `http://localhost:9091` in https://github.com/camaraproject/NetworkSliceBooking/pull/116
 
-### Fixed
-
-* _To be filled during release review_
-
-### Removed
-
-* _To be filled during release review_
 
 ## network-slice-assignment 0.1.0-rc.2
 
@@ -88,19 +83,14 @@ The API definition(s) are based on
 
 ### Added
 
-* _To be filled during release review_
+* Add maxLength requirement applies to all string properties in https://github.com/camaraproject/NetworkSliceBooking/pull/108
+* Add maxItems requirement for array properties, maximum requirement for object properties and description for all properties in https://github.com/camaraproject/NetworkSliceBooking/pull/116
 
 ### Changed
 
-* _To be filled during release review_
+* Change the callback requestbody schema changes from CloudEvent to ApiNotificationEvent aligning with commonalities r4.2 in https://github.com/camaraproject/NetworkSliceBooking/pull/108
+* Modify the apiRoot path to `http://localhost:9091` in https://github.com/camaraproject/NetworkSliceBooking/pull/116
 
-### Fixed
-
-* _To be filled during release review_
-
-### Removed
-
-* _To be filled during release review_
 
 **Full Changelog**: https://github.com/camaraproject/NetworkSliceBooking/compare/r2.1...r2.2
 
