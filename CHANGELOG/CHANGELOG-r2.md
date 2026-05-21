@@ -54,7 +54,7 @@ The API definition(s) are based on
 
 ## network-slice-booking 0.2.0-rc.2
 
-**network-slice-booking 0.2.0-rc.2 is ...**
+**network-slice-booking 0.2.0-rc.2 is the second release-candidate of the Network Slice Booking API to align with Commonalities r4.2.**
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.2/code/API_definitions/network-slice-booking.yaml&nocors)
@@ -74,7 +74,7 @@ The API definition(s) are based on
 
 ## network-slice-assignment 0.1.0-rc.2
 
-**network-slice-assignment 0.1.0-rc.2 is ...**
+**network-slice-assignment 0.1.0-rc.2 is the second release-candidate of the Network Slice Assignment API to align with Commonalities r4.2.**
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.2/code/API_definitions/network-slice-assignment.yaml&nocors)
