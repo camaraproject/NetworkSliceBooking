@@ -2,7 +2,7 @@ repository:
   repository_name: NetworkSliceBooking
   release_tag: r2.2
   release_type: pre-release-rc
-  release_date: null
+  release_date: '2026-05-25T02:43:44Z'
   src_commit_sha: a4d341853a4e5f6bff8b16984f4dd780fef35f9c
 apis:
 - api_name: network-slice-booking
