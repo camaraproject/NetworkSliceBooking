@@ -68,7 +68,7 @@ The API definition(s) are based on
 
 ## network-slice-booking 0.2.0
 
-**network-slice-booking 0.2.0 is ...**
+**network-slice-booking 0.2.0 is the second public version of the Network Slice Booking API.**
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.3/code/API_definitions/network-slice-booking.yaml&nocors)
@@ -77,23 +77,20 @@ The API definition(s) are based on
 
 ### Added
 
-* _To be filled during release review_
+* Align with Commonalities r4.3 - Add mandatory templates and fix schemas in [#130](https://github.com/camaraproject/NetworkSliceBooking/pull/130)
 
 ### Changed
 
-* _To be filled during release review_
-
-### Fixed
-
-* _To be filled during release review_
+* Update API definitions with corrected defaults and schema constraints aligning with Commonalities r4.2 in [#116](https://github.com/camaraproject/NetworkSliceBooking/pull/116)
+* Replace inline CloudEvent + sink-credential schemas and inline area / geometry schemas with $refs into CAMARA_event_common.yaml in [#120](https://github.com/camaraproject/NetworkSliceBooking/pull/120)
 
 ### Removed
 
-* _To be filled during release review_
+* Remove the local schema definitions for CloudEvent, sink-credential, area and geometry in favor of $refs into CAMARA_event_common.yaml in [#120](https://github.com/camaraproject/NetworkSliceBooking/pull/120)
 
 ## network-slice-assignment 0.1.0
 
-**network-slice-assignment 0.1.0 is ...**
+**network-slice-assignment 0.1.0 is the initial public version of the Network Slice Assignment API.**
 
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/NetworkSliceBooking/r2.3/code/API_definitions/network-slice-assignment.yaml&nocors)
@@ -102,19 +99,16 @@ The API definition(s) are based on
 
 ### Added
 
-* _To be filled during release review_
+* Align with Commonalities r4.3 - Add mandatory templates and fix schemas in [#130](https://github.com/camaraproject/NetworkSliceBooking/pull/130)
 
 ### Changed
 
-* _To be filled during release review_
-
-### Fixed
-
-* _To be filled during release review_
+* Update API definitions with corrected defaults and schema constraints aligning with Commonalities r4.2 in [#116](https://github.com/camaraproject/NetworkSliceBooking/pull/116)
+* Replace inline CloudEvent + sink-credential schemas and inline area / geometry schemas with $refs into CAMARA_event_common.yaml in [#120](https://github.com/camaraproject/NetworkSliceBooking/pull/120)
 
 ### Removed
 
-* _To be filled during release review_
+* Remove the local schema definitions for CloudEvent, sink-credential, area and geometry in favor of $refs into CAMARA_event_common.yaml in [#120](https://github.com/camaraproject/NetworkSliceBooking/pull/120)
 
 **Full Changelog**: https://github.com/camaraproject/NetworkSliceBooking/compare/r1.2...r2.3
 
