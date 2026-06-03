@@ -78,9 +78,13 @@ The API definition(s) are based on
 ### Added
 
 * Align with Commonalities r4.3 - Add mandatory templates and fix schemas in [#130](https://github.com/camaraproject/NetworkSliceBooking/pull/130)
+* Add maxLength requirement applies to all string properties in [#108](https://github.com/camaraproject/NetworkSliceBooking/pull/108)
 
 ### Changed
 
+* Rename the term "session" to "slice" for clarity in [#87](https://github.com/camaraproject/NetworkSliceBooking/pull/87)
+* Split 422 SERVICE_NOT_APPLICABLE error into SERVICE_AREA_NOT_SUPPORTED and RESOURCES_INSUFFICIENT for better problem understanding in [#92](https://github.com/camaraproject/NetworkSliceBooking/pull/92)
+* Change the callback request body schema from CloudEvent to ApiNotificationEvent aligning with Commonalities r4.2 in [#108](https://github.com/camaraproject/NetworkSliceBooking/pull/108)
 * Update API definitions with corrected defaults and schema constraints aligning with Commonalities r4.2 in [#116](https://github.com/camaraproject/NetworkSliceBooking/pull/116)
 * Replace inline CloudEvent + sink-credential schemas and inline area / geometry schemas with $refs into CAMARA_event_common.yaml in [#120](https://github.com/camaraproject/NetworkSliceBooking/pull/120)
 
@@ -99,11 +103,16 @@ The API definition(s) are based on
 
 ### Added
 
+* Initial public definition of the Network Slice Assignment API to provide users the method to subscribe a network slice service in [#87](https://github.com/camaraproject/NetworkSliceBooking/pull/87)
+* Modify network-slice-assignment API Path and Feature Files in [#96](https://github.com/camaraproject/NetworkSliceBooking/pull/96)
+* Add maxLength requirement applies to all string properties in [#108](https://github.com/camaraproject/NetworkSliceBooking/pull/108)
+* Add maxItems requirement for array properties, maximum requirement for object properties and description for all properties in [#116](https://github.com/camaraproject/NetworkSliceBooking/pull/116)
 * Align with Commonalities r4.3 - Add mandatory templates and fix schemas in [#130](https://github.com/camaraproject/NetworkSliceBooking/pull/130)
 
 ### Changed
 
-* Update API definitions with corrected defaults and schema constraints aligning with Commonalities r4.2 in [#116](https://github.com/camaraproject/NetworkSliceBooking/pull/116)
+* Change the callback request body schema from CloudEvent to ApiNotificationEvent aligning with Commonalities r4.2 in [#108](https://github.com/camaraproject/NetworkSliceBooking/pull/108)
+* Modify the apiRoot path to `http://localhost:9091` in [#116](https://github.com/camaraproject/NetworkSliceBooking/pull/116)
 * Replace inline CloudEvent + sink-credential schemas and inline area / geometry schemas with $refs into CAMARA_event_common.yaml in [#120](https://github.com/camaraproject/NetworkSliceBooking/pull/120)
 
 ### Removed
